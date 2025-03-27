@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Perfume Bliss</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f3e7e9, #e3eeff);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+        <h2 class="text-2xl font-bold text-gray-900 text-center">LogIn</h2>
+        <div class="mt-6">
+            <label class="block text-gray-700 font-semibold mb-2">Phone Number</label>
+            <div class="flex border rounded-lg p-2">
+                <select class="bg-transparent border-r px-2 outline-none">
+                    <option>+91</option>
+                    <option>+1</option>
+                    <option>+44</option>
+                </select>
+                <input type="tel" placeholder="Phone" class="w-full px-2 outline-none">
+            </div>
+            <button class="w-full mt-4 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600">Send One Time Password</button>
+        </div>
+        <div class="flex items-center justify-center my-4">
+            <div class="w-full border-b"></div>
+            <span class="mx-2 text-gray-600">or</span>
+            <div class="w-full border-b"></div>
+        </div>
+        <button class="w-full flex items-center justify-center bg-gray-100 py-2 rounded-lg hover:bg-gray-200 mt-2">
+            <img src="https://img.icons8.com/color/48/000000/google-logo.png" class="h-5 mr-2"/> Sign in with Google
+        </button>
+        <p class="mt-4 text-center text-gray-700">New to VTrade? <a href="SignUp.html" class="text-red-500 hover:underline">Create account</a></p>
+    </div>
+</body>
+</html>

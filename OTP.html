@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification - VTrade</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f3e7e9, #e3eeff);
+        }
+        .otp-input {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            font-size: 18px;
+            margin: 0 5px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+        }
+        .otp-input:focus {
+            outline: none;
+            border-color: #ef4444;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+        <h2 class="text-2xl font-bold text-gray-900 text-center">OTP Verification</h2>
+        <p class="text-center text-gray-600 mt-2">We've sent a 6-digit code to +91 ••••• •••89</p>
+        
+        <div class="mt-6">
+            <div class="flex justify-center mb-6">
+                <input type="text" maxlength="1" class="otp-input" pattern="\d*">
+                <input type="text" maxlength="1" class="otp-input" pattern="\d*">
+                <input type="text" maxlength="1" class="otp-input" pattern="\d*">
+                <input type="text" maxlength="1" class="otp-input" pattern="\d*">
+                <input type="text" maxlength="1" class="otp-input" pattern="\d*">
+                <input type="text" maxlength="1" class="otp-input" pattern="\d*">
+            </div>
+            
+            <button class="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600">
+                Verify OTP
+            </button>
+            
+            <div class="mt-4 text-center">
+                <p class="text-gray-600">Didn't receive code?</p>
+                <button class="text-red-500 hover:underline">Resend OTP</button>
+            </div>
+        </div>
+        
+        <div class="flex items-center justify-center my-6">
+            <div class="w-full border-b"></div>
+            <span class="mx-2 text-gray-600">or</span>
+            <div class="w-full border-b"></div>
+        </div>
+        
+        <p class="mt-4 text-center text-gray-700">
+            <a href="login.html" class="text-red-500 hover:underline">← Back to Login</a>
+        </p>
+    </div>
+
+    <script>
+        const otpInputs = document.querySelectorAll('.otp-input');
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length === 1 && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+            });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && index > 0 && !e.target.value) {
+                    otpInputs[index - 1].focus();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

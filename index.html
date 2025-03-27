@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIT Trade</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="bg-gray-900 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-xl font-bold">VTrade</a>
+            <button class="md:hidden focus:outline-none" id="menu-toggle">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+            <ul class="hidden md:flex space-x-6 items-center" id="nav-links">
+                <li class="relative">
+                    <form action="/s/" method="GET" class="flex items-center">
+                        <input 
+                            type="text" 
+                            name="q" 
+                            placeholder="Search..." 
+                            class="bg-gray-800 text-white px-3 py-1 rounded focus:outline-none w-40 sm:w-48 md:w-56" 
+                            autocomplete="off"
+                            id="search-input"
+                        />
+                        <button type="submit" class="ml-2 hover:text-gray-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </button>
+                    </form>
+                    <div id="suggestions-container" class="hidden absolute top-full left-0 mt-1 w-full bg-white shadow-lg rounded-lg z-50"></div>
+                </li>
+                <li>
+                    <div class="btn">
+                        <button class="login active"><a href="login.html">Login</a></button>
+                        <button class="signup"><a href="SignUp.html">Signup</a></button>
+                    </div>
+                </li>
+                <li>
+                    <a href="MyCart.html" class="hover:text-gray-400 flex items-center relative">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <span class="ml-1">Cart</span>
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mx-auto p-6">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <!-- Grocery -->
+            <div class="group relative">
+                <a href="/grocery-supermart-store" class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center block h-full flex flex-col">
+                    <div class="flex justify-center flex-1 items-center">
+                        <img src="https://thumbs.dreamstime.com/b/shopping-cart-full-dairy-grocery-products-isolated-over-white-background-35477050.jpg?q=100" alt="Grocery" class="w-16 h-16 object-contain">
+                    </div>
+                    <span class="mt-2 block text-sm font-semibold">Grocery</span>
+                </a>
+                <div class="absolute hidden group-hover:block w-48 bg-white shadow-lg rounded-lg mt-1 z-10 p-2 left-1/2 transform -translate-x-1/2">
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Snacks</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Beverages</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Packaged Food</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Dairy</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Personal Care</a>
+                </div>
+            </div>
+        
+            <!-- Stationery -->
+            <div class="group relative">
+                <a href="/stationery-store" class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center block h-full flex flex-col">
+                    <div class="flex justify-center flex-1 items-center">
+                        <img src="https://img.freepik.com/premium-photo/school-concept-blank-background-used-back-school-advertising_145713-31190.jpg?q=100" alt="Stationery" class="w-16 h-19 object-contain">
+                    </div>
+                    <span class="mt-2 block text-sm font-semibold">Stationery</span>
+                </a>
+                <div class="absolute hidden group-hover:block w-48 bg-white shadow-lg rounded-lg mt-1 z-10 p-2 left-1/2 transform -translate-x-1/2">
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Notebooks</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Pens & Pencils</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Art Supplies</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Calculators</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Files & Folders</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Sticky Notes</a>
+                </div>
+            </div>
+        
+            <!-- Fashion -->
+            <div class="group relative">
+                <a href="/fashion-store" class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center block h-full flex flex-col">
+                    <div class="flex justify-center flex-1 items-center">
+                        <img src="https://static.vecteezy.com/system/resources/previews/004/333/924/non_2x/webstylishly-dressed-boy-and-teenage-girl-on-a-white-background-vector.jpg?q=100" alt="Fashion" class="w-16 h-16 object-contain">
+                    </div>
+                    <span class="mt-2 block text-sm font-semibold">Fashion</span>
+                </a>
+                <div class="absolute hidden group-hover:block w-48 bg-white shadow-lg rounded-lg mt-1 z-10 p-2 left-1/2 transform -translate-x-1/2">
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Men's Fashion</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Women's Fashion</a>
+                </div>
+            </div>
+        
+            <!-- Medicine -->
+            <div class="group relative">
+                <a href="/medicine-store" class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center block h-full flex flex-col">
+                    <div class="flex justify-center flex-1 items-center">
+                        <img src="https://img.freepik.com/premium-photo/brown-medical-bottles-pills-isolated-white-background_185193-8416.jpg?semt=ais_hybrid?q=100" alt="Medicine" class="w-24 h-19 object-contain">
+                    </div>
+                    <span class="mt-2 block text-sm font-semibold">Medicine</span>
+                </a>
+                <div class="absolute hidden group-hover:block w-48 bg-white shadow-lg rounded-lg mt-1 z-10 p-2 left-1/2 transform -translate-x-1/2">
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Prescription Medicines</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">OTC Products</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Wellness & Nutrition</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Ayurvedic</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Personal Care</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Health Devices</a>
+                </div>
+            </div>
+        
+            <!-- Second-Hand Home Goods -->
+            <div class="group relative">
+                <a href="/secondhand-furniture" class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center block h-full flex flex-col">
+                    <div class="flex justify-center flex-1 items-center">
+                        <img src="https://rukminim2.flixcart.com/flap/96/96/image/ab7e2b022a4587dd.jpg?q=100" alt="Second-Hand Home Goods" class="w-16 h-16 object-contain">
+                    </div>
+                    <span class="mt-2 block text-sm font-semibold">Second-Hand Home Goods</span>
+                </a>
+                <div class="absolute hidden group-hover:block w-48 bg-white shadow-lg rounded-lg mt-1 z-10 p-2 left-1/2 transform -translate-x-1/2">
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Mattress</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Electric Kettle</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Dustbin</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Bathing Bucket</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Room Decor</a>
+                </div>
+            </div>
+
+            <!-- Parcel Pickup -->
+            <div class="group relative">
+                <a href="/home-furniture-store" class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center block h-full flex flex-col">
+                    <div class="flex justify-center flex-1 items-center">
+                        <img src="https://www.pickparcel.com/assets/img/slider_1.jpg?q=100" alt="Parcel Pickup" class="w-20 h-20 object-contain">
+                    </div>
+                    <span class="mt-2 block text-sm font-semibold">Parcel Pickup</span>
+                </a>
+                <div class="absolute hidden group-hover:block w-48 bg-white shadow-lg rounded-lg mt-1 z-10 p-2 left-1/2 transform -translate-x-1/2">
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Amazon</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Flipkart</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Myntra</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Snapdeal</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Blinkit</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Swiggy</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Zomato</a>
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Other</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section id="best-sellers" class="py-16 text-center text-white">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold">Best Sellers</h2>
+            <p class="mt-4">Discover our most popular stationery items.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+                <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105">
+                    <img src="https://images.unsplash.com/photo-1621351183012-e2f9972dd9bf?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Notebooks" class="mx-auto h-48 object-cover rounded-t-lg">
+                    <h3 class="text-xl font-semibold mt-4">BalaJi Notebooks</h3>
+                    <p class="text-gray-600">High-quality notebooks for all your writing needs.</p>
+                    <div class="flex items-center justify-between mt-4">
+                        <span class="text-lg font-bold">₹25</span>
+                        <div class="flex items-center space-x-2">
+                            <button class="quantity-btn bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">-</button>
+                            <span class="quantity">0</span>
+                            <button class="quantity-btn bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">+</button>
+                        </div>
+                    </div>
+                    <button class="w-full mt-4 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition-colors">
+                        Add to Cart
+                    </button>
+                </div>
+                <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105">
+                    <img src="https://n3.sdlcdn.com/imgs/i/7/h/Pentonic-Linc-LNPTP50AS-Ball-Point-SDL116457782-3-5950a.jpeg" alt="Pens" class="mx-auto h-48 object-cover rounded-t-lg">
+                    <h3 class="text-xl font-semibold mt-4">Pentonic Linc Ballpoint Pens</h3>
+                    <p class="text-gray-600">Smooth-writing pens for a seamless experience.</p>
+                    <div class="flex items-center justify-between mt-4">
+                        <span class="text-lg font-bold">₹10</span>
+                        <div class="flex items-center space-x-2">
+                            <button class="quantity-btn bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">-</button>
+                            <span class="quantity">0</span>
+                            <button class="quantity-btn bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">+</button>
+                        </div>
+                    </div>
+                    <button class="w-full mt-4 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition-colors">
+                        Add to Cart
+                    </button>
+                </div>
+                <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105">
+                    <img src="https://m.media-amazon.com/images/I/619f7cza-ML._SX466_.jpg" alt="Art Supplies" class="mx-auto h-48 object-cover rounded-t-lg">
+                    <h3 class="text-xl font-semibold mt-4">Casio FX-991ES Plus-2nd Edition Scientific Calculator</h3>
+                    <p class="text-gray-600">Everything you need to unleash your creativity.</p>
+                    <div class="flex items-center justify-between mt-4">
+                        <span class="text-lg font-bold">₹899</span>
+                        <div class="flex items-center space-x-2">
+                            <button class="quantity-btn bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">-</button>
+                            <span class="quantity">0</span>
+                            <button class="quantity-btn bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">+</button>
+                        </div>
+                    </div>
+                    <button class="w-full mt-4 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition-colors">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="main" class="py-16 text-center text-white">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold">Explore Our Top Picks</h2>
+            <p class="mt-4">Discover the best from our diverse collection of everyday essentials.</p>
+            <div id="product-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+                <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105">
+                    <img src="https://hyderabad-grocers.com/wp-content/uploads/2021/02/Kurkure.jpg" alt="Grocery" class="mx-auto h-48 object-cover rounded-t-lg">
+                    <h3 class="text-xl font-semibold mt-4">Fresh Groceries</h3>
+                    <p class="text-gray-600">Stock up on daily essentials like snacks and beverages.</p>
+                </div>
+                <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105">
+                    <img src="https://rukminim2.flixcart.com/image/850/1000/xif0q/cap/c/y/m/free-latest-side-ny-baseball-cap-highever-original-imagnm8fvyf9jbpv.jpeg?q=90&crop=false" alt="Cap" class="mx-auto h-48 object-cover rounded-t-lg">
+                    <h3 class="text-xl font-semibold mt-4">Trendy Apparel</h3>
+                    <p class="text-gray-600">Upgrade your wardrobe with stylish clothing.</p>
+                </div>
+                <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105">
+                    <img src="https://scooboo.in/cdn/shop/files/deli-sticky-notes-3x2-inch-pack-of-100-sticky-notes-scooboodeli6921734942425a00253-230946.jpg?v=1720295126&width=1214" alt="Sticky Notes" class="mx-auto h-48 object-cover rounded-t-lg">
+                    <h3 class="text-xl font-semibold mt-4">Sticky Notes</h3>
+                    <p class="text-gray-600">Perfect for reminders and quick notes.</p>
+                </div>
+                <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105 hidden" data-hidden>
+                    <img src="https://ayushpharmacy.co.in/wp-content/uploads/2023/06/Cipla-Cofsils-Lozenges-Orange-Jar-24-X-10-Lozenges-Blister-Pack.jpg" alt="Medicine" class="mx-auto h-48 object-cover rounded-t-lg">
+                    <h3 class="text-xl font-semibold mt-4">Health Essentials</h3>
+                    <p class="text-gray-600">Find medicines and wellness products.</p>
+                </div>
+                <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105 hidden" data-hidden>
+                    <img src="https://images.unsplash.com/photo-1595436148849-7d906906c48a?q=80&w=2070&auto=format&fit=crop" alt="Toys" class="mx-auto h-48 object-cover rounded-t-lg">
+                    <h3 class="text-xl font-semibold mt-4">Fun Toys</h3>
+                    <p class="text-gray-600">Keep the kids entertained with our toy collection.</p>
+                </div>
+                <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105 hidden" data-hidden>
+                    <img src="https://images.unsplash.com/photo-1596464716127-f2a82984de30?q=80&w=2070&auto=format&fit=crop" alt="Parcel" class="mx-auto h-48 object-cover rounded-t-lg">
+                    <h3 class="text-xl font-semibold mt-4">Parcel Pickup</h3>
+                    <p class="text-gray-600">Convenient pickup for your online orders.</p>
+                </div>
+            </div>
+            <button id="show-more" class="mt-8 bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition-colors">Show More</button>
+        </div>
+    </section>
+    
+    <section id="new-arrivals" class="py-16 text-center text-white">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold">New Arrivals</h2>
+            <p class="mt-4">Check out the latest additions to our stationery collection.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+                <div class="p-6 shadow-md rounded-lg bg-white text-gray-900">
+                    <img src="https://images.unsplash.com/photo-1591348278863-a8fb3887e2aa?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Erasers" class="mx-auto h-48 object-cover">
+                    <h3 class="text-xl font-semibold mt-4">Premium Erasers</h3>
+                    <p class="text-gray-600">Smooth and durable erasers for precise corrections.</p>
+                </div>
+                <div class="p-6 shadow-md rounded-lg bg-white text-gray-900">
+                    <img src="https://images.unsplash.com/photo-1591348278997-7b5f2a1b5d5e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Highlighters" class="mx-auto h-48 object-cover">
+                    <h3 class="text-xl font-semibold mt-4">Pastel Highlighters</h3>
+                    <p class="text-gray-600">Soft colors for gentle highlighting.</p>
+                </div>
+                <div class="p-6 shadow-md rounded-lg bg-white text-gray-900">
+                    <img src="https://images.unsplash.com/photo-1591348278997-7b5f2a1b5d5e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Desk Organizers" class="mx-auto h-48 object-cover">
+                    <h3 class="text-xl font-semibold mt-4">Desk Organizers</h3>
+                    <p class="text-gray-600">Keep your workspace tidy and stylish.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="customer-reviews" class="py-16 text-center text-white">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold">Customer Reviews</h2>
+            <p class="mt-4">See what our customers have to say about our products.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+                <div class="p-6 shadow-md rounded-lg bg-white text-gray-900">
+                    <p class="italic">"The notebooks are amazing! The paper quality is top-notch."</p>
+                    <h4 class="font-semibold mt-4">- Sarah M.</h4>
+                </div>
+                <div class="p-6 shadow-md rounded-lg bg-white text-gray-900">
+                    <p class="italic">"I love the pens! They write so smoothly and last a long time."</p>
+                    <h4 class="font-semibold mt-4">- David R.</h4>
+                </div>
+                <div class="p-6 shadow-md rounded-lg bg-white text-gray-900">
+                    <p class="italic">"The desk organizer is a game-changer for my workspace!"</p>
+                    <h4 class="font-semibold mt-4">- Emily L.</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-white py-8 mt-10">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-center space-x-6 mb-6">
+                <a href="PrivacyPolicy.html" class="text-gray-300 hover:text-white transition-colors">Privacy Policy</a>
+                <a href="TermsAndCondition.html" class="text-gray-300 hover:text-white transition-colors">Terms of Service</a>
+                <a href="ContactUs.html" class="text-gray-300 hover:text-white transition-colors">Contact</a>
+                <a href="About.html" class="text-gray-300 hover:text-white transition-colors">About Us</a>
+            </div>
+            <div class="flex flex-col items-center">
+                <div class="flex space-x-5 mb-4">
+                    <a href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer" 
+                       class="text-gray-400 hover:text-blue-500 transition-colors">
+                        <i class="fab fa-facebook-f text-xl"></i>
+                    </a>
+                    <a href="https://instagram.com/yourusername" target="_blank" rel="noopener noreferrer" 
+                       class="text-gray-400 hover:text-pink-500 transition-colors">
+                        <i class="fab fa-instagram text-xl"></i>
+                    </a>
+                    <a href="https://linkedin.com/company/yourcompany" target="_blank" rel="noopener noreferrer" 
+                       class="text-gray-400 hover:text-blue-400 transition-colors">
+                        <i class="fab fa-linkedin-in text-xl"></i>
+                    </a>
+                    <a href="mailto:contact@vtrade.com" class="text-gray-400 hover:text-red-400 transition-colors">
+                        <i class="fas fa-envelope text-xl"></i>
+                    </a>
+                </div>
+                <p class="text-gray-400 text-sm">
+                    &copy; VTrade Commerce Private Limited 2025. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+    <button id="back-to-top" class="fixed bottom-5 right-5 bg-red-500 text-white p-3 rounded-full shadow-lg hover:bg-red-600 transition-colors duration-300 hidden">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+        </svg>
+    </button>
+    <script src="script.js"></script>
+</body>
+</html>
