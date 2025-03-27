@@ -4,11 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All Products - VTrade</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
     <style>
         body {
+            background: linear-gradient(to right, #c2e1ea, #a9bfda); /* From index.html */
+            /* Override for specific pages */
+        }
+        body.login, body.otp, body.signup, body.seeall {
             background: linear-gradient(135deg, #f3e7e9, #e3eeff);
+        }
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .btn {
+            height: 40px;
+            width: 200px;
+            margin: 0 auto;
+            box-shadow: 0px 0px 10px rgba(254, 215, 188, 0.5);
+            border-radius: 50px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn button {
+            font-size: 14px;
+            border: none;
+            outline: none;
+            background-color: transparent;
+            cursor: pointer;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+        .btn button:hover {
+            color: #ff6b6b;
+            background-color: rgba(255, 107, 107, 0.1);
         }
     </style>
 </head>
@@ -41,7 +78,7 @@
                     <div id="suggestions-container" class="hidden absolute top-full left-0 mt-1 w-full bg-white shadow-lg rounded-lg z-50"></div>
                 </li>
                 <li>
-                    <div class="btn">
+                    <div class="btn" id="auth-buttons">
                         <button class="login active"><a href="login.html">Login</a></button>
                         <button class="signup"><a href="SignUp.html">Signup</a></button>
                     </div>
@@ -70,11 +107,34 @@
     </section>
     <footer class="bg-gray-900 text-white py-8 mt-10">
         <div class="container mx-auto px-4">
-            <p class="text-gray-400 text-sm text-center">
-                © VTrade Commerce Private Limited 2025. All rights reserved.
-            </p>
+            <div class="flex justify-center space-x-6 mb-6">
+                <a href="PrivacyPolicy.html" class="text-gray-300 hover:text-white transition-colors">Privacy Policy</a>
+                <a href="TermsAndCondition.html" class="text-gray-300 hover:text-white transition-colors">Terms of Service</a>
+                <a href="ContactUs.html" class="text-gray-300 hover:text-white transition-colors">Contact</a>
+                <a href="About.html" class="text-gray-300 hover:text-white transition-colors">About Us</a>
+            </div>
+            <div class="flex flex-col items-center">
+                <div class="flex space-x-5 mb-4">
+                    <a href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-blue-500 transition-colors">
+                        <i class="fab fa-facebook-f text-xl"></i>
+                    </a>
+                    <a href="https://instagram.com/yourusername" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-pink-500 transition-colors">
+                        <i class="fab fa-instagram text-xl"></i>
+                    </a>
+                    <a href="https://linkedin.com/company/yourcompany" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-blue-400 transition-colors">
+                        <i class="fab fa-linkedin-in text-xl"></i>
+                    </a>
+                    <a href="mailto:contact@vtrade.com" class="text-gray-400 hover:text-red-400 transition-colors">
+                        <i class="fas fa-envelope text-xl"></i>
+                    </a>
+                </div>
+                <p class="text-gray-400 text-sm">
+                    © VTrade Commerce Private Limited 2025. All rights reserved.
+                </p>
+            </div>
         </div>
     </footer>
+    <script src="script.js"></script>
     <script>
         const productsData = {
             'top-picks': {
@@ -100,24 +160,32 @@
             }
         };
         document.addEventListener('DOMContentLoaded', function() {
-            console.log("DOM loaded in SeeAll.html");
             const activeSection = localStorage.getItem('activeSection') || 'top-picks';
-            console.log("Active section:", activeSection);
-            const sectionData = productsData[activeSection] || productsData['top-picks'];
+            const sectionData = productsData[activeSection] || {
+                title: 'No Products Found',
+                description: 'Sorry, no products are available for this section.',
+                products: []
+            };
             document.getElementById('page-title').textContent = sectionData.title;
             document.getElementById('page-description').textContent = sectionData.description;
             const productsContainer = document.getElementById('products-container');
             productsContainer.innerHTML = '';
-            sectionData.products.forEach(product => {
-                const productHTML = `
-                    <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105">
-                        <img src="${product.img}" alt="${product.title}" class="mx-auto h-48 object-cover rounded-t-lg">
-                        <h3 class="text-xl font-semibold mt-4">${product.title}</h3>
-                        <p class="text-gray-600">${product.desc}</p>
-                    </div>
-                `;
-                productsContainer.insertAdjacentHTML('beforeend', productHTML);
-            });
+            if (sectionData.products.length === 0) {
+                productsContainer.innerHTML = '<p class="text-gray-600">No products available at this time.</p>';
+            } else {
+                sectionData.products.forEach(product => {
+                    const productHTML = `
+                        <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105">
+                            <img src="${product.img}" alt="${product.title}" class="mx-auto h-48 object-cover rounded-t-lg">
+                            <h3 class="text-xl font-semibold mt-4">${product.title}</h3>
+                            <p class="text-gray-600">${product.desc}</p>
+                        </div>
+                    `;
+                    productsContainer.insertAdjacentHTML('beforeend', productHTML);
+                });
+            }
+            updateNavigation();
+            updateCartCount();
         });
     </script>
 </body>

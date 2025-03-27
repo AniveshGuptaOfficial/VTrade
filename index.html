@@ -37,7 +37,7 @@
                     <div id="suggestions-container" class="hidden absolute top-full left-0 mt-1 w-full bg-white shadow-lg rounded-lg z-50"></div>
                 </li>
                 <li>
-                    <div class="btn">
+                    <div class="btn" id="auth-buttons">
                         <button class="login active"><a href="login.html">Login</a></button>
                         <button class="signup"><a href="SignUp.html">Signup</a></button>
                     </div>
@@ -54,7 +54,6 @@
             </ul>
         </div>
     </nav>
-
     <div class="container mx-auto p-6">
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             <!-- Grocery -->
@@ -73,7 +72,6 @@
                     <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Personal Care</a>
                 </div>
             </div>
-        
             <!-- Stationery -->
             <div class="group relative">
                 <a href="/stationery-store" class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center block h-full flex flex-col">
@@ -91,7 +89,6 @@
                     <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Sticky Notes</a>
                 </div>
             </div>
-        
             <!-- Fashion -->
             <div class="group relative">
                 <a href="/fashion-store" class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center block h-full flex flex-col">
@@ -105,7 +102,6 @@
                     <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Women's Fashion</a>
                 </div>
             </div>
-        
             <!-- Medicine -->
             <div class="group relative">
                 <a href="/medicine-store" class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center block h-full flex flex-col">
@@ -123,7 +119,6 @@
                     <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Health Devices</a>
                 </div>
             </div>
-        
             <!-- Second-Hand Home Goods -->
             <div class="group relative">
                 <a href="/secondhand-furniture" class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center block h-full flex flex-col">
@@ -140,7 +135,6 @@
                     <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Room Decor</a>
                 </div>
             </div>
-
             <!-- Parcel Pickup -->
             <div class="group relative">
                 <a href="/home-furniture-store" class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center block h-full flex flex-col">
@@ -162,7 +156,6 @@
             </div>
         </div>
     </div>
-
     <section id="best-sellers" class="py-16 text-center text-white">
         <div class="container mx-auto">
             <h2 class="text-3xl font-bold">Best Sellers</h2>
@@ -219,7 +212,6 @@
             </div>
         </div>
     </section>
-    
     <section id="main" class="py-16 text-center text-white">
         <div class="container mx-auto">
             <h2 class="text-3xl font-bold">Explore Our Top Picks</h2>
@@ -259,7 +251,6 @@
             <button class="show-more mt-8 bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition-colors" data-section="top-picks">Show More</button>
         </div>
     </section>
-
     <section id="new-arrivals" class="py-16 text-center text-white">
         <div class="container mx-auto">
             <h2 class="text-3xl font-bold">New Arrivals</h2>
@@ -284,22 +275,6 @@
             <button class="show-more mt-8 bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition-colors" data-section="new-arrivals">Show More</button>
         </div>
     </section>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log("DOM loaded in index.html");
-            const showMoreButtons = document.querySelectorAll('.show-more');
-            showMoreButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const section = this.getAttribute('data-section');
-                    console.log("Button clicked, section:", section);
-                    localStorage.setItem('activeSection', section);
-                    window.location.href = 'SeeAll.html';
-                });
-            });
-        });
-    </script>
-    
     <section id="customer-reviews" class="py-16 text-center text-white">
         <div class="container mx-auto">
             <h2 class="text-3xl font-bold">Customer Reviews</h2>
@@ -320,7 +295,6 @@
             </div>
         </div>
     </section>
-
     <footer class="bg-gray-900 text-white py-8 mt-10">
         <div class="container mx-auto px-4">
             <div class="flex justify-center space-x-6 mb-6">
@@ -358,6 +332,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
         </svg>
     </button>
+
     <script src="script.js"></script>
 </body>
 </html>
