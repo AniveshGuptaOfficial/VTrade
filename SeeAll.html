@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Products - VTrade</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f3e7e9, #e3eeff);
+        }
+    </style>
+</head>
+<body>
+    <nav class="bg-gray-900 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-xl font-bold">VTrade</a>
+            <button class="md:hidden focus:outline-none" id="menu-toggle">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+            <ul class="hidden md:flex space-x-6 items-center" id="nav-links">
+                <li class="relative">
+                    <form action="/s/" method="GET" class="flex items-center">
+                        <input 
+                            type="text" 
+                            name="q" 
+                            placeholder="Search..." 
+                            class="bg-gray-800 text-white px-3 py-1 rounded focus:outline-none w-40 sm:w-48 md:w-56" 
+                            autocomplete="off"
+                            id="search-input"
+                        />
+                        <button type="submit" class="ml-2 hover:text-gray-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </button>
+                    </form>
+                    <div id="suggestions-container" class="hidden absolute top-full left-0 mt-1 w-full bg-white shadow-lg rounded-lg z-50"></div>
+                </li>
+                <li>
+                    <div class="btn">
+                        <button class="login active"><a href="login.html">Login</a></button>
+                        <button class="signup"><a href="SignUp.html">Signup</a></button>
+                    </div>
+                </li>
+                <li>
+                    <a href="MyCart.html" class="hover:text-gray-400 flex items-center relative">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <span class="ml-1">Cart</span>
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <section class="py-16 text-center text-white">
+        <div class="container mx-auto">
+            <h1 id="page-title" class="text-3xl font-bold mb-4">Loading...</h1>
+            <p id="page-description" class="mb-8">Please wait...</p>
+            <div id="products-container" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+            <a href="index.html" class="mt-8 inline-block bg-gray-500 text-white py-2 px-6 rounded-lg hover:bg-gray-600 transition-colors">
+                Back to Home
+            </a>
+        </div>
+    </section>
+    <footer class="bg-gray-900 text-white py-8 mt-10">
+        <div class="container mx-auto px-4">
+            <p class="text-gray-400 text-sm text-center">
+                © VTrade Commerce Private Limited 2025. All rights reserved.
+            </p>
+        </div>
+    </footer>
+    <script>
+        const productsData = {
+            'top-picks': {
+                title: 'All Top Picks',
+                description: 'Discover our complete collection of top products.',
+                products: [
+                    { img: 'https://hyderabad-grocers.com/wp-content/uploads/2021/02/Kurkure.jpg', title: 'Fresh Groceries', desc: 'Stock up on daily essentials like snacks and beverages.' },
+                    { img: 'https://rukminim2.flixcart.com/image/850/1000/xif0q/cap/c/y/m/free-latest-side-ny-baseball-cap-highever-original-imagnm8fvyf9jbpv.jpeg', title: 'Trendy Apparel', desc: 'Upgrade your wardrobe with stylish clothing.' },
+                    { img: 'https://scooboo.in/cdn/shop/files/deli-sticky-notes-3x2-inch-pack-of-100-sticky-notes-scooboodeli6921734942425a00253-230946.jpg', title: 'Sticky Notes', desc: 'Perfect for reminders and quick notes.' },
+                    { img: 'https://ayushpharmacy.co.in/wp-content/uploads/2023/06/Cipla-Cofsils-Lozenges-Orange-Jar-24-X-10-Lozenges-Blister-Pack.jpg', title: 'Health Essentials', desc: 'Find medicines and wellness products.' },
+                    { img: 'https://images.unsplash.com/photo-1595436148849-7d906906c48a?q=80&w=2070&auto=format&fit=crop', title: 'Fun Toys', desc: 'Keep the kids entertained with our toy collection.' },
+                    { img: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?q=80&w=2070&auto=format&fit=crop', title: 'Parcel Pickup', desc: 'Convenient pickup for your online orders.' }
+                ]
+            },
+            'new-arrivals': {
+                title: 'All New Arrivals',
+                description: 'Browse our latest additions to the collection.',
+                products: [
+                    { img: 'https://images.unsplash.com/photo-1591348278863-a8fb3887e2aa?q=80&w=2070', title: 'Premium Erasers', desc: 'Smooth and durable erasers for precise corrections.' },
+                    { img: 'https://images.unsplash.com/photo-1591348278997-7b5f2a1b5d5e?q=80&w=2070', title: 'Pastel Highlighters', desc: 'Soft colors for gentle highlighting.' },
+                    { img: 'https://images.unsplash.com/photo-1591348278997-7b5f2a1b5d5e?q=80&w=2070', title: 'Desk Organizers', desc: 'Keep your workspace tidy and stylish.' }
+                ]
+            }
+        };
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM loaded in SeeAll.html");
+            const activeSection = localStorage.getItem('activeSection') || 'top-picks';
+            console.log("Active section:", activeSection);
+            const sectionData = productsData[activeSection] || productsData['top-picks'];
+            document.getElementById('page-title').textContent = sectionData.title;
+            document.getElementById('page-description').textContent = sectionData.description;
+            const productsContainer = document.getElementById('products-container');
+            productsContainer.innerHTML = '';
+            sectionData.products.forEach(product => {
+                const productHTML = `
+                    <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105">
+                        <img src="${product.img}" alt="${product.title}" class="mx-auto h-48 object-cover rounded-t-lg">
+                        <h3 class="text-xl font-semibold mt-4">${product.title}</h3>
+                        <p class="text-gray-600">${product.desc}</p>
+                    </div>
+                `;
+                productsContainer.insertAdjacentHTML('beforeend', productHTML);
+            });
+        });
+    </script>
+</body>
+</html>
