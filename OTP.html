@@ -28,7 +28,7 @@
 <body class="flex items-center justify-center h-screen">
     <div class="bg-white p-8 rounded-lg shadow-lg w-96">
         <h2 class="text-2xl font-bold text-gray-900 text-center">OTP Verification</h2>
-        <p class="text-center text-gray-600 mt-2">We've sent a 6-digit code to +91 ••••• •••89</p>
+        <p id="phone-display" class="text-center text-gray-600 mt-2">We've sent a 6-digit code to your phone</p>
         
         <div class="mt-6">
             <div class="flex justify-center mb-6">
@@ -40,13 +40,13 @@
                 <input type="text" maxlength="1" class="otp-input" pattern="\d*">
             </div>
             
-            <button class="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600">
+            <button id="verify-otp" class="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600">
                 Verify OTP
             </button>
             
             <div class="mt-4 text-center">
                 <p class="text-gray-600">Didn't receive code?</p>
-                <button class="text-red-500 hover:underline">Resend OTP</button>
+                <button id="resend-otp" class="text-red-500 hover:underline">Resend OTP</button>
             </div>
         </div>
         
@@ -62,6 +62,12 @@
     </div>
 
     <script>
+        // Display masked phone number
+        const phoneNumber = localStorage.getItem('phoneNumber') || '+91••••••••••';
+        const maskedPhone = phoneNumber.slice(0, 3) + " ••••• ••" + phoneNumber.slice(-2);
+        document.getElementById('phone-display').textContent = `We've sent a 6-digit code to ${maskedPhone}`;
+
+        // OTP input handling
         const otpInputs = document.querySelectorAll('.otp-input');
         otpInputs.forEach((input, index) => {
             input.addEventListener('input', (e) => {
@@ -74,6 +80,31 @@
                     otpInputs[index - 1].focus();
                 }
             });
+        });
+
+        // Verify OTP
+        document.getElementById('verify-otp').addEventListener('click', () => {
+            const enteredOTP = Array.from(otpInputs).map(input => input.value).join('');
+            const generatedOTP = localStorage.getItem('generatedOTP');
+
+            if (enteredOTP.length !== 6) {
+                alert("Please enter a 6-digit OTP.");
+                return;
+            }
+            if (enteredOTP === generatedOTP) {
+                alert("OTP Verified Successfully! Logging you in...");
+                localStorage.setItem('userLoggedIn', 'true');
+                window.location.href = "index.html";
+            } else {
+                alert("Invalid OTP. Please try again.");
+            }
+        });
+
+        // Resend OTP
+        document.getElementById('resend-otp').addEventListener('click', () => {
+            let otp = Math.floor(100000 + Math.random() * 900000);
+            localStorage.setItem('generatedOTP', otp);
+            alert(`New OTP Sent Successfully! Your OTP is: ${otp}`);
         });
     </script>
 </body>

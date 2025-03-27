@@ -9,6 +9,9 @@
         body {
             background: linear-gradient(135deg, #f3e7e9, #e3eeff);
         }
+        .error {
+            border: 2px solid red;
+        }
     </style>
 </head>
 <body class="flex items-center justify-center h-screen">
@@ -17,24 +20,56 @@
         <div class="mt-6">
             <label class="block text-gray-700 font-semibold mb-2">Phone Number</label>
             <div class="flex border rounded-lg p-2">
-                <select class="bg-transparent border-r px-2 outline-none">
+                <select id="country-code" class="bg-transparent border-r px-2 outline-none">
                     <option>+91</option>
                     <option>+1</option>
                     <option>+44</option>
                 </select>
-                <input type="tel" placeholder="Phone" class="w-full px-2 outline-none">
+                <input id="phone" type="tel" placeholder="Phone" class="w-full px-2 outline-none">
             </div>
-            <button class="w-full mt-4 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600">Send One Time Password</button>
+            <button id="send-otp" class="w-full mt-4 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600">Send One Time Password</button>
         </div>
         <div class="flex items-center justify-center my-4">
             <div class="w-full border-b"></div>
             <span class="mx-2 text-gray-600">or</span>
             <div class="w-full border-b"></div>
         </div>
-        <button class="w-full flex items-center justify-center bg-gray-100 py-2 rounded-lg hover:bg-gray-200 mt-2">
+        <button id="google-signin" class="w-full flex items-center justify-center bg-gray-100 py-2 rounded-lg hover:bg-gray-200 mt-2">
             <img src="https://img.icons8.com/color/48/000000/google-logo.png" class="h-5 mr-2"/> Sign in with Google
         </button>
         <p class="mt-4 text-center text-gray-700">New to VTrade? <a href="SignUp.html" class="text-red-500 hover:underline">Create account</a></p>
     </div>
+    <script>
+        document.getElementById("send-otp").addEventListener("click", function() {
+            let phoneInput = document.getElementById("phone");
+            let phoneNumber = phoneInput.value.trim();
+            let countryCode = document.getElementById("country-code").value;
+            let phoneRegex = /^\d{10}$/; 
+
+            if (phoneNumber === "") {
+                alert("Phone number field is empty");
+                phoneInput.classList.add("error");
+                return;
+            } else if (!phoneRegex.test(phoneNumber)) {
+                alert("Please enter a valid 10-digit Phone Number.");
+                phoneInput.classList.add("error");
+                return;
+            } else {
+                phoneInput.classList.remove("error");
+                // Generate a random 6-digit OTP
+                let otp = Math.floor(100000 + Math.random() * 900000); // Generates a number between 100000 and 999999
+                alert(`OTP Sent Successfully! Your OTP is: ${otp}`);
+                // Store OTP and phone number in localStorage
+                localStorage.setItem('generatedOTP', otp);
+                localStorage.setItem('phoneNumber', countryCode + phoneNumber);
+                // Redirect to OTP.html
+                window.location.href = "OTP.html";
+            }
+        });
+
+        document.getElementById("google-signin").addEventListener("click", function() {
+            const googleAuth = window.open("https://accounts.google.com/AccountChooser", "_blank", "width=500,height=600");
+        });
+    </script>
 </body>
 </html>
