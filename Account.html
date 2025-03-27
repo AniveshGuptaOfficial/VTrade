@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - VTrade</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-6 max-w-4xl">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h1 class="text-2xl font-bold mb-6">My Account</h1>
+            
+            <div id="account-info" class="space-y-4"></div>
+            
+            <button id="logout-btn" class="mt-6 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">
+                Logout
+            </button>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userData = JSON.parse(localStorage.getItem('userData'));
+            const accountInfo = document.getElementById('account-info');
+            
+            if (userData) {
+                accountInfo.innerHTML = `
+                    <div>
+                        <h3 class="font-semibold">Name:</h3>
+                        <p>${userData.firstName} ${userData.lastName}</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold">Email:</h3>
+                        <p>${userData.email}</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold">Phone:</h3>
+                        <p>${userData.phone}</p>
+                    </div>
+                `;
+            }
+            document.getElementById('logout-btn').addEventListener('click', function() {
+                localStorage.removeItem('userLoggedIn');
+                window.location.href = "index.html";
+            });
+        });
+    </script>
+</body>
+</html>

@@ -85,3 +85,13 @@ document.getElementById('show-more').addEventListener('click', function() {
     });
     this.textContent = this.textContent === 'Show More' ? 'Show Less' : 'Show More';
 });
+document.addEventListener('DOMContentLoaded', function() {
+    const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+    const navButtons = document.querySelector('.btn');
+    
+    if (isLoggedIn && navButtons) {
+        navButtons.innerHTML = `
+            <button class="login active"><a href="Account.html">Account</a></button>
+        `;
+    }
+});

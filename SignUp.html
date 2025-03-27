@@ -83,8 +83,12 @@
                 alert("Please enter a valid email address.");
                 return;
             }
+            if (!/^\d+$/.test(phone)) {
+                alert("Phone number must contain only numbers.");
+                return;
+            }
             if (phone.length !== 10) {
-                alert("Phone number must be 10 digits.");
+                alert("Phone number must be exactly 10 digits.");
                 return;
             }
             if (password.length < 8) {
@@ -95,7 +99,17 @@
                 alert("Passwords do not match.");
                 return;
             }
-            alert("Signup successful!");
+            const userData = {
+                firstName,
+                lastName,
+                email,
+                phone,
+                password
+            };
+            localStorage.setItem('userData', JSON.stringify(userData));
+            localStorage.setItem('userLoggedIn', 'true');
+            alert("Account created successfully! You will now be redirected.");
+            window.location.href = "index.html";
         });
     </script>
 </body>
