@@ -9,8 +9,7 @@
     <link rel="stylesheet" href="style.css">
     <style>
         body {
-            background: linear-gradient(to right, #c2e1ea, #a9bfda); /* From index.html */
-            /* Override for specific pages */
+            background: linear-gradient(to right, #c2e1ea, #a9bfda);
         }
         body.login, body.otp, body.signup, body.seeall {
             background: linear-gradient(135deg, #f3e7e9, #e3eeff);
@@ -141,22 +140,21 @@
                 title: 'All Top Picks',
                 description: 'Discover our complete collection of top products.',
                 products: [
-                    { img: 'https://hyderabad-grocers.com/wp-content/uploads/2021/02/Kurkure.jpg', title: 'Kurkure', desc: 'Crispy and flavorful snacks for your everyday munching needs.' },
-                    { img: 'https://rukminim2.flixcart.com/image/850/1000/xif0q/cap/c/y/m/free-latest-side-ny-baseball-cap-highever-original-imagnm8fvyf9jbpv.jpeg', title: 'New York Cap', desc: 'Stylish baseball caps to complete your fashionable look.' },
-                    { img: 'https://scooboo.in/cdn/shop/files/deli-sticky-notes-3x2-inch-pack-of-100-sticky-notes-scooboodeli6921734942425a00253-230946.jpg', title: 'Sticky Notes', desc: 'Colorful 3x3 inch sticky notes for effective organization.' },
-                    { img: 'https://ayushpharmacy.co.in/wp-content/uploads/2023/06/Cipla-Cofsils-Lozenges-Orange-Jar-24-X-10-Lozenges-Blister-Pack.jpg', title: 'Cofsils', desc: 'Soothing orange-flavored lozenges for throat relief.' },
-                    { img: 'https://kewalson.com/cdn/shop/files/Blue_Cotton_Lab_Coat___KS_COLABD_668764dd-4c66-4ddf-8a70-68e3759f6ef3.jpg?v=1740643424&width=713', title: 'Navy-Blue Lab Coat', desc: 'Professional cotton lab coat for scientific and medical use.' },
-                    { img: 'https://cdn.zeptonow.com/production/tr:w-640,ar-1000-1000,pr-true,f-auto,q-80/cms/product_variant/f3ea1766-cc6f-4616-a5b6-e400d45b6222.jpeg', title: 'English Oven Garlic Bread', desc: 'Delicious garlic-flavored bread perfect for toasting and pairing with meals.' }
-                    
+                    { img: 'https://hyderabad-grocers.com/wp-content/uploads/2021/02/Kurkure.jpg', title: 'Kurkure', desc: 'Crispy and flavorful snacks for your everyday munching needs.', price: '₹20' },
+                    { img: 'https://rukminim2.flixcart.com/image/850/1000/xif0q/cap/c/y/m/free-latest-side-ny-baseball-cap-highever-original-imagnm8fvyf9jbpv.jpeg', title: 'New York Cap', desc: 'Stylish baseball caps to complete your fashionable look.', price: '₹299' },
+                    { img: 'https://scooboo.in/cdn/shop/files/deli-sticky-notes-3x2-inch-pack-of-100-sticky-notes-scooboodeli6921734942425a00253-230946.jpg', title: 'Sticky Notes', desc: 'Colorful 3x3 inch sticky notes for effective organization.', price: '₹99' },
+                    { img: 'https://ayushpharmacy.co.in/wp-content/uploads/2023/06/Cipla-Cofsils-Lozenges-Orange-Jar-24-X-10-Lozenges-Blister-Pack.jpg', title: 'Cofsils', desc: 'Soothing orange-flavored lozenges for throat relief.', price: '₹45' },
+                    { img: 'https://kewalson.com/cdn/shop/files/Blue_Cotton_Lab_Coat___KS_COLABD_668764dd-4c66-4ddf-8a70-68e3759f6ef3.jpg?v=1740643424&width=713', title: 'Navy-Blue Lab Coat', desc: 'Professional cotton lab coat for scientific and medical use.', price: '₹799' },
+                    { img: 'https://cdn.zeptonow.com/production/tr:w-640,ar-1000-1000,pr-true,f-auto,q-80/cms/product_variant/f3ea1766-cc6f-4616-a5b6-e400d45b6222.jpeg', title: 'English Oven Garlic Bread', desc: 'Delicious garlic-flavored bread perfect for toasting and pairing with meals.', price: '₹120' }
                 ]
             },
             'new-arrivals': {
                 title: 'All New Arrivals',
                 description: 'Browse our latest additions to the collection.',
                 products: [
-                    { img: 'https://images.unsplash.com/photo-1591348278863-a8fb3887e2aa?q=80&w=2070', title: 'Premium Erasers', desc: 'Smooth and durable erasers for precise corrections.' },
-                    { img: 'https://images.unsplash.com/photo-1591348278997-7b5f2a1b5d5e?q=80&w=2070', title: 'Pastel Highlighters', desc: 'Soft colors for gentle highlighting.' },
-                    { img: 'https://images.unsplash.com/photo-1591348278997-7b5f2a1b5d5e?q=80&w=2070', title: 'Desk Organizers', desc: 'Keep your workspace tidy and stylish.' }
+                    { img: 'https://images.unsplash.com/photo-1591348278863-a8fb3887e2aa?q=80&w=2070', title: 'Premium Erasers', desc: 'Smooth and durable erasers for precise corrections.', price: '₹50' },
+                    { img: 'https://www.bbassets.com/media/uploads/p/l/40339532_2-sting-gold-night-fuel-energy-drink.jpg?q=20', title: 'Sting Gold Energy Drink', desc: 'Energy drink with gold rush flavor and extra boost.', price: '₹20' ,
+                    { img: 'https://m.media-amazon.com/images/I/51nbck-2P2L.jpg', title: 'Desk Organizers', desc: 'Keep your workspace tidy and stylish.', price: '₹399' }
                 ]
             }
         };
@@ -177,13 +175,59 @@
                 sectionData.products.forEach(product => {
                     const productHTML = `
                         <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105">
-                            <img src="${product.img}" alt="${product.title}" class="mx-auto h-48 object-cover rounded-t-lg">
+                            <img src="${product.img}" alt="${product.title}" class="mx-auto h-48 w-full object-cover rounded-t-lg">
                             <h3 class="text-xl font-semibold mt-4">${product.title}</h3>
                             <p class="text-gray-600">${product.desc}</p>
+                            <div class="flex items-center justify-between mt-4">
+                                <span class="text-lg font-bold">${product.price}</span>
+                                <div class="flex items-center space-x-2">
+                                    <button class="quantity-btn bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">-</button>
+                                    <span class="quantity">0</span>
+                                    <button class="quantity-btn bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">+</button>
+                                </div>
+                            </div>
+                            <button class="w-full mt-4 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition-colors add-to-cart">
+                                Add to Cart
+                            </button>
                         </div>
                     `;
                     productsContainer.insertAdjacentHTML('beforeend', productHTML);
                 });
+            }
+            document.querySelectorAll('.quantity-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const quantityElement = this.parentElement.querySelector('.quantity');
+                    let quantity = parseInt(quantityElement.textContent);
+                    if (this.textContent === '+' && quantity < 10) {
+                        quantity++;
+                    } else if (this.textContent === '-' && quantity > 0) {
+                        quantity--;
+                    }
+                    quantityElement.textContent = quantity;
+                });
+            });
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productCard = this.closest('div');
+                    const productName = productCard.querySelector('h3').textContent;
+                    const productPrice = productCard.querySelector('span.text-lg').textContent;
+                    const quantity = parseInt(productCard.querySelector('.quantity').textContent);
+                    if (quantity > 0) {
+                        alert(`Added ${quantity} ${productName}(s) to cart for ${productPrice} each`);
+                        updateCartCount(quantity);
+                    } else {
+                        alert('Please select at least 1 quantity');
+                    }
+                });
+            });
+            function updateCartCount(addedItems = 0) {
+                const cartCountElement = document.getElementById('cart-count');
+                let currentCount = parseInt(cartCountElement.textContent) || 0;
+                currentCount += addedItems;
+                cartCountElement.textContent = currentCount;
+                cartCountElement.classList.toggle('hidden', currentCount === 0);
+            }
+            function updateNavigation() {
             }
             updateNavigation();
             updateCartCount();

@@ -18,7 +18,6 @@ nav {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
-
 .btn button {
     font-size: 14px;
     border: none;
@@ -30,8 +29,14 @@ nav {
     border-radius: 50px;
     transition: all 0.3s ease;
 }
-
 .btn button:hover {
     color: #ff6b6b;
     background-color: rgba(255, 107, 107, 0.1);
+}
+#review-slider::-webkit-scrollbar {
+    display: none;
+}
+#review-slider {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }

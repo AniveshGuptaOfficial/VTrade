@@ -161,3 +161,28 @@ document.addEventListener('DOMContentLoaded', function() {
     renderCartItems();
     updateOrderSummary();
 });
+document.addEventListener('DOMContentLoaded', function() {
+    const slider = document.getElementById('review-slider');
+    let scrollInterval;
+    const scrollAmount = 400; // Adjust based on card width
+    
+    function startAutoScroll() {
+        scrollInterval = setInterval(() => {
+            // Check if reached end
+            if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 100) {
+                slider.scrollTo({
+                    left: 0,
+                    behavior: 'smooth'
+                });
+            } else {
+                slider.scrollBy({
+                    left: scrollAmount,
+                    behavior: 'smooth'
+                });
+            }
+        }, 5000);
+    }
+    startAutoScroll();
+    slider.addEventListener('mouseenter', () => clearInterval(scrollInterval));
+    slider.addEventListener('mouseleave', startAutoScroll);
+});
