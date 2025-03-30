@@ -60,17 +60,81 @@
             <div class="group relative">
                 <a href="/grocery-supermart-store" class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center block h-full flex flex-col">
                     <div class="flex justify-center flex-1 items-center">
-                        <img src="https://thumbs.dreamstime.com/b/shopping-cart-full-dairy-grocery-products-isolated-over-white-background-35477050.jpg?q=100" alt="Grocery" class="w-16 h-16 object-contain">
+                        <img src="https://thumbs.dreamstime.com/b/shopping-cart-full-dairy-grocery-products-isolated-over-white-background-35477050.jpg?q=100" 
+                             alt="Grocery" class="w-16 h-16 object-contain">
                     </div>
                     <span class="mt-2 block text-sm font-semibold">Grocery</span>
                 </a>
-                <div class="absolute hidden group-hover:block w-48 bg-white shadow-lg rounded-lg mt-1 z-10 p-2 left-1/2 transform -translate-x-1/2">
-                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Snacks</a>
-                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Bakery</a>
-                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Beverages</a>
-                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Packaged Food</a>
-                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Dairy</a>
-                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Personal Care</a>
+                
+                <div class="absolute hidden group-hover:block w-56 bg-white shadow-lg rounded-lg mt-1 z-10 p-2 left-1/2 transform -translate-x-1/2">
+                    <!-- Food Items with submenu -->
+                    <div class="relative group/submenu">
+                        <div class="flex justify-between items-center px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer">
+                            Food Items
+                            <svg class="w-4 h-4 ml-2 transform group-hover/submenu:rotate-90 transition-transform" 
+                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
+                        <div class="absolute hidden group-hover/submenu:block left-full top-0 ml-1 w-56 bg-white shadow-lg rounded-lg z-20 p-2">
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Snacks</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Bakery</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Packaged Food</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Ready-to-Eat</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Beverages with submenu -->
+                    <div class="relative group/submenu">
+                        <div class="flex justify-between items-center px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer">
+                            Beverages
+                            <svg class="w-4 h-4 ml-2 transform group-hover/submenu:rotate-90 transition-transform" 
+                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
+                        <div class="absolute hidden group-hover/submenu:block left-full top-0 ml-1 w-56 bg-white shadow-lg rounded-lg z-20 p-2">
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Soft Drinks</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Juices</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Tea & Coffee</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Energy Drinks</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Dairy & Eggs -->
+                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Dairy & Eggs</a>
+                    
+                    <!-- Household Essentials -->
+                    <div class="relative group/submenu">
+                        <div class="flex justify-between items-center px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer">
+                            Household
+                            <svg class="w-4 h-4 ml-2 transform group-hover/submenu:rotate-90 transition-transform" 
+                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
+                        <div class="absolute hidden group-hover/submenu:block left-full top-0 ml-1 w-56 bg-white shadow-lg rounded-lg z-20 p-2">
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Cleaning Supplies</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Laundry</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Paper Goods</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Personal Care -->
+                    <div class="relative group/submenu">
+                        <div class="flex justify-between items-center px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer">
+                            Personal Care
+                            <svg class="w-4 h-4 ml-2 transform group-hover/submenu:rotate-90 transition-transform" 
+                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
+                        <div class="absolute hidden group-hover/submenu:block left-full top-0 ml-1 w-56 bg-white shadow-lg rounded-lg z-20 p-2">
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Soaps</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Shampoo & Conditioner</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Paper Goods</a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- Stationery -->
@@ -94,13 +158,49 @@
             <div class="group relative">
                 <a href="/fashion-store" class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center block h-full flex flex-col">
                     <div class="flex justify-center flex-1 items-center">
-                        <img src="https://static.vecteezy.com/system/resources/previews/004/333/924/non_2x/webstylishly-dressed-boy-and-teenage-girl-on-a-white-background-vector.jpg?q=100" alt="Fashion" class="w-16 h-16 object-contain">
+                        <img src="https://static.vecteezy.com/system/resources/previews/004/333/924/non_2x/webstylishly-dressed-boy-and-teenage-girl-on-a-white-background-vector.jpg?q=100" 
+                             alt="Fashion" class="w-16 h-16 object-contain">
                     </div>
                     <span class="mt-2 block text-sm font-semibold">Fashion</span>
                 </a>
-                <div class="absolute hidden group-hover:block w-48 bg-white shadow-lg rounded-lg mt-1 z-10 p-2 left-1/2 transform -translate-x-1/2">
-                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Men's Fashion</a>
-                    <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Women's Fashion</a>
+                <div class="absolute hidden group-hover:block w-56 bg-white shadow-lg rounded-lg mt-1 z-10 p-2 left-1/2 transform -translate-x-1/2">
+                    <div class="relative group/submenu">
+                        <div class="flex justify-between items-center px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer">
+                            Men's
+                            <svg class="w-4 h-4 ml-2 transform group-hover/submenu:rotate-90 transition-transform" 
+                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
+                        <div class="absolute hidden group-hover/submenu:block left-full top-0 ml-1 w-56 bg-white shadow-lg rounded-lg z-20 p-2">
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Face Washes</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Beard Oils</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Hair Styling</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Shaving Essentials</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Aftershave</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Face Creams & Face Packs</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Soaps & Bodywashes</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Men's Grooming Combos</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100"></a>
+                        </div>
+                    </div>
+                    <div class="relative group/submenu">
+                        <div class="flex justify-between items-center px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer">
+                            Women's
+                            <svg class="w-4 h-4 ml-2 transform group-hover/submenu:rotate-90 transition-transform" 
+                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
+                        <div class="absolute hidden group-hover/submenu:block left-full top-0 ml-1 w-56 bg-white shadow-lg rounded-lg z-20 p-2">
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Face Washes</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Hair Styling</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Face Creams & Face Packs</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Soaps & Bodywashes</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Women's Grooming Combos</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100"></a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- Medicine -->
@@ -221,31 +321,31 @@
             <div id="product-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
                 <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105">
                     <img src="https://hyderabad-grocers.com/wp-content/uploads/2021/02/Kurkure.jpg" alt="Fresh Groceries" class="mx-auto h-48 object-cover rounded-t-lg">
-                    <h3 class="text-xl font-semibold mt-4">Fresh Groceries</h3>
-                    <p class="text-gray-600">Stock up on daily essentials like snacks and beverages.</p>
+                    <h3 class="text-xl font-semibold mt-4">Kurkure</h3>
+                    <p class="text-gray-600">Crispy and flavorful snacks for your everyday munching needs.</p>
                 </div>
                 <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105">
                     <img src="https://rukminim2.flixcart.com/image/850/1000/xif0q/cap/c/y/m/free-latest-side-ny-baseball-cap-highever-original-imagnm8fvyf9jbpv.jpeg?q=90&crop=false" alt="Trendy Apparel" class="mx-auto h-48 object-cover rounded-t-lg">
-                    <h3 class="text-xl font-semibold mt-4">Trendy Apparel</h3>
-                    <p class="text-gray-600">Upgrade your wardrobe with stylish clothing.</p>
+                    <h3 class="text-xl font-semibold mt-4">New York Cap</h3>
+                    <p class="text-gray-600">Stylish baseball caps to complete your fashionable look.</p>
                 </div>
                 <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105">
                     <img src="https://scooboo.in/cdn/shop/files/deli-sticky-notes-3x2-inch-pack-of-100-sticky-notes-scooboodeli6921734942425a00253-230946.jpg?v=1720295126&width=1214" alt="Sticky Notes" class="mx-auto h-48 object-cover rounded-t-lg">
                     <h3 class="text-xl font-semibold mt-4">Sticky Notes</h3>
-                    <p class="text-gray-600">Perfect for reminders and quick notes.</p>
+                    <p class="text-gray-600">Colorful 3x3 inch sticky notes for effective organization.</p>
                 </div>
                 <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105 hidden" data-hidden>
                     <img src="https://ayushpharmacy.co.in/wp-content/uploads/2023/06/Cipla-Cofsils-Lozenges-Orange-Jar-24-X-10-Lozenges-Blister-Pack.jpg" alt="Health Essentials" class="mx-auto h-48 object-cover rounded-t-lg">
-                    <h3 class="text-xl font-semibold mt-4">Health Essentials</h3>
-                    <p class="text-gray-600">Find medicines and wellness products.</p>
+                    <h3 class="text-xl font-semibold mt-4">Cofsils</h3>
+                    <p class="text-gray-600">Soothing orange-flavored lozenges for throat relief.</p>
                 </div>
                 <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105 hidden" data-hidden>
-                    <img src="https://images.unsplash.com/photo-1595436148849-7d906906c48a?q=80&w=2070&auto=format&fit=crop" alt="Fun Toys" class="mx-auto h-48 object-cover rounded-t-lg">
+                    <img src="https://kewalson.com/cdn/shop/files/Blue_Cotton_Lab_Coat___KS_COLABD_668764dd-4c66-4ddf-8a70-68e3759f6ef3.jpg?v=1740643424&width=713" alt="Navy-Blue Lab Coat" class="mx-auto h-48 object-cover rounded-t-lg">
                     <h3 class="text-xl font-semibold mt-4">Fun Toys</h3>
-                    <p class="text-gray-600">Keep the kids entertained with our toy collection.</p>
+                    <p class="text-gray-600">Professional cotton lab coat for scientific and medical use.</p>
                 </div>
                 <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105 hidden" data-hidden>
-                    <img src="https://images.unsplash.com/photo-1596464716127-f2a82984de30?q=80&w=2070&auto=format&fit=crop" alt="Parcel Pickup" class="mx-auto h-48 object-cover rounded-t-lg">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLcLzvCZpIXZYzZNfibcbHTm4buIZLsuWZ7Q&s" alt="Amazon Pickup" class="mx-auto h-48 object-cover rounded-t-lg">
                     <h3 class="text-xl font-semibold mt-4">Parcel Pickup</h3>
                     <p class="text-gray-600">Convenient pickup for your online orders.</p>
                 </div>
@@ -334,7 +434,6 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
         </svg>
     </button>
-
     <script src="script.js"></script>
 </body>
 </html>
