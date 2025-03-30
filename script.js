@@ -161,3 +161,5 @@ document.addEventListener('DOMContentLoaded', function() {
     renderCartItems();
     updateOrderSummary();
 });
+
+auth-buttons
