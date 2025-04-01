@@ -1,3 +1,7 @@
+document.getElementById('menu-toggle').addEventListener('click', () => {
+    const navLinks = document.getElementById('nav-links');
+    navLinks.classList.toggle('hidden');
+});
 document.getElementById('menu-toggle').addEventListener('click', function() {
     const navLinks = document.getElementById('nav-links');
     navLinks.classList.toggle('hidden');
@@ -190,3 +194,23 @@ function hideLoader() {
 window.onload = function() {
     setTimeout(hideLoader, 1000);
 }
+function toggleSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section.classList.contains('hidden')) {
+        section.classList.remove('hidden');
+    } else {
+        section.classList.add('hidden');
+    }
+}
+if (window.innerWidth < 768) {
+    document.querySelectorAll('ul').forEach(ul => {
+        ul.classList.add('hidden');
+    });
+}
+window.addEventListener('resize', () => {
+    if (window.innerWidth >= 768) {
+        document.querySelectorAll('ul').forEach(ul => {
+            ul.classList.remove('hidden');
+        });
+    }
+});

@@ -5,14 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Account - VTrade</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .order-card {
+            transition: all 0.3s ease;
+        }
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto p-6 max-w-4xl">
         <div class="bg-white rounded-lg shadow-md p-6">
             <h1 class="text-2xl font-bold mb-6">My Account</h1>
-            
-            <div id="account-info" class="space-y-4"></div>
-            
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold mb-4">Personal Information</h2>
+                <div id="account-info" class="space-y-4"></div>
+            </div>
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold mb-4">Order History</h2>
+                <div id="order-history" class="space-y-4">
+                    <!-- Order history will be populated here -->
+                </div>
+            </div>
             <button id="logout-btn" class="mt-6 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">
                 Logout
             </button>
@@ -22,7 +38,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             const userData = JSON.parse(localStorage.getItem('userData'));
             const accountInfo = document.getElementById('account-info');
-            
+            const orderHistory = document.getElementById('order-history');
+            // Display user information
             if (userData) {
                 accountInfo.innerHTML = `
                     <div>
@@ -35,12 +52,56 @@
                     </div>
                     <div>
                         <h3 class="font-semibold">Phone:</h3>
-                        <p>${userData.phone}</p>
+                        <p>${userData.phone || 'Not provided'}</p>
                     </div>
                 `;
+            } else {
+                accountInfo.innerHTML = '<p class="text-red-500">No user data found. Please log in again.</p>';
             }
+            // Display order history
+            const orders = JSON.parse(localStorage.getItem('orderHistory')) || [];
+            if (orders.length === 0) {
+                orderHistory.innerHTML = '<p class="text-gray-500">No previous orders found.</p>';
+            } else {
+                orders.forEach((order, index) => {
+                    const orderItems = order.items.map(item => `
+                        <li class="flex justify-between">
+                            <span>${item.name} (x${item.quantity})</span>
+                            <span>₹${(item.price * item.quantity).toFixed(2)}</span>
+                        </li>
+                    `).join('');
+                    orderHistory.innerHTML += `
+                        <div class="order-card bg-gray-50 p-4 rounded-lg border">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="font-medium">Order #${index + 1}</h3>
+                                <span class="text-sm text-gray-600">${new Date(order.date).toLocaleDateString()}</span>
+                            </div>
+                            <ul class="list-disc pl-5 mb-2">
+                                ${orderItems}
+                            </ul>
+                            <div class="border-t pt-2">
+                                <div class="flex justify-between">
+                                    <span>Shipping</span>
+                                    <span>Free</span>
+                                </div>
+                                <div class="flex justify-between font-semibold">
+                                    <span>Total</span>
+                                    <span>₹${order.total.toFixed(2)}</span>
+                                </div>
+                                <div class="mt-2 text-sm text-gray-600">
+                                    <p>Shipping: ${order.shipping.address}</p>
+                                    <p>Payment: ${order.paymentMethod}</p>
+                                    <p>Status: ${order.status || 'Delivered'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            // Logout functionality
             document.getElementById('logout-btn').addEventListener('click', function() {
                 localStorage.removeItem('userLoggedIn');
+                localStorage.removeItem('userData');
                 window.location.href = "index.html";
             });
         });

@@ -17,14 +17,14 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
                 </svg>
             </button>
-            <ul class="hidden md:flex space-x-6 items-center" id="nav-links">
-                <li class="relative">
-                    <form action="/s/" method="GET" class="flex items-center">
+            <ul class="hidden md:flex md:space-x-6 md:items-center absolute md:static top-16 left-0 w-full md:w-auto bg-gray-900 md:bg-transparent p-4 md:p-0 z-50" id="nav-links">
+                <li class="relative w-full md:w-auto mb-4 md:mb-0">
+                    <form action="/s/" method="GET" class="flex items-center w-full">
                         <input 
                             type="text" 
                             name="q" 
                             placeholder="Search..." 
-                            class="bg-gray-800 text-white px-3 py-1 rounded focus:outline-none w-40 sm:w-48 md:w-56" 
+                            class="bg-gray-800 text-white px-3 py-1 rounded focus:outline-none w-full md:w-56" 
                             autocomplete="off"
                             id="search-input"
                         />
@@ -36,18 +36,18 @@
                     </form>
                     <div id="suggestions-container" class="hidden absolute top-full left-0 mt-1 w-full bg-white shadow-lg rounded-lg z-50"></div>
                 </li>
-                <li>
-                    <div class="btn" id="auth-buttons">
-                        <button class="login active"><a href="login.html">Login</a></button>
-                        <button class="signup"><a href="SignUp.html">Signup</a></button>
+                <li class="w-full md:w-auto mb-4 md:mb-0">
+                    <div class="btn flex justify-center space-x-2" id="auth-buttons">
+                        <button class="login active px-4 py-2 rounded-full hover:bg-gray-800 transition-colors"><a href="login.html">Login</a></button>
+                        <button class="signup px-4 py-2 rounded-full hover:bg-gray-800 transition-colors"><a href="SignUp.html">Signup</a></button>
                     </div>
                 </li>
-                <li>
-                    <a href="MyCart.html" class="hover:text-gray-400 flex items-center relative">
+                <li class="w-full md:w-auto">
+                    <a href="MyCart.html" class="hover:text-gray-400 flex items-center justify-center md:justify-start relative">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
-                        <span class="ml-1">Cart</span>
+                        <span class="ml-2">Cart</span>
                         <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
                     </a>
                 </li>
@@ -558,36 +558,69 @@
     </section>
     <footer class="bg-gray-900 text-white py-8 mt-10">
         <div class="container mx-auto px-4">
-            <div class="flex justify-center space-x-6 mb-6">
-                <a href="PrivacyPolicy.html" class="text-gray-300 hover:text-white transition-colors">Privacy Policy</a>
-                <a href="TermsAndCondition.html" class="text-gray-300 hover:text-white transition-colors">Terms of Service</a>
-                <a href="ContactUs.html" class="text-gray-300 hover:text-white transition-colors">Contact</a>
-                <a href="About.html" class="text-gray-300 hover:text-white transition-colors">About Us</a>
-            </div>
-            <div class="flex flex-col items-center">
-                <div class="flex space-x-5 mb-4">
-                    <a href="https://twitter.com/yourcompany" target="_blank" rel="noopener noreferrer" 
-                       class="text-gray-400 hover:text-blue-500 transition-colors">
-                        <i class="fab fa-twitter text-xl"></i>
-                    </a>
-                    <a href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer" 
-                       class="text-gray-400 hover:text-blue-500 transition-colors">
-                        <i class="fab fa-facebook-f text-xl"></i>
-                    </a>
-                    <a href="https://instagram.com/yourusername" target="_blank" rel="noopener noreferrer" 
-                       class="text-gray-400 hover:text-pink-500 transition-colors">
-                        <i class="fab fa-instagram text-xl"></i>
-                    </a>
-                    <a href="https://linkedin.com/company/yourcompany" target="_blank" rel="noopener noreferrer" 
-                       class="text-gray-400 hover:text-blue-400 transition-colors">
-                        <i class="fab fa-linkedin-in text-xl"></i>
-                    </a>
-                    <a href="mailto:contact@vtrade.com" class="text-gray-400 hover:text-red-400 transition-colors">
-                        <i class="fas fa-envelope text-xl"></i>
-                    </a>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 cursor-pointer hover:text-red-400 transition-colors duration-300" onclick="toggleSection('company-links')">
+                        Company
+                    </h3>
+                    <ul id="company-links" class="space-y-2 text-gray-300">
+                        <li><a href="About.html" class="hover:text-white transition-colors duration-300">About Us</a></li>
+                        <li><a href="ContactUs.html" class="hover:text-white transition-colors duration-300">Contact</a></li>
+                    </ul>
                 </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 cursor-pointer hover:text-red-400 transition-colors duration-300" onclick="toggleSection('legal-links')">
+                        Legal
+                    </h3>
+                    <ul id="legal-links" class="space-y-2 text-gray-300">
+                        <li><a href="PrivacyPolicy.html" class="hover:text-white transition-colors duration-300">Privacy Policy</a></li>
+                        <li><a href="TermsAndCondition.html" class="hover:text-white transition-colors duration-300">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 cursor-pointer hover:text-red-400 transition-colors duration-300" onclick="toggleSection('account-links')">
+                        Account
+                    </h3>
+                    <ul id="account-links" class="space-y-2 text-gray-300">
+                        <li><a href="Account.html" class="hover:text-white transition-colors duration-300">My Account</a></li>
+                        <li><a href="MyCart.html" class="hover:text-white transition-colors duration-300">Cart</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 cursor-pointer hover:text-red-400 transition-colors duration-300" onclick="toggleSection('connect-links')">
+                        Connect
+                    </h3>
+                    <ul id="connect-links" class="space-y-2 text-gray-300">
+                        <li><a href="mailto:contact@vtrade.com" class="hover:text-white transition-colors duration-300">Email Us</a></li>
+                        <li><a href="tel:+1234567890" class="hover:text-white transition-colors duration-300">Call Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="flex justify-center space-x-6 mb-6">
+                <a href="https://twitter.com/yourcompany" target="_blank" rel="noopener noreferrer" 
+                   class="text-gray-400 hover:text-blue-500 transform hover:scale-110 transition-all duration-300">
+                    <i class="fab fa-twitter text-xl"></i>
+                </a>
+                <a href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer" 
+                   class="text-gray-400 hover:text-blue-500 transform hover:scale-110 transition-all duration-300">
+                    <i class="fab fa-facebook-f text-xl"></i>
+                </a>
+                <a href="https://instagram.com/yourusername" target="_blank" rel="noopener noreferrer" 
+                   class="text-gray-400 hover:text-pink-500 transform hover:scale-110 transition-all duration-300">
+                    <i class="fab fa-instagram text-xl"></i>
+                </a>
+                <a href="https://linkedin.com/company/yourcompany" target="_blank" rel="noopener noreferrer" 
+                   class="text-gray-400 hover:text-blue-400 transform hover:scale-110 transition-all duration-300">
+                    <i class="fab fa-linkedin-in text-xl"></i>
+                </a>
+                <a href="mailto:contact@vtrade.com" 
+                   class="text-gray-400 hover:text-red-400 transform hover:scale-110 transition-all duration-300">
+                    <i class="fas fa-envelope text-xl"></i>
+                </a>
+            </div>
+            <div class="text-center">
                 <p class="text-gray-400 text-sm">
-                    &copy; VTrade Commerce Private Limited 2025. All rights reserved.
+                    © VTrade Commerce Private Limited 2025. All rights reserved.
                 </p>
             </div>
         </div>
