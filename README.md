@@ -37,5 +37,4 @@ This wasn’t just another e-commerce platform; this was a **student-driven ecos
 ✅ **Flexible workforce** – Students work when they are free  
 ✅ **Scalable** – Can be replicated in other universities  
 
-The excitement is real, and **your launch day is getting closer!** 🚀  
-Would you like me to start coding the **ReactJS frontend** now? 😃
+The excitement is real, and **my launch day is getting closer!** 🚀 
