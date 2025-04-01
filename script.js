@@ -164,18 +164,9 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
     const slider = document.getElementById('review-slider');
     let scrollInterval;
-<<<<<<< HEAD
     const scrollAmount = 400;
-    
     function startAutoScroll() {
         scrollInterval = setInterval(() => {
-=======
-    const scrollAmount = 400; // Adjust based on card width
-    
-    function startAutoScroll() {
-        scrollInterval = setInterval(() => {
-            // Check if reached end
->>>>>>> 2cc0be7 (Updated website files)
             if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 100) {
                 slider.scrollTo({
                     left: 0,
@@ -192,7 +183,6 @@ document.addEventListener('DOMContentLoaded', function() {
     startAutoScroll();
     slider.addEventListener('mouseenter', () => clearInterval(scrollInterval));
     slider.addEventListener('mouseleave', startAutoScroll);
-<<<<<<< HEAD
 });
 function hideLoader() {
     document.querySelector('.loader-container').classList.add('active');
@@ -200,6 +190,3 @@ function hideLoader() {
 window.onload = function() {
     setTimeout(hideLoader, 1000);
 }
-=======
-});
->>>>>>> 2cc0be7 (Updated website files)
