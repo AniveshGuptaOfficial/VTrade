@@ -164,11 +164,10 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
     const slider = document.getElementById('review-slider');
     let scrollInterval;
-    const scrollAmount = 400; // Adjust based on card width
+    const scrollAmount = 400;
     
     function startAutoScroll() {
         scrollInterval = setInterval(() => {
-            // Check if reached end
             if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 100) {
                 slider.scrollTo({
                     left: 0,
@@ -186,3 +185,9 @@ document.addEventListener('DOMContentLoaded', function() {
     slider.addEventListener('mouseenter', () => clearInterval(scrollInterval));
     slider.addEventListener('mouseleave', startAutoScroll);
 });
+function hideLoader() {
+    document.querySelector('.loader-container').classList.add('active');
+}
+window.onload = function() {
+    setTimeout(hideLoader, 1000);
+}
