@@ -45,6 +45,23 @@
             color: #ff6b6b;
             background-color: rgba(255, 107, 107, 0.1);
         }
+        .loader-container{
+            position: fixed;
+            top:0; left: 0;
+            height:100%;
+            width: 100%;
+            z-index: 10000;
+            background:#f7f7f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .loader-container.active{
+            display: none;
+        }
+        .loader-container img{
+            height:10rem;
+        }
     </style>
 </head>
 <body>
@@ -131,6 +148,9 @@
             </div>
         </div>
     </footer>
+    <div class="loader-container">
+        <img src="https://media1.giphy.com/media/Ply1nOFdlZZsLTz6mr/giphy.gif" alt="">
+    </div>
     <script>
         const productsData = {
             'top-picks': {
@@ -235,6 +255,12 @@
             });
             updateCartCount(0);
         });
+        function hideLoader() {
+            document.querySelector('.loader-container').classList.add('active');
+        }
+        window.onload = function() {
+            setTimeout(hideLoader, 1000);
+        }
     </script>
 </body>
 </html>
