@@ -9,6 +9,8 @@
         body {
             background: linear-gradient(to right, #c2e1ea, #a9bfda);
         }
+
+
         .btn {
             height: 40px;
             width: 200px;
@@ -38,6 +40,8 @@
             color: #ff6b6b;
             background-color: rgba(255, 107, 107, 0.1);
         }
+
+
         .loader-container{
             position: fixed;
             top:0; left: 0;
@@ -49,15 +53,18 @@
             align-items: center;
             justify-content: center;
         }
+
         .loader-container.active{
             display: none;
         }
+
         .loader-container img{
             height:10rem;
         }
     </style>
 </head>
 <body class="bg-gray-100">
+    <!-- Navigation Bar -->
     <nav class="bg-gray-900 text-white p-4 shadow-md">
         <div class="container mx-auto flex justify-between items-center">
             <a href="index.html" class="text-xl font-bold">VTrade</a>
@@ -95,6 +102,9 @@
             </ul>
         </div>
     </nav>
+
+
+    <!-- Your Shopping Cart, Order Summary -->
     <section class="py-12 container mx-auto px-4">
         <h1 class="text-3xl font-bold mb-8">Your Shopping Cart</h1>
         <div class="flex flex-col lg:flex-row gap-8">
@@ -141,6 +151,9 @@
             </div>
         </div>
     </section>
+
+
+    <!-- Web Loader -->
     <div class="loader-container">
         <img src="https://media1.giphy.com/media/Ply1nOFdlZZsLTz6mr/giphy.gif" alt="">
     </div>
