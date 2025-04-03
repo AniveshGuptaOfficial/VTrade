@@ -21,6 +21,7 @@
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
+
         .btn button {
             font-size: 14px;
             border: none;
@@ -32,27 +33,27 @@
             border-radius: 50px;
             transition: all 0.3s ease;
         }
+
         .btn button:hover {
             color: #ff6b6b;
             background-color: rgba(255, 107, 107, 0.1);
         }
-        .loader-container {
+        .loader-container{
             position: fixed;
-            top: 0;
-            left: 0;
-            height: 100%;
+            top:0; left: 0;
+            height:100%;
             width: 100%;
             z-index: 10000;
-            background: #f7f7f7;
+            background:#f7f7f7;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .loader-container.active {
+        .loader-container.active{
             display: none;
         }
-        .loader-container img {
-            height: 10rem;
+        .loader-container img{
+            height:10rem;
         }
     </style>
 </head>
@@ -152,125 +153,6 @@
         const taxElement = document.getElementById('tax');
         const totalElement = document.getElementById('total');
         const checkoutBtn = document.getElementById('checkout-btn');
-        let shippingData = {}; // To store shipping details
-
-        // Add checkout modal HTML
-        document.body.insertAdjacentHTML('beforeend', `
-            <div id="checkout-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center z-50">
-                <div class="bg-white rounded-lg w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-bold">Checkout</h2>
-                        <button id="close-modal" class="text-gray-600 hover:text-gray-800">✕</button>
-                    </div>
-                    
-                    <!-- Progress Tracker -->
-                    <div class="mb-6">
-                        <div class="flex justify-between items-center">
-                            <div class="flex-1 text-center">
-                                <span class="step-number w-8 h-8 rounded-full bg-gray-200 inline-flex items-center justify-center">1</span>
-                                <p class="mt-2 text-sm">Review Cart</p>
-                            </div>
-                            <div class="flex-1 text-center">
-                                <span class="step-number w-8 h-8 rounded-full bg-gray-200 inline-flex items-center justify-center">2</span>
-                                <p class="mt-2 text-sm">Shipping</p>
-                            </div>
-                            <div class="flex-1 text-center">
-                                <span class="step-number w-8 h-8 rounded-full bg-gray-200 inline-flex items-center justify-center">3</span>
-                                <p class="mt-2 text-sm">Payment</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Checkout Steps -->
-                    <div id="checkout-steps">
-                        <!-- Step content will be dynamically inserted here -->
-                    </div>
-
-                    <div class="mt-6 flex justify-between">
-                        <button id="prev-step" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 hidden">Previous</button>
-                        <button id="next-step" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Next</button>
-                    </div>
-                </div>
-            </div>
-        `);
-
-        // Checkout step templates
-        const checkoutSteps = [
-            {
-                title: "Review Your Cart",
-                content: () => {
-                    let itemsHTML = cart.map(item => `
-                        <div class="flex justify-between py-2">
-                            <span>${item.name} (x${item.quantity})</span>
-                            <span>₹${(item.price * item.quantity).toFixed(2)}</span>
-                        </div>
-                    `).join('');
-                    return `
-                        <div class="mb-4">
-                            ${itemsHTML}
-                            <div class="border-t pt-2 mt-2">
-                                <div class="flex justify-between">
-                                    <span>Subtotal</span>
-                                    <span>${subtotalElement.textContent}</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span>Tax</span>
-                                    <span>${taxElement.textContent}</span>
-                                </div>
-                                <div class="flex justify-between font-bold">
-                                    <span>Total</span>
-                                    <span>${totalElement.textContent}</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }
-            },
-            {
-                title: "Shipping Details",
-                content: () => `
-                    <form id="shipping-form">
-                        <div class="mb-4">
-                            <label class="block mb-1">Full Name</label>
-                            <input type="text" name="name" class="w-full p-2 border rounded" value="${shippingData.name || ''}" required>
-                        </div>
-                        <div class="mb-4">
-                            <label class="block mb-1">Address</label>
-                            <textarea name="address" class="w-full p-2 border rounded" required>${shippingData.address || ''}</textarea>
-                        </div>
-                        <div class="mb-4">
-                            <label class="block mb-1">Phone</label>
-                            <input type="tel" name="phone" class="w-full p-2 border rounded" value="${shippingData.phone || ''}" required>
-                        </div>
-                    </form>
-                `
-            },
-            {
-                title: "Payment Method",
-                content: () => `
-                    <form id="payment-form">
-                        <label class="block mb-2">Select Payment Method</label>
-                        <div class="space-y-2">
-                            <div>
-                                <input type="radio" name="payment" value="card" checked>
-                                <span class="ml-2">Credit/Debit Card</span>
-                            </div>
-                            <div>
-                                <input type="radio" name="payment" value="upi">
-                                <span class="ml-2">UPI</span>
-                            </div>
-                            <div>
-                                <input type="radio" name="payment" value="cod">
-                                <span class="ml-2">Cash on Delivery</span>
-                            </div>
-                        </div>
-                    </form>
-                `
-            }
-        ];
-
-        let currentStep = 0;
-
         function updateNavigation() {
             const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
             const authButtons = document.getElementById('auth-buttons');
@@ -285,14 +167,16 @@
                 `;
             }
         }
-
         function updateCartCount() {
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
             cartCountElement.textContent = totalItems;
-            cartCountElement.classList.toggle('hidden', totalItems === 0);
+            if (totalItems > 0) {
+                cartCountElement.classList.remove('hidden');
+            } else {
+                cartCountElement.classList.add('hidden');
+            }
             localStorage.setItem('cart', JSON.stringify(cart));
         }
-
         function updateOrderSummary() {
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const tax = subtotal * 0.18;
@@ -302,7 +186,6 @@
             totalElement.textContent = `₹${total.toFixed(2)}`;
             checkoutBtn.disabled = cart.length === 0;
         }
-
         function renderCartItems() {
             if (cart.length === 0) {
                 emptyCartMessage.classList.remove('hidden');
@@ -311,25 +194,28 @@
                 return;
             }
             emptyCartMessage.classList.add('hidden');
-            cartItemsContainer.innerHTML = cart.map((item, index) => `
-                <div class="flex flex-col sm:flex-row gap-4 border-b border-gray-200 py-4" data-index="${index}">
-                    <img src="${item.image}" alt="${item.name}" class="w-24 h-24 object-contain rounded-lg">
-                    <div class="flex-1">
-                        <h3 class="font-medium">${item.name}</h3>
-                        <p class="text-gray-600">₹${item.price.toFixed(2)}</p>
-                        <div class="flex items-center mt-2">
-                            <button class="quantity-btn decrease bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">-</button>
-                            <span class="quantity mx-2 w-8 text-center">${item.quantity}</span>
-                            <button class="quantity-btn increase bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">+</button>
-                            <button class="remove-btn ml-4 text-red-600 hover:text-red-800">Remove</button>
+            let cartHTML = '';
+            cart.forEach((item, index) => {
+                cartHTML += `
+                    <div class="flex flex-col sm:flex-row gap-4 border-b border-gray-200 py-4" data-index="${index}">
+                        <img src="${item.image}" alt="${item.name}" class="w-24 h-24 object-contain rounded-lg">
+                        <div class="flex-1">
+                            <h3 class="font-medium">${item.name}</h3>
+                            <p class="text-gray-600">₹${item.price.toFixed(2)}</p>
+                            <div class="flex items-center mt-2">
+                                <button class="quantity-btn decrease bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">-</button>
+                                <span class="quantity mx-2 w-8 text-center">${item.quantity}</span>
+                                <button class="quantity-btn increase bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">+</button>
+                                <button class="remove-btn ml-4 text-red-600 hover:text-red-800">Remove</button>
+                            </div>
+                        </div>
+                        <div class="font-medium sm:text-right">
+                            ₹${(item.price * item.quantity).toFixed(2)}
                         </div>
                     </div>
-                    <div class="font-medium sm:text-right">
-                        ₹${(item.price * item.quantity).toFixed(2)}
-                    </div>
-                </div>
-            `).join('');
-
+                `;
+            });
+            cartItemsContainer.innerHTML = cartHTML;
             document.querySelectorAll('.quantity-btn.increase').forEach(button => {
                 button.addEventListener('click', function() {
                     const index = this.closest('[data-index]').dataset.index;
@@ -362,144 +248,25 @@
                 });
             });
         }
-
-        function updateCheckoutStep() {
-            const stepsContainer = document.getElementById('checkout-steps');
-            const prevBtn = document.getElementById('prev-step');
-            const nextBtn = document.getElementById('next-step');
-            const stepNumbers = document.querySelectorAll('.step-number');
-
-            stepsContainer.innerHTML = `
-                <h3 class="text-lg font-medium mb-4">${checkoutSteps[currentStep].title}</h3>
-                ${checkoutSteps[currentStep].content()}
-            `;
-
-            stepNumbers.forEach((step, index) => {
-                step.classList.toggle('bg-red-600', index <= currentStep);
-                step.classList.toggle('text-white', index <= currentStep);
-                step.classList.toggle('bg-gray-200', index > currentStep);
-            });
-
-            prevBtn.classList.toggle('hidden', currentStep === 0);
-            nextBtn.textContent = currentStep === checkoutSteps.length - 1 ? 'Complete Order' : 'Next';
-        }
-
-        function handleCheckoutNavigation() {
-            const modal = document.getElementById('checkout-modal');
-            const closeModal = document.getElementById('close-modal');
-            const prevBtn = document.getElementById('prev-step');
-            const nextBtn = document.getElementById('next-step');
-
-            checkoutBtn.addEventListener('click', () => {
-                if (cart.length === 0) {
-                    alert('Your cart is empty!');
-                    return;
-                }
-                currentStep = 0;
-                shippingData = {}; // Reset shipping data on new checkout
-                modal.classList.remove('hidden');
-                updateCheckoutStep();
-            });
-
-            closeModal.addEventListener('click', () => {
-                modal.classList.add('hidden');
-            });
-
-            prevBtn.addEventListener('click', () => {
-                if (currentStep > 0) {
-                    currentStep--;
-                    updateCheckoutStep();
-                }
-            });
-
-            nextBtn.addEventListener('click', () => {
-                try {
-                    if (currentStep < checkoutSteps.length - 1) {
-                        if (currentStep === 1) {
-                            const shippingForm = document.getElementById('shipping-form');
-                            if (!shippingForm || !shippingForm.checkValidity()) {
-                                console.log('Shipping form validation failed');
-                                shippingForm.reportValidity();
-                                return;
-                            }
-                            // Store shipping data before moving to next step
-                            shippingData = {
-                                name: shippingForm.querySelector('input[name="name"]').value,
-                                address: shippingForm.querySelector('textarea[name="address"]').value,
-                                phone: shippingForm.querySelector('input[name="phone"]').value
-                            };
-                            console.log('Shipping data stored:', shippingData);
-                        }
-                        currentStep++;
-                        updateCheckoutStep();
-                    } else {
-                        console.log('Attempting to complete order...');
-                        const paymentForm = document.getElementById('payment-form');
-
-                        if (!paymentForm) {
-                            throw new Error('Payment form not found');
-                        }
-
-                        const paymentInput = paymentForm.querySelector('input[name="payment"]:checked');
-                        if (!paymentInput) {
-                            throw new Error('Payment method not selected');
-                        }
-
-                        if (!shippingData.name || !shippingData.address || !shippingData.phone) {
-                            throw new Error('Shipping details are incomplete');
-                        }
-
-                        const order = {
-                            items: [...cart],
-                            total: parseFloat(totalElement.textContent.replace('₹', '')),
-                            date: new Date().toISOString(),
-                            shipping: shippingData,
-                            paymentMethod: paymentInput.value === 'card' ? 'Credit/Debit Card' : 
-                                        paymentInput.value === 'upi' ? 'UPI' : 'Cash on Delivery',
-                            status: 'Processing'
-                        };
-
-                        console.log('Order object created:', order);
-
-                        const existingOrders = JSON.parse(localStorage.getItem('orderHistory')) || [];
-                        existingOrders.unshift(order);
-                        localStorage.setItem('orderHistory', JSON.stringify(existingOrders));
-
-                        console.log('Order saved to localStorage');
-
-                        modal.classList.add('hidden');
-                        cart = [];
-                        localStorage.setItem('cart', JSON.stringify(cart));
-                        renderCartItems();
-                        updateCartCount();
-                        updateOrderSummary();
-                        alert('Order placed successfully!');
-                        console.log('Checkout completed successfully');
-                    }
-                } catch (error) {
-                    console.error('Checkout error:', error.message);
-                    alert(`Checkout failed: ${error.message}. Please try again.`);
-                }
-            });
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
             updateNavigation();
             updateCartCount();
             renderCartItems();
             updateOrderSummary();
-            handleCheckoutNavigation();
-
-            document.getElementById('menu-toggle').addEventListener('click', () => {
-                document.getElementById('nav-links').classList.toggle('hidden');
+            document.getElementById('menu-toggle').addEventListener('click', function() {
+                const navLinks = document.getElementById('nav-links');
+                navLinks.classList.toggle('hidden');
+            });
+            checkoutBtn.addEventListener('click', function() {
+                alert('Checkout functionality would go here!');
             });
         });
-
         function hideLoader() {
             document.querySelector('.loader-container').classList.add('active');
         }
-
-        window.onload = () => setTimeout(hideLoader, 1000);
+        window.onload = function() {
+            setTimeout(hideLoader, 1000);
+        }
     </script>
 </body>
 </html>
