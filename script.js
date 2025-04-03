@@ -192,7 +192,6 @@ document.addEventListener('DOMContentLoaded', function() {
     startAutoScroll();
     slider.addEventListener('mouseenter', () => clearInterval(scrollInterval));
     slider.addEventListener('mouseleave', startAutoScroll);
-<<<<<<< HEAD
 });
 function hideLoader() {
     document.querySelector('.loader-container').classList.add('active');
@@ -200,6 +199,3 @@ function hideLoader() {
 window.onload = function() {
     setTimeout(hideLoader, 1000);
 }
-=======
-});
->>>>>>> 2cc0be7 (Updated website files)
