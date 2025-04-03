@@ -145,7 +145,10 @@
         <img src="https://media1.giphy.com/media/Ply1nOFdlZZsLTz6mr/giphy.gif" alt="">
     </div>
     <script>
+        // Retrieve the cart from localStorage or initialize an empty array if it doesn't exist
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Get references to various elements on the page
         const cartCountElement = document.getElementById('cart-count');
         const cartItemsContainer = document.getElementById('cart-items');
         const emptyCartMessage = document.getElementById('empty-cart-message');
@@ -153,6 +156,12 @@
         const taxElement = document.getElementById('tax');
         const totalElement = document.getElementById('total');
         const checkoutBtn = document.getElementById('checkout-btn');
+
+        /**
+         * Updates the navigation bar based on user authentication status.
+         * If the user is logged in, it shows an "Account" button.
+         * If the user is not logged in, it shows "Login" and "Signup" buttons.
+         */
         function updateNavigation() {
             const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
             const authButtons = document.getElementById('auth-buttons');
@@ -167,6 +176,11 @@
                 `;
             }
         }
+        
+        /**
+         * Updates the cart item count displayed in the navigation bar.
+         * Also stores the updated cart in localStorage.
+         */
         function updateCartCount() {
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
             cartCountElement.textContent = totalItems;
@@ -177,6 +191,14 @@
             }
             localStorage.setItem('cart', JSON.stringify(cart));
         }
+        
+        /**
+         * Calculates and updates the order summary including:
+         * - Subtotal (sum of all item prices)
+         * - Tax (18% of subtotal)
+         * - Total (subtotal + tax)
+         * Also disables the checkout button if the cart is empty.
+         */
         function updateOrderSummary() {
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const tax = subtotal * 0.18;
@@ -186,6 +208,13 @@
             totalElement.textContent = `₹${total.toFixed(2)}`;
             checkoutBtn.disabled = cart.length === 0;
         }
+        
+        /**
+         * Renders the cart items on the page.
+         * If the cart is empty, it displays an "Empty Cart" message.
+         * Otherwise, it dynamically generates HTML for each cart item, 
+         * including options to increase, decrease quantity, or remove the item.
+         */
         function renderCartItems() {
             if (cart.length === 0) {
                 emptyCartMessage.classList.remove('hidden');
@@ -216,6 +245,7 @@
                 `;
             });
             cartItemsContainer.innerHTML = cartHTML;
+            // Add event listeners to increase quantity
             document.querySelectorAll('.quantity-btn.increase').forEach(button => {
                 button.addEventListener('click', function() {
                     const index = this.closest('[data-index]').dataset.index;
@@ -227,6 +257,7 @@
                     }
                 });
             });
+            // Add event listeners to decrease quantity
             document.querySelectorAll('.quantity-btn.decrease').forEach(button => {
                 button.addEventListener('click', function() {
                     const index = this.closest('[data-index]').dataset.index;
@@ -238,6 +269,7 @@
                     }
                 });
             });
+            // Add event listeners to remove item from cart
             document.querySelectorAll('.remove-btn').forEach(button => {
                 button.addEventListener('click', function() {
                     const index = this.closest('[data-index]').dataset.index;
@@ -248,22 +280,44 @@
                 });
             });
         }
+        
+        /**
+         * Executes functions after the page has loaded.
+         * - Updates the navigation bar
+         * - Updates cart count
+         * - Renders cart items
+         * - Updates order summary
+         * - Adds event listener to menu toggle button
+         * - Adds event listener to checkout button
+         */
         document.addEventListener('DOMContentLoaded', () => {
             updateNavigation();
             updateCartCount();
             renderCartItems();
             updateOrderSummary();
+            // Toggle navigation menu on mobile view
             document.getElementById('menu-toggle').addEventListener('click', function() {
                 const navLinks = document.getElementById('nav-links');
                 navLinks.classList.toggle('hidden');
             });
+            // Placeholder functionality for checkout button
             checkoutBtn.addEventListener('click', function() {
                 alert('Checkout functionality would go here!');
             });
         });
+        
+        /**
+         * Hides the loading screen after a delay.
+         * Adds 'active' class to loader-container to hide it.
+         */
         function hideLoader() {
             document.querySelector('.loader-container').classList.add('active');
         }
+        
+        /**
+         * Runs when the page is fully loaded.
+         * Calls hideLoader() after 1 second to ensure smooth loading transition.
+         */
         window.onload = function() {
             setTimeout(hideLoader, 1000);
         }

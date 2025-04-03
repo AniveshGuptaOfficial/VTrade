@@ -39,7 +39,6 @@ nav {
 #review-slider {
     -ms-overflow-style: none;
     scrollbar-width: none;
-<<<<<<< HEAD
 }
 .loader-container{
     position: fixed;
@@ -57,6 +56,4 @@ nav {
 }
 .loader-container img{
     height:10rem;
-=======
->>>>>>> 2cc0be7 (Updated website files)
 }
