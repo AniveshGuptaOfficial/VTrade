@@ -4,36 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us - VTrade</title>
+    
+    <!-- Include Tailwind CSS from CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <style>
+        /* Background gradient for the page */
         body {
             background: linear-gradient(135deg, #f3e7e9, #e3eeff);
         }
+        
+        /* Highlight error fields with red border */
         .error-field {
             border: 2px solid red !important;
         }
     </style>
 </head>
 <body class="flex items-center justify-center h-screen">
+    <!-- Contact Form Container -->
     <div class="bg-white p-8 rounded-lg shadow-lg w-96">
         <h2 class="text-2xl font-bold text-gray-900 text-center mb-6">Contact Us</h2>
         
+        <!-- Contact Form -->
         <form id="contactForm" class="space-y-4">
+            <!-- Name Input Field -->
             <div>
                 <label class="block text-gray-700 font-semibold mb-1">Name</label>
                 <input type="text" id="name" placeholder="Your Name" 
                        class="w-full px-3 py-2 border rounded-lg focus:outline-none">
             </div>
+            
+            <!-- Email Input Field -->
             <div>
                 <label class="block text-gray-700 font-semibold mb-1">Email</label>
                 <input type="email" id="email" placeholder="Your Email" 
                        class="w-full px-3 py-2 border rounded-lg focus:outline-none">
             </div>
+            
+            <!-- Message Textarea -->
             <div>
                 <label class="block text-gray-700 font-semibold mb-1">Message</label>
                 <textarea id="message" rows="4" placeholder="Your Message" 
                           class="w-full px-3 py-2 border rounded-lg focus:outline-none"></textarea>
             </div>
+            
+            <!-- Submit Button -->
             <button type="submit" 
                     class="w-full mt-4 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 focus:outline-none">
                 Send Message
@@ -42,10 +57,12 @@
     </div>
 
     <script>
+        // Request notification permission on page load
         if (Notification.permission !== "granted") {
             Notification.requestPermission();
         }
         
+        // Function to show a notification or alert if notifications are disabled
         function showNotification(title, message) {
             if (Notification.permission === "granted") {
                 new Notification(title, { body: message });
@@ -54,21 +71,27 @@
             }
         }
         
+        // Form submission event listener
         document.getElementById("contactForm").addEventListener("submit", function(event) {
-            event.preventDefault();
+            event.preventDefault(); // Prevent page reload
             let errorMessages = [];
             let emptyFields = [];
+            
+            // Get form input elements
             let nameField = document.getElementById("name");
             let emailField = document.getElementById("email");
             let messageField = document.getElementById("message");
+            
             let name = nameField.value.trim();
             let email = emailField.value.trim();
             let message = messageField.value.trim();
             
+            // Remove previous error highlights
             nameField.classList.remove("error-field");
             emailField.classList.remove("error-field");
             messageField.classList.remove("error-field");
             
+            // Check for empty fields and highlight errors
             if (!name) {
                 emptyFields.push("Name");
                 nameField.classList.add("error-field");
@@ -81,23 +104,28 @@
                 emptyFields.push("Message");
                 messageField.classList.add("error-field");
             }
+            
+            // Show notification if fields are empty
             if (emptyFields.length > 0) {
                 showNotification("Form Error", `The following fields cannot be empty: ${emptyFields.join(", ")}.`);
                 return;
             }
             
+            // Validate name format (alphabets and spaces, max 16 characters)
             if (!/^[A-Za-z\s]{1,16}$/.test(name)) {
                 showNotification("Invalid Name", "Name must contain only alphabets and spaces, and be at most 16 characters.");
                 nameField.classList.add("error-field");
                 return;
             }
             
+            // Validate email format (custom regex constraint)
             if (!/^[A-Za-z0-9]{1,50}@[A-Za-z0-9]{1,10}\.com$/.test(email)) {
                 showNotification("Invalid Email", "Email must be 50 characters, followed by '@', 10 characters, and end with '.com'.");
                 emailField.classList.add("error-field");
                 return;
             }
             
+            // Show success message and reset form
             showNotification("Success", "Thank you for contacting us! We'll get back to you soon.");
             document.getElementById("contactForm").reset();
         });
