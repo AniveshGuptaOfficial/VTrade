@@ -1,14 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Document Metadata -->
+    <!-- Character encoding declaration for proper text rendering -->
     <meta charset="UTF-8">
+    <!-- Viewport settings for responsive design on mobile devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Page title that appears in browser tabs -->
     <title>OTP Verification - VTrade</title>
+    
+    <!-- External Resources -->
+    <!-- Tailwind CSS framework for utility classes -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Internal Styles -->
     <style>
+        /* Background gradient styling for the page */
         body {
             background: linear-gradient(135deg, #f3e7e9, #e3eeff);
         }
+        /* Custom styling for OTP input boxes */
         .otp-input {
             width: 40px;
             height: 40px;
@@ -18,6 +29,7 @@
             border: 1px solid #d1d5db;
             border-radius: 8px;
         }
+        /* Focus state styling for OTP inputs */
         .otp-input:focus {
             outline: none;
             border-color: #ef4444;
@@ -25,13 +37,21 @@
         }
     </style>
 </head>
+<!-- Main page container with flex centering -->
 <body class="flex items-center justify-center h-screen">
+    <!-- OTP verification form container -->
+    <!-- White card with padding, rounded corners and shadow -->
     <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+        <!-- Form heading -->
         <h2 class="text-2xl font-bold text-gray-900 text-center">OTP Verification</h2>
+        <!-- Phone number display (masked for privacy) -->
         <p id="phone-display" class="text-center text-gray-600 mt-2">We've sent a 6-digit code to your phone</p>
         
+        <!-- OTP input section -->
         <div class="mt-6">
+            <!-- OTP input boxes container -->
             <div class="flex justify-center mb-6">
+                <!-- Six individual OTP digit inputs -->
                 <input type="text" maxlength="1" class="otp-input" pattern="\d*">
                 <input type="text" maxlength="1" class="otp-input" pattern="\d*">
                 <input type="text" maxlength="1" class="otp-input" pattern="\d*">
@@ -40,41 +60,49 @@
                 <input type="text" maxlength="1" class="otp-input" pattern="\d*">
             </div>
             
+            <!-- Verify OTP button -->
             <button id="verify-otp" class="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600">
                 Verify OTP
             </button>
             
+            <!-- Resend OTP section -->
             <div class="mt-4 text-center">
                 <p class="text-gray-600">Didn't receive code?</p>
                 <button id="resend-otp" class="text-red-500 hover:underline">Resend OTP</button>
             </div>
         </div>
         
+        <!-- Divider with "or" text -->
         <div class="flex items-center justify-center my-6">
             <div class="w-full border-b"></div>
             <span class="mx-2 text-gray-600">or</span>
             <div class="w-full border-b"></div>
         </div>
         
+        <!-- Back to login link -->
         <p class="mt-4 text-center text-gray-700">
             <a href="login.html" class="text-red-500 hover:underline">← Back to Login</a>
         </p>
     </div>
 
+    <!-- JavaScript functionality -->
     <script>
-        // Display masked phone number
+        // Display masked phone number for user confirmation
         const phoneNumber = localStorage.getItem('phoneNumber') || '+91••••••••••';
+        // Mask phone number for privacy (shows first 3 digits and last 2 digits)
         const maskedPhone = phoneNumber.slice(0, 3) + " ••••• ••" + phoneNumber.slice(-2);
         document.getElementById('phone-display').textContent = `We've sent a 6-digit code to ${maskedPhone}`;
 
-        // OTP input handling
+        // OTP input handling for better user experience
         const otpInputs = document.querySelectorAll('.otp-input');
         otpInputs.forEach((input, index) => {
+            // Auto-focus next input when current input is filled
             input.addEventListener('input', (e) => {
                 if (e.target.value.length === 1 && index < otpInputs.length - 1) {
                     otpInputs[index + 1].focus();
                 }
             });
+            // Handle backspace to move to previous input
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Backspace' && index > 0 && !e.target.value) {
                     otpInputs[index - 1].focus();
@@ -82,28 +110,38 @@
             });
         });
 
-        // Verify OTP
+        // Verify OTP button click handler
         document.getElementById('verify-otp').addEventListener('click', () => {
+            // Combine all OTP digits into single string
             const enteredOTP = Array.from(otpInputs).map(input => input.value).join('');
+            // Retrieve generated OTP from localStorage
             const generatedOTP = localStorage.getItem('generatedOTP');
 
+            // Validation checks
             if (enteredOTP.length !== 6) {
                 alert("Please enter a 6-digit OTP.");
                 return;
             }
             if (enteredOTP === generatedOTP) {
+                // Successful verification
                 alert("OTP Verified Successfully! Logging you in...");
+                // Set login status in localStorage
                 localStorage.setItem('userLoggedIn', 'true');
+                // Redirect to home page
                 window.location.href = "index.html";
             } else {
+                // Failed verification
                 alert("Invalid OTP. Please try again.");
             }
         });
 
-        // Resend OTP
+        // Resend OTP button click handler
         document.getElementById('resend-otp').addEventListener('click', () => {
+            // Generate new 6-digit OTP (demo purposes only)
             let otp = Math.floor(100000 + Math.random() * 900000);
+            // Store new OTP in localStorage
             localStorage.setItem('generatedOTP', otp);
+            // Show new OTP (in production, this would be sent via SMS)
             alert(`New OTP Sent Successfully! Your OTP is: ${otp}`);
         });
     </script>
