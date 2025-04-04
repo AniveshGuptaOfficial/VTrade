@@ -4,25 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Account - VTrade</title>
+    
+    <!-- Include Tailwind CSS from CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
+    <!-- Main Container for the Account Page -->
     <div class="container mx-auto p-6 max-w-4xl">
         <div class="bg-white rounded-lg shadow-md p-6">
+            <!-- Page Title -->
             <h1 class="text-2xl font-bold mb-6">My Account</h1>
             
+            <!-- Section to Display Account Information Dynamically -->
             <div id="account-info" class="space-y-4"></div>
             
+            <!-- Logout Button -->
             <button id="logout-btn" class="mt-6 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">
                 Logout
             </button>
         </div>
     </div>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Retrieve stored user data from localStorage
             const userData = JSON.parse(localStorage.getItem('userData'));
             const accountInfo = document.getElementById('account-info');
             
+            // If user data exists, display it dynamically on the page
             if (userData) {
                 accountInfo.innerHTML = `
                     <div>
@@ -39,6 +48,8 @@
                     </div>
                 `;
             }
+            
+            // Logout button functionality: Clears login status and redirects to home page
             document.getElementById('logout-btn').addEventListener('click', function() {
                 localStorage.removeItem('userLoggedIn');
                 window.location.href = "index.html";
