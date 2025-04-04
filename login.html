@@ -1,73 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Document Metadata -->
+    <!-- Character encoding declaration for proper text rendering -->
     <meta charset="UTF-8">
+    <!-- Viewport settings for responsive design on mobile devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Page title that appears in browser tabs -->
     <title>Login - VTrade</title>
+    
+    <!-- External Resources -->
+    <!-- Tailwind CSS framework for utility classes -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Internal Styles -->
     <style>
+        /* Background gradient styling */
         body {
             background: linear-gradient(135deg, #f3e7e9, #e3eeff);
         }
+        /* Error state styling for form validation */
         .error {
             border: 2px solid red;
         }
     </style>
 </head>
+<!-- Main page container with flex centering -->
 <body class="flex items-center justify-center h-screen">
+    <!-- Login form container -->
+    <!-- White card with padding, rounded corners and shadow -->
     <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+        <!-- Form heading -->
         <h2 class="text-2xl font-bold text-gray-900 text-center">LogIn</h2>
+        
+        <!-- Phone number input section -->
         <div class="mt-6">
+            <!-- Input label -->
             <label class="block text-gray-700 font-semibold mb-2">Phone Number</label>
+            <!-- Phone input container with country code dropdown -->
             <div class="flex border rounded-lg p-2">
+                <!-- Country code selector -->
                 <select id="country-code" class="bg-transparent border-r px-2 outline-none">
-                    <option>+91</option>
-                    <option>+1</option>
-                    <option>+44</option>
+                    <option>+91</option>  <!-- India -->
+                    <option>+1</option>   <!-- USA -->
+                    <option>+44</option>  <!-- UK -->
                 </select>
+                <!-- Phone number input field -->
                 <input id="phone" type="tel" placeholder="Phone" class="w-full px-2 outline-none">
             </div>
+            <!-- OTP send button with hover effect -->
             <button id="send-otp" class="w-full mt-4 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600">Send One Time Password</button>
         </div>
+        
+        <!-- Divider with "or" text -->
         <div class="flex items-center justify-center my-4">
-            <div class="w-full border-b"></div>
-            <span class="mx-2 text-gray-600">or</span>
-            <div class="w-full border-b"></div>
+            <div class="w-full border-b"></div>  <!-- Left line -->
+            <span class="mx-2 text-gray-600">or</span>  <!-- Divider text -->
+            <div class="w-full border-b"></div>  <!-- Right line -->
         </div>
+        
+        <!-- Google sign-in button -->
         <button id="google-signin" class="w-full flex items-center justify-center bg-gray-100 py-2 rounded-lg hover:bg-gray-200 mt-2">
-            <img src="https://img.icons8.com/color/48/000000/google-logo.png" class="h-5 mr-2"/> Sign in with Google
+            <!-- Google logo -->
+            <img src="https://img.icons8.com/color/48/000000/google-logo.png" class="h-5 mr-2"/>
+            Sign in with Google
         </button>
+        
+        <!-- Sign-up link for new users -->
         <p class="mt-4 text-center text-gray-700">New to VTrade? <a href="SignUp.html" class="text-red-500 hover:underline">Create account</a></p>
     </div>
+
+    <!-- JavaScript functionality -->
     <script>
+        // OTP send button click handler
         document.getElementById("send-otp").addEventListener("click", function() {
+            // Get input values
             let phoneInput = document.getElementById("phone");
             let phoneNumber = phoneInput.value.trim();
             let countryCode = document.getElementById("country-code").value;
+            
+            // Phone number validation regex (10 digits)
             let phoneRegex = /^\d{10}$/; 
 
+            // Validation checks
             if (phoneNumber === "") {
                 alert("Phone number field is empty");
-                phoneInput.classList.add("error");
+                phoneInput.classList.add("error");  // Show error state
                 return;
             } else if (!phoneRegex.test(phoneNumber)) {
                 alert("Please enter a valid 10-digit Phone Number.");
-                phoneInput.classList.add("error");
+                phoneInput.classList.add("error");  // Show error state
                 return;
             } else {
-                phoneInput.classList.remove("error");
-                // Generate a random 6-digit OTP
-                let otp = Math.floor(100000 + Math.random() * 900000); // Generates a number between 100000 and 999999
+                phoneInput.classList.remove("error");  // Remove error state if valid
+                
+                // Generate 6-digit OTP (for demo purposes)
+                let otp = Math.floor(100000 + Math.random() * 900000); // Random number 100000-999999
+                
+                // Show success message with OTP (in production, this would be sent via SMS)
                 alert(`OTP Sent Successfully! Your OTP is: ${otp}`);
+                
                 // Store OTP and phone number in localStorage
                 localStorage.setItem('generatedOTP', otp);
                 localStorage.setItem('phoneNumber', countryCode + phoneNumber);
-                // Redirect to OTP.html
+                
+                // Redirect to OTP verification page
                 window.location.href = "OTP.html";
             }
         });
 
+        // Google sign-in button click handler
         document.getElementById("google-signin").addEventListener("click", function() {
+            // Open Google authentication in a new popup window
             const googleAuth = window.open("https://accounts.google.com/AccountChooser", "_blank", "width=500,height=600");
         });
     </script>
