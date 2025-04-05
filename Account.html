@@ -4,9 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Account - VTrade</title>
-    
-    <!-- Include Tailwind CSS from CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .order-card {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .remove-order {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            cursor: pointer;
+            color: #ef4444;
+            font-weight: bold;
+            background: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 <body class="bg-gray-100">
     <!-- Main Container for the Account Page -->
@@ -15,8 +39,22 @@
             <!-- Page Title -->
             <h1 class="text-2xl font-bold mb-6">My Account</h1>
             
-            <!-- Section to Display Account Information Dynamically -->
-            <div id="account-info" class="space-y-4"></div>
+            <!-- Personal Information Section -->
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold mb-4">Personal Information</h2>
+                <div id="account-info" class="space-y-4"></div>
+            </div>
+
+            <!-- Order History Section -->
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold">Order History</h2>
+                    <button id="clear-orders" class="text-sm text-red-500 hover:text-red-700">
+                        Clear All Orders
+                    </button>
+                </div>
+                <div id="order-history" class="space-y-4"></div>
+            </div>
             
             <!-- Logout Button -->
             <button id="logout-btn" class="mt-6 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">
@@ -27,11 +65,19 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Retrieve stored user data from localStorage
+            // Check if user is logged in
+            if (!localStorage.getItem('userLoggedIn')) {
+                window.location.href = "index.html";
+                return;
+            }
+
+            // Retrieve stored user data and orders from localStorage
             const userData = JSON.parse(localStorage.getItem('userData'));
             const accountInfo = document.getElementById('account-info');
+            const orderHistory = document.getElementById('order-history');
+            const clearOrdersBtn = document.getElementById('clear-orders');
             
-            // If user data exists, display it dynamically on the page
+            // Display user information
             if (userData) {
                 accountInfo.innerHTML = `
                     <div>
@@ -44,15 +90,93 @@
                     </div>
                     <div>
                         <h3 class="font-semibold">Phone:</h3>
-                        <p>${userData.phone}</p>
+                        <p>${userData.phone || 'Not provided'}</p>
                     </div>
                 `;
+            } else {
+                accountInfo.innerHTML = '<p class="text-red-500">No user data found. Please log in again.</p>';
             }
+
+            // Function to render orders
+            function renderOrders() {
+                const orders = JSON.parse(localStorage.getItem('orderHistory')) || [];
+                orderHistory.innerHTML = '';
+                
+                if (orders.length === 0) {
+                    orderHistory.innerHTML = '<p class="text-gray-500">No previous orders found.</p>';
+                    clearOrdersBtn.style.display = 'none';
+                } else {
+                    clearOrdersBtn.style.display = 'block';
+                    orders.forEach((order, index) => {
+                        const orderItems = order.items.map(item => `
+                            <li class="flex justify-between">
+                                <span>${item.name} (x${item.quantity})</span>
+                                <span>₹${(item.price * item.quantity).toFixed(2)}</span>
+                            </li>
+                        `).join('');
+                        
+                        orderHistory.innerHTML += `
+                            <div class="order-card bg-gray-50 p-4 rounded-lg border relative">
+                                <span class="remove-order" data-order-index="${index}">×</span>
+                                <div class="flex justify-between items-center mb-2">
+                                    <h3 class="font-medium">Order #${index + 1}</h3>
+                                    <span class="text-sm text-gray-600">${new Date(order.date).toLocaleDateString()}</span>
+                                </div>
+                                <ul class="list-disc pl-5 mb-2">
+                                    ${orderItems}
+                                </ul>
+                                <div class="border-t pt-2">
+                                    <div class="flex justify-between">
+                                        <span>Shipping</span>
+                                        <span>Free</span>
+                                    </div>
+                                    <div class="flex justify-between font-semibold">
+                                        <span>Total</span>
+                                        <span>₹${order.total.toFixed(2)}</span>
+                                    </div>
+                                    <div class="mt-2 text-sm text-gray-600">
+                                        <p>Shipping: ${order.shipping.address}</p>
+                                        <p>Payment: ${order.paymentMethod}</p>
+                                        <p>Status: ${order.status || 'Delivered'}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            }
+
+            // Initial render
+            renderOrders();
+
+            // Remove single order functionality
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-order')) {
+                    const orderIndex = parseInt(e.target.getAttribute('data-order-index'));
+                    let orders = JSON.parse(localStorage.getItem('orderHistory')) || [];
+                    orders.splice(orderIndex, 1);
+                    localStorage.setItem('orderHistory', JSON.stringify(orders));
+                    renderOrders();
+                }
+            });
+
+            // Clear all orders functionality
+            clearOrdersBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to clear all your order history?')) {
+                    localStorage.removeItem('orderHistory');
+                    renderOrders();
+                }
+            });
             
-            // Logout button functionality: Clears login status and redirects to home page
+            // Logout button functionality
             document.getElementById('logout-btn').addEventListener('click', function() {
-                localStorage.removeItem('userLoggedIn');
-                window.location.href = "index.html";
+                if (confirm('Are you sure you want to logout?')) {
+                    // Clear user session and order history
+                    localStorage.removeItem('userLoggedIn');
+                    localStorage.removeItem('userData');
+                    localStorage.removeItem('orderHistory');
+                    window.location.href = "index.html";
+                }
             });
         });
     </script>

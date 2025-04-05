@@ -1,34 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Basic meta tags for character set and responsive viewport -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All Products - VTrade</title>
-    
-    <!-- External resources -->
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Tailwind CSS framework -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Internal CSS styles -->
     <style>
-        /* Gradient background for the body */
         body {
             background: linear-gradient(to right, #c2e1ea, #a9bfda);
         }
-        /* Special background for specific pages */
         body.login, body.otp, body.signup, body.seeall {
             background: linear-gradient(135deg, #f3e7e9, #e3eeff);
         }
-        /* Sticky navigation bar styling */
         nav {
             position: sticky;
             top: 0;
             z-index: 50;
         }
-        /* Button styling for auth buttons */
         .btn {
             height: 40px;
             width: 200px;
@@ -41,7 +30,6 @@
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        /* Button hover effects */
         .btn button {
             font-size: 14px;
             border: none;
@@ -57,52 +45,47 @@
             color: #ff6b6b;
             background-color: rgba(255, 107, 107, 0.1);
         }
-        /* Loader container styling (shown while page loads) */
-        .loader-container{
+        .btn button a {
+            color: inherit;
+            text-decoration: none;
+        }
+        .loader-container {
             position: fixed;
-            top:0; left: 0;
-            height:100%;
+            top: 0;
+            left: 0;
+            height: 100%;
             width: 100%;
             z-index: 10000;
-            background:#f7f7f7;
+            background: #f7f7f7;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        /* Loader hidden state */
-        .loader-container.active{
+        .loader-container.active {
             display: none;
         }
-        /* Loader image sizing */
-        .loader-container img{
-            height:10rem;
+        .loader-container img {
+            height: 10rem;
         }
     </style>
 </head>
 <body>
-    <!-- Navigation bar -->
     <nav class="bg-gray-900 text-white p-4 shadow-md">
         <div class="container mx-auto flex justify-between items-center">
-            <!-- Logo/brand link -->
             <a href="index.html" class="text-xl font-bold">VTrade</a>
-            
-            <!-- Mobile menu toggle button -->
             <button class="md:hidden focus:outline-none" id="menu-toggle">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
                 </svg>
             </button>
-            
-            <!-- Navigation links (hidden on mobile by default) -->
-            <ul class="hidden md:flex space-x-6 items-center" id="nav-links">
-                <li class="relative">
-                    <!-- Search form -->
-                    <form action="/s/" method="GET" class="flex items-center">
+            <ul class="hidden md:flex md:space-x-6 md:items-center absolute md:static top-16 left-0 w-full md:w-auto bg-gray-900 md:bg-transparent p-4 md:p-0 z-50" id="nav-links">
+                <li class="relative w-full md:w-auto mb-4 md:mb-0">
+                    <form action="/s/" method="GET" class="flex items-center w-full">
                         <input 
                             type="text" 
                             name="q" 
                             placeholder="Search..." 
-                            class="bg-gray-800 text-white px-3 py-1 rounded focus:outline-none w-40 sm:w-48 md:w-56" 
+                            class="bg-gray-800 text-white px-3 py-1 rounded focus:outline-none w-full md:w-56" 
                             autocomplete="off"
                             id="search-input"
                         />
@@ -113,56 +96,56 @@
                         </button>
                     </form>
                 </li>
-                <li>
-                    <!-- Authentication buttons (Login/Signup) -->
+                <li class="w-full md:w-auto mb-4 md:mb-0">
                     <div class="btn" id="auth-buttons">
                         <button class="login"><a href="login.html">Login</a></button>
                         <button class="signup"><a href="SignUp.html">Signup</a></button>
                     </div>
                 </li>
-                <li>
-                    <!-- Cart link with counter -->
-                    <a href="MyCart.html" class="hover:text-gray-400 flex items-center relative">
+                <li class="w-full md:w-auto">
+                    <a href="MyCart.html" class="hover:text-gray-400 flex items-center justify-center md:justify-start relative">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
-                        <span class="ml-1">Cart</span>
+                        <span class="ml-2">Cart</span>
                         <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
                     </a>
                 </li>
             </ul>
         </div>
     </nav>
-
-    <!-- Main content section -->
-    <section class="py-16 text-center text-white">
-        <div class="container mx-auto">
-            <!-- Dynamic page title and description -->
+    <section class="py-16 text-center text-gray-900">
+        <div class="container mx-auto px-4">
             <h1 id="page-title" class="text-3xl font-bold mb-4">Loading...</h1>
             <p id="page-description" class="mb-8">Please wait...</p>
-            
-            <!-- Products grid container -->
-            <div id="products-container" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
-            
-            <!-- Back to home link -->
+            <div class="flex flex-col sm:flex-row justify-center items-center mb-8 space-y-4 sm:space-y-0 sm:space-x-4">
+                <input 
+                    type="text" 
+                    id="product-search" 
+                    placeholder="Search products..." 
+                    class="w-full sm:w-64 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
+                />
+                <select id="sort-options" class="w-full sm:w-48 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500">
+                    <option value="price-low-high">Price: Low to High</option>
+                    <option value="price-high-low">Price: High to Low</option>
+                    <option value="name-a-z">Name: A to Z</option>
+                    <option value="name-z-a">Name: Z to A</option>
+                </select>
+            </div>
+            <div id="products-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8"></div>
             <a href="index.html" class="mt-8 inline-block bg-gray-500 text-white py-2 px-6 rounded-lg hover:bg-gray-600 transition-colors">
                 Back to Home
             </a>
         </div>
     </section>
-
-    <!-- Footer section -->
     <footer class="bg-gray-900 text-white py-8 mt-10">
         <div class="container mx-auto px-4">
-            <!-- Footer links -->
             <div class="flex justify-center space-x-6 mb-6">
                 <a href="PrivacyPolicy.html" class="text-gray-300 hover:text-white">Privacy Policy</a>
                 <a href="TermsAndCondition.html" class="text-gray-300 hover:text-white">Terms of Service</a>
                 <a href="ContactUs.html" class="text-gray-300 hover:text-white">Contact</a>
                 <a href="About.html" class="text-gray-300 hover:text-white">About Us</a>
             </div>
-            
-            <!-- Social media links and copyright -->
             <div class="flex flex-col items-center">
                 <div class="flex space-x-5 mb-4">
                     <a href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-blue-500">
@@ -184,15 +167,10 @@
             </div>
         </div>
     </footer>
-
-    <!-- Page loader (shown while page is loading) -->
     <div class="loader-container">
         <img src="https://media1.giphy.com/media/Ply1nOFdlZZsLTz6mr/giphy.gif" alt="">
     </div>
-
-    <!-- JavaScript functionality -->
     <script>
-        // Product data for different sections
         const productsData = {
             'top-picks': {
                 title: 'All Top Picks',
@@ -212,129 +190,180 @@
                 products: [
                     { img: 'https://images.unsplash.com/photo-1591348278863-a8fb3887e2aa?q=80&w=2070', title: 'Premium Erasers', desc: 'Smooth and durable erasers for precise corrections.', price: '₹50' },
                     { img: 'https://cdn.zeptonow.com/production/ik-seo/tr:w-640,ar-2000-2000,pr-true,f-auto,q-80/cms/product_variant/30711f88-25ea-462b-bd98-25744a7b9f32/Sting-Gold-Night-Fuel-Energy-Drink.jpg', title: 'Sting Gold Energy Drink', desc: 'Energy drink with gold rush flavor and extra boost.', price: '₹20' },
-                    { img: 'https://www.bigbasket.com/media/uploads/p/xxl/40255050-6_3-kinder-joy-chocolate-rich-creamy-natoons-suprise-toy-inside.jpg', title: 'Kinder Joy Chocolate', desc: 'Rich creamy chocolate with a surprise toy inside.', price: '₹85' }
+                    { img: 'https://www.bigbasket.com/media/uploads/p/xxl/40255050-6_3-kinder-joy-chocolate-rich-creamy-natoons-suprise-toy-inside.jpg', title: 'Kinder Joy Chocolate', desc: 'Rich creamy chocolate with a surprise toy inside.', price: '₹85' },
+                    { img: 'https://m.media-amazon.com/images/I/51nbck-2P2L.jpg', title: 'Desk Organizers', desc: 'Keep your workspace tidy and stylish.', price: '₹399' }
                 ]
             }
         };
 
-        // Main DOMContentLoaded event handler
         document.addEventListener('DOMContentLoaded', () => {
-            // Get active section from localStorage or default to 'top-picks'
+            // Update navigation based on login status
+            function updateNavigation() {
+                const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+                const authButtons = document.getElementById('auth-buttons');
+                if (isLoggedIn && authButtons) {
+                    authButtons.innerHTML = `
+                        <button class="login active"><a href="Account.html">Account</a></button>
+                    `;
+                } else if (authButtons) {
+                    authButtons.innerHTML = `
+                        <button class="login active"><a href="login.html">Login</a></button>
+                        <button class="signup"><a href="SignUp.html">Signup</a></button>
+                    `;
+                }
+            }
+
+            // Update cart count
+            function updateCartCount(addedItems = 0) {
+                const cartCountElement = document.getElementById('cart-count');
+                let currentCount = parseInt(localStorage.getItem('cartCount')) || 0;
+                currentCount += addedItems;
+                localStorage.setItem('cartCount', currentCount);
+                cartCountElement.textContent = currentCount;
+                cartCountElement.classList.toggle('hidden', currentCount === 0);
+            }
+
+            // Render products
+            function renderProducts(products) {
+                const productsContainer = document.getElementById('products-container');
+                productsContainer.innerHTML = '';
+
+                if (products.length === 0) {
+                    productsContainer.innerHTML = '<p class="text-gray-600">No products match your search.</p>';
+                } else {
+                    products.forEach(product => {
+                        const productHTML = `
+                            <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105 flex flex-col h-full">
+                                <div class="h-48 flex items-center justify-center overflow-hidden rounded-t-lg bg-gray-50 flex-shrink-0">
+                                    <img src="${product.img}" alt="${product.title}" class="h-full w-auto object-contain">
+                                </div>
+                                <div class="flex-grow flex flex-col">
+                                    <h3 class="text-xl font-semibold mt-4">${product.title}</h3>
+                                    <p class="text-gray-600 flex-grow">${product.desc}</p>
+                                    <div class="flex items-center justify-between mt-4">
+                                        <span class="text-lg font-bold">${product.price}</span>
+                                        <div class="flex items-center space-x-2">
+                                            <button class="quantity-btn bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">-</button>
+                                            <span class="quantity">0</span>
+                                            <button class="quantity-btn bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">+</button>
+                                        </div>
+                                    </div>
+                                    <button class="w-full mt-4 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition-colors add-to-cart">
+                                        Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        productsContainer.insertAdjacentHTML('beforeend', productHTML);
+                    });
+                }
+
+                // Add event listeners to quantity buttons
+                document.querySelectorAll('.quantity-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const quantityElement = this.parentElement.querySelector('.quantity');
+                        let quantity = parseInt(quantityElement.textContent);
+                        if (this.textContent === '+' && quantity < 10) {
+                            quantity++;
+                        } else if (this.textContent === '-' && quantity > 0) {
+                            quantity--;
+                        }
+                        quantityElement.textContent = quantity;
+                    });
+                });
+
+                // Add event listeners to add-to-cart buttons
+                document.querySelectorAll('.add-to-cart').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const productCard = this.closest('.flex');
+                        const productName = productCard.querySelector('h3').textContent;
+                        const productPrice = productCard.querySelector('.text-lg').textContent;
+                        const quantity = parseInt(productCard.querySelector('.quantity').textContent);
+
+                        if (quantity > 0) {
+                            alert(`Added ${quantity} ${productName}(s) to cart for ${productPrice} each`);
+                            updateCartCount(quantity);
+
+                            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+                            const existingItem = cart.find(item => item.name === productName);
+                            if (existingItem) {
+                                existingItem.quantity += quantity;
+                            } else {
+                                cart.push({ name: productName, price: parseFloat(productPrice.replace('₹', '')), quantity, image: productCard.querySelector('img').src });
+                            }
+                            localStorage.setItem('cart', JSON.stringify(cart));
+                        } else {
+                            alert('Please select at least 1 quantity');
+                        }
+                    });
+                });
+            }
+
+            // Sort products
+            function sortProducts(products, sortBy) {
+                const sortedProducts = [...products];
+                switch (sortBy) {
+                    case 'price-low-high':
+                        return sortedProducts.sort((a, b) => parseFloat(a.price.replace('₹', '')) - parseFloat(b.price.replace('₹', '')));
+                    case 'price-high-low':
+                        return sortedProducts.sort((a, b) => parseFloat(b.price.replace('₹', '')) - parseFloat(a.price.replace('₹', '')));
+                    case 'name-a-z':
+                        return sortedProducts.sort((a, b) => a.title.localeCompare(b.title));
+                    case 'name-z-a':
+                        return sortedProducts.sort((a, b) => b.title.localeCompare(a.title));
+                    default:
+                        return sortedProducts;
+                }
+            }
+
+            // Filter and sort products
+            function updateProductDisplay() {
+                const searchQuery = document.getElementById('product-search').value.toLowerCase();
+                const sortBy = document.getElementById('sort-options').value;
+                const activeSection = localStorage.getItem('activeSection') || 'top-picks';
+                const sectionData = productsData[activeSection] || { products: [] };
+
+                let filteredProducts = sectionData.products.filter(product => 
+                    product.title.toLowerCase().includes(searchQuery)
+                );
+                const sortedProducts = sortProducts(filteredProducts, sortBy);
+                renderProducts(sortedProducts);
+            }
+
+            // Load initial products
             const activeSection = localStorage.getItem('activeSection') || 'top-picks';
-            
-            // Get section data or use default if not found
             const sectionData = productsData[activeSection] || {
                 title: 'No Products Found',
                 description: 'Sorry, no products are available for this section.',
                 products: []
             };
-            
-            // Update page title and description
+
             document.getElementById('page-title').textContent = sectionData.title;
             document.getElementById('page-description').textContent = sectionData.description;
-            
-            // Get products container and clear it
-            const productsContainer = document.getElementById('products-container');
-            productsContainer.innerHTML = '';
-            
-            // Handle empty product list
-            if (sectionData.products.length === 0) {
-                productsContainer.innerHTML = '<p class="text-gray-600">No products available at this time.</p>';
-            } else {
-                // Generate product cards for each product
-                sectionData.products.forEach(product => {
-                    const productHTML = `
-                        <div class="p-6 shadow-md rounded-lg bg-white text-gray-900 transition-transform hover:scale-105 flex flex-col h-full">
-                            <div class="h-48 flex items-center justify-center overflow-hidden rounded-t-lg bg-gray-50 flex-shrink-0">
-                                <img src="${product.img}" alt="${product.title}" class="h-full w-auto object-contain">
-                            </div>
-                            <div class="flex-grow flex flex-col">
-                                <h3 class="text-xl font-semibold mt-4">${product.title}</h3>
-                                <p class="text-gray-600 flex-grow">${product.desc}</p>
-                                <div class="flex items-center justify-between mt-4">
-                                    <span class="text-lg font-bold">${product.price}</span>
-                                    <div class="flex items-center space-x-2">
-                                        <button class="quantity-btn bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">-</button>
-                                        <span class="quantity">0</span>
-                                        <button class="quantity-btn bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">+</button>
-                                    </div>
-                                </div>
-                                <button class="w-full mt-4 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition-colors add-to-cart">
-                                    Add to Cart
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                    productsContainer.insertAdjacentHTML('beforeend', productHTML);
-                });
-            }
-            
-            // Add event listeners for quantity buttons
-            document.querySelectorAll('.quantity-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const quantityElement = this.parentElement.querySelector('.quantity');
-                    let quantity = parseInt(quantityElement.textContent);
-                    
-                    // Increase or decrease quantity based on button clicked
-                    if (this.textContent === '+' && quantity < 10) {
-                        quantity++;
-                    } else if (this.textContent === '-' && quantity > 0) {
-                        quantity--;
-                    }
-                    
-                    quantityElement.textContent = quantity;
-                });
-            });
-            
-            // Add event listeners for add to cart buttons
-            document.querySelectorAll('.add-to-cart').forEach(button => {
-                button.addEventListener('click', function() {
-                    const productCard = this.closest('div');
-                    const productName = productCard.querySelector('h3').textContent;
-                    const productPrice = productCard.querySelector('.text-lg').textContent;
-                    const quantity = parseInt(productCard.querySelector('.quantity').textContent);
-                    
-                    // Validate quantity and show appropriate message
-                    if (quantity > 0) {
-                        alert(`Added ${quantity} ${productName}(s) to cart for ${productPrice} each`);
-                        updateCartCount(quantity);
-                    } else {
-                        alert('Please select at least 1 quantity');
-                    }
-                });
-            });
-            
-            // Function to update cart count in UI and localStorage
-            function updateCartCount(addedItems = 0) {
-                const cartCountElement = document.getElementById('cart-count');
-                let currentCount = parseInt(localStorage.getItem('cartCount')) || 0;
-                currentCount += addedItems;
-                
-                // Update localStorage and UI
-                localStorage.setItem('cartCount', currentCount);
-                cartCountElement.textContent = currentCount;
-                cartCountElement.classList.toggle('hidden', currentCount === 0);
-            }
-            
-            // Mobile menu toggle functionality
+
+            // Initial render
+            renderProducts(sectionData.products);
+
+            // Search and sort event listeners
+            document.getElementById('product-search').addEventListener('input', updateProductDisplay);
+            document.getElementById('sort-options').addEventListener('change', updateProductDisplay);
+
+            // Mobile menu toggle
             document.getElementById('menu-toggle').addEventListener('click', () => {
                 const navLinks = document.getElementById('nav-links');
                 navLinks.classList.toggle('hidden');
             });
-            
-            // Initialize cart count
+
+            // Initial setup
+            updateNavigation();
             updateCartCount(0);
         });
-        
-        // Function to hide loader
+
+        // Hide loader
         function hideLoader() {
             document.querySelector('.loader-container').classList.add('active');
         }
-        
-        // Hide loader after page loads
-        window.onload = function() {
-            setTimeout(hideLoader, 1000);
-        }
+        window.onload = () => setTimeout(hideLoader, 1000);
     </script>
 </body>
 </html>

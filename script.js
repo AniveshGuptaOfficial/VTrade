@@ -220,3 +220,53 @@ document.addEventListener('DOMContentLoaded', function() {
     renderCartItems();
     updateOrderSummary();
 });
+
+
+
+
+function toggleSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section.classList.contains('hidden')) {
+        section.classList.remove('hidden');
+    } else {
+        section.classList.add('hidden');
+    }
+}
+
+// Initially hide sections on mobile for accordion effect
+if (window.innerWidth < 768) {
+    document.querySelectorAll('ul').forEach(ul => {
+        ul.classList.add('hidden');
+    });
+}
+
+// Show sections by default on larger screens
+window.addEventListener('resize', () => {
+    if (window.innerWidth >= 768) {
+        document.querySelectorAll('ul').forEach(ul => {
+            ul.classList.remove('hidden');
+        });
+    }
+});
+
+// Handle newsletter subscription
+document.getElementById('newsletter-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const emailInput = document.getElementById('newsletter-email');
+    const email = emailInput.value.trim();
+
+    if (email) {
+        // Store email in localStorage (for demo purposes)
+        const subscribers = JSON.parse(localStorage.getItem('newsletterSubscribers')) || [];
+        if (!subscribers.includes(email)) {
+            subscribers.push(email);
+            localStorage.setItem('newsletterSubscribers', JSON.stringify(subscribers));
+            alert('Thank you for subscribing! You will receive further information soon.');
+        } else {
+            alert('You are already subscribed!');
+        }
+        emailInput.value = ''; // Clear input
+    } else {
+        alert('Please enter a valid email address.');
+    }
+});

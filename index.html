@@ -569,36 +569,88 @@
     <!-- All Links -->
     <footer class="bg-gray-900 text-white py-8 mt-10">
         <div class="container mx-auto px-4">
-            <div class="flex justify-center space-x-6 mb-6">
-                <a href="PrivacyPolicy.html" class="text-gray-300 hover:text-white transition-colors">Privacy Policy</a>
-                <a href="TermsAndCondition.html" class="text-gray-300 hover:text-white transition-colors">Terms of Service</a>
-                <a href="ContactUs.html" class="text-gray-300 hover:text-white transition-colors">Contact</a>
-                <a href="About.html" class="text-gray-300 hover:text-white transition-colors">About Us</a>
-            </div>
-            <div class="flex flex-col items-center">
-                <div class="flex space-x-5 mb-4">
-                    <a href="https://twitter.com/yourcompany" target="_blank" rel="noopener noreferrer" 
-                       class="text-gray-400 hover:text-blue-500 transition-colors">
-                        <i class="fab fa-twitter text-xl"></i>
-                    </a>
-                    <a href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer" 
-                       class="text-gray-400 hover:text-blue-500 transition-colors">
-                        <i class="fab fa-facebook-f text-xl"></i>
-                    </a>
-                    <a href="https://instagram.com/yourusername" target="_blank" rel="noopener noreferrer" 
-                       class="text-gray-400 hover:text-pink-500 transition-colors">
-                        <i class="fab fa-instagram text-xl"></i>
-                    </a>
-                    <a href="https://linkedin.com/company/yourcompany" target="_blank" rel="noopener noreferrer" 
-                       class="text-gray-400 hover:text-blue-400 transition-colors">
-                        <i class="fab fa-linkedin-in text-xl"></i>
-                    </a>
-                    <a href="mailto:contact@vtrade.com" class="text-gray-400 hover:text-red-400 transition-colors">
-                        <i class="fas fa-envelope text-xl"></i>
-                    </a>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 cursor-pointer hover:text-red-400 transition-colors duration-300" onclick="toggleSection('company-links')">
+                        Company
+                    </h3>
+                    <ul id="company-links" class="space-y-2 text-gray-300">
+                        <li><a href="About.html" class="hover:text-white transition-colors duration-300">About Us</a></li>
+                        <li><a href="ContactUs.html" class="hover:text-white transition-colors duration-300">Contact</a></li>
+                    </ul>
                 </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 cursor-pointer hover:text-red-400 transition-colors duration-300" onclick="toggleSection('legal-links')">
+                        Legal
+                    </h3>
+                    <ul id="legal-links" class="space-y-2 text-gray-300">
+                        <li><a href="PrivacyPolicy.html" class="hover:text-white transition-colors duration-300">Privacy Policy</a></li>
+                        <li><a href="TermsAndCondition.html" class="hover:text-white transition-colors duration-300">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 cursor-pointer hover:text-red-400 transition-colors duration-300" onclick="toggleSection('account-links')">
+                        Account
+                    </h3>
+                    <ul id="account-links" class="space-y-2 text-gray-300">
+                        <li><a href="Account.html" class="hover:text-white transition-colors duration-300">My Account</a></li>
+                        <li><a href="MyCart.html" class="hover:text-white transition-colors duration-300">Cart</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 cursor-pointer hover:text-red-400 transition-colors duration-300" onclick="toggleSection('connect-links')">
+                        Connect
+                    </h3>
+                    <ul id="connect-links" class="space-y-2 text-gray-300">
+                        <li><a href="mailto:contact@vtrade.com" class="hover:text-white transition-colors duration-300">Email Us</a></li>
+                        <li><a href="tel:+1234567890" class="hover:text-white transition-colors duration-300">Call Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="flex justify-center space-x-6 mb-6">
+                <a href="https://twitter.com/yourcompany" target="_blank" rel="noopener noreferrer" 
+                   class="text-gray-400 hover:text-blue-500 transform hover:scale-110 transition-all duration-300">
+                    <i class="fab fa-twitter text-xl"></i>
+                </a>
+                <a href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer" 
+                   class="text-gray-400 hover:text-blue-500 transform hover:scale-110 transition-all duration-300">
+                    <i class="fab fa-facebook-f text-xl"></i>
+                </a>
+                <a href="https://instagram.com/yourusername" target="_blank" rel="noopener noreferrer" 
+                   class="text-gray-400 hover:text-pink-500 transform hover:scale-110 transition-all duration-300">
+                    <i class="fab fa-instagram text-xl"></i>
+                </a>
+                <a href="https://linkedin.com/company/yourcompany" target="_blank" rel="noopener noreferrer" 
+                   class="text-gray-400 hover:text-blue-400 transform hover:scale-110 transition-all duration-300">
+                    <i class="fab fa-linkedin-in text-xl"></i>
+                </a>
+                <a href="mailto:contact@vtrade.com" 
+                   class="text-gray-400 hover:text-red-400 transform hover:scale-110 transition-all duration-300">
+                    <i class="fas fa-envelope text-xl"></i>
+                </a>
+            </div>
+            <!-- Newsletter Subscription Form -->
+            <div class="mb-6 text-center">
+                <h3 class="text-lg font-semibold mb-4">Get Further Information</h3>
+                <form id="newsletter-form" class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                    <input 
+                        type="email" 
+                        id="newsletter-email" 
+                        placeholder="Enter your email" 
+                        class="w-full sm:w-64 px-4 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-400"
+                        required
+                    />
+                    <button 
+                        type="submit" 
+                        class="w-full sm:w-auto bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition-colors duration-300"
+                    >
+                        Subscribe
+                    </button>
+                </form>
+            </div>
+            <div class="text-center">
                 <p class="text-gray-400 text-sm">
-                    &copy; VTrade Commerce Private Limited 2025. All rights reserved.
+                    © VTrade Commerce Private Limited 2025. All rights reserved.
                 </p>
             </div>
         </div>

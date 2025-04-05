@@ -10,7 +10,6 @@
             background: linear-gradient(to right, #c2e1ea, #a9bfda);
         }
 
-
         .btn {
             height: 40px;
             width: 200px;
@@ -41,25 +40,25 @@
             background-color: rgba(255, 107, 107, 0.1);
         }
 
-
-        .loader-container{
+        .loader-container {
             position: fixed;
-            top:0; left: 0;
-            height:100%;
+            top: 0;
+            left: 0;
+            height: 100%;
             width: 100%;
             z-index: 10000;
-            background:#f7f7f7;
+            background: #f7f7f7;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .loader-container.active{
+        .loader-container.active {
             display: none;
         }
 
-        .loader-container img{
-            height:10rem;
+        .loader-container img {
+            height: 10rem;
         }
     </style>
 </head>
@@ -103,14 +102,13 @@
         </div>
     </nav>
 
-
     <!-- Your Shopping Cart, Order Summary -->
     <section class="py-12 container mx-auto px-4">
         <h1 class="text-3xl font-bold mb-8">Your Shopping Cart</h1>
         <div class="flex flex-col lg:flex-row gap-8">
             <div class="lg:w-2/3">
                 <div id="cart-items" class="bg-white rounded-lg shadow-md p-6">
-                    <div id="empty-cart-message" class="text-center py-12">
+                    <div id="empty-cart-message" class="text-center py-12 hidden">
                         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
@@ -152,16 +150,52 @@
         </div>
     </section>
 
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Checkout</h2>
+                <button id="close-modal" class="text-gray-600 hover:text-gray-800">✕</button>
+            </div>
+            
+            <!-- Progress Tracker -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center">
+                    <div class="flex-1 text-center">
+                        <span class="step-number w-8 h-8 rounded-full bg-gray-200 inline-flex items-center justify-center">1</span>
+                        <p class="mt-2 text-sm">Review Cart</p>
+                    </div>
+                    <div class="flex-1 text-center">
+                        <span class="step-number w-8 h-8 rounded-full bg-gray-200 inline-flex items-center justify-center">2</span>
+                        <p class="mt-2 text-sm">Shipping</p>
+                    </div>
+                    <div class="flex-1 text-center">
+                        <span class="step-number w-8 h-8 rounded-full bg-gray-200 inline-flex items-center justify-center">3</span>
+                        <p class="mt-2 text-sm">Payment</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checkout Steps -->
+            <div id="checkout-steps">
+                <!-- Step content will be dynamically inserted here -->
+            </div>
+
+            <div class="mt-6 flex justify-between">
+                <button id="prev-step" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 hidden">Previous</button>
+                <button id="next-step" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Next</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Web Loader -->
     <div class="loader-container">
         <img src="https://media1.giphy.com/media/Ply1nOFdlZZsLTz6mr/giphy.gif" alt="">
     </div>
-    <script>
-        // Retrieve the cart from localStorage or initialize an empty array if it doesn't exist
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-        // Get references to various elements on the page
+    <script>
+        // Global variables to store cart data and shipping information
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
         const cartCountElement = document.getElementById('cart-count');
         const cartItemsContainer = document.getElementById('cart-items');
         const emptyCartMessage = document.getElementById('empty-cart-message');
@@ -169,11 +203,88 @@
         const taxElement = document.getElementById('tax');
         const totalElement = document.getElementById('total');
         const checkoutBtn = document.getElementById('checkout-btn');
+        let shippingData = {}; // To store shipping details
+
+        // Checkout step templates
+        const checkoutSteps = [
+            {
+                title: "Review Your Cart",
+                content: () => {
+                    let itemsHTML = cart.map(item => `
+                        <div class="flex justify-between py-2">
+                            <span>${item.name} (x${item.quantity})</span>
+                            <span>₹${(item.price * item.quantity).toFixed(2)}</span>
+                        </div>
+                    `).join('');
+                    return `
+                        <div class="mb-4">
+                            ${itemsHTML}
+                            <div class="border-t pt-2 mt-2">
+                                <div class="flex justify-between">
+                                    <span>Subtotal</span>
+                                    <span>${subtotalElement.textContent}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Tax</span>
+                                    <span>${taxElement.textContent}</span>
+                                </div>
+                                <div class="flex justify-between font-bold">
+                                    <span>Total</span>
+                                    <span>${totalElement.textContent}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            },
+            {
+                title: "Shipping Details",
+                content: () => `
+                    <form id="shipping-form">
+                        <div class="mb-4">
+                            <label class="block mb-1">Full Name</label>
+                            <input type="text" name="name" class="w-full p-2 border rounded" value="${shippingData.name || ''}" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block mb-1">Address</label>
+                            <textarea name="address" class="w-full p-2 border rounded" required>${shippingData.address || ''}</textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block mb-1">Phone</label>
+                            <input type="tel" name="phone" class="w-full p-2 border rounded" value="${shippingData.phone || ''}" required>
+                        </div>
+                    </form>
+                `
+            },
+            {
+                title: "Payment Method",
+                content: () => `
+                    <form id="payment-form">
+                        <label class="block mb-2">Select Payment Method</label>
+                        <div class="space-y-2">
+                            <div>
+                                <input type="radio" name="payment" value="card" checked>
+                                <span class="ml-2">Credit/Debit Card</span>
+                            </div>
+                            <div>
+                                <input type="radio" name="payment" value="upi">
+                                <span class="ml-2">UPI</span>
+                            </div>
+                            <div>
+                                <input type="radio" name="payment" value="cod">
+                                <span class="ml-2">Cash on Delivery</span>
+                            </div>
+                        </div>
+                    </form>
+                `
+            }
+        ];
+
+        let currentStep = 0;
 
         /**
-         * Updates the navigation bar based on user authentication status.
-         * If the user is logged in, it shows an "Account" button.
-         * If the user is not logged in, it shows "Login" and "Signup" buttons.
+         * Updates the navigation bar based on user login status
+         * Shows account button if logged in, otherwise shows login/signup buttons
          */
         function updateNavigation() {
             const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
@@ -182,35 +293,23 @@
                 authButtons.innerHTML = `
                     <button class="login active"><a href="Account.html">Account</a></button>
                 `;
-            } else if (authButtons) {
-                authButtons.innerHTML = `
-                    <button class="login active"><a href="login.html">Login</a></button>
-                    <button class="signup"><a href="SignUp.html">Signup</a></button>
-                `;
             }
         }
-        
+
         /**
-         * Updates the cart item count displayed in the navigation bar.
-         * Also stores the updated cart in localStorage.
+         * Updates the cart count displayed in the navigation bar
+         * Also updates the cart in localStorage
          */
         function updateCartCount() {
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
             cartCountElement.textContent = totalItems;
-            if (totalItems > 0) {
-                cartCountElement.classList.remove('hidden');
-            } else {
-                cartCountElement.classList.add('hidden');
-            }
+            cartCountElement.classList.toggle('hidden', totalItems === 0);
             localStorage.setItem('cart', JSON.stringify(cart));
         }
-        
+
         /**
-         * Calculates and updates the order summary including:
-         * - Subtotal (sum of all item prices)
-         * - Tax (18% of subtotal)
-         * - Total (subtotal + tax)
-         * Also disables the checkout button if the cart is empty.
+         * Calculates and updates the order summary (subtotal, tax, total)
+         * Also enables/disables the checkout button based on cart contents
          */
         function updateOrderSummary() {
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -221,12 +320,10 @@
             totalElement.textContent = `₹${total.toFixed(2)}`;
             checkoutBtn.disabled = cart.length === 0;
         }
-        
+
         /**
-         * Renders the cart items on the page.
-         * If the cart is empty, it displays an "Empty Cart" message.
-         * Otherwise, it dynamically generates HTML for each cart item, 
-         * including options to increase, decrease quantity, or remove the item.
+         * Renders the cart items in the cart container
+         * Shows empty cart message if cart is empty
          */
         function renderCartItems() {
             if (cart.length === 0) {
@@ -258,82 +355,193 @@
                 `;
             });
             cartItemsContainer.innerHTML = cartHTML;
-            // Add event listeners to increase quantity
-            document.querySelectorAll('.quantity-btn.increase').forEach(button => {
-                button.addEventListener('click', function() {
-                    const index = this.closest('[data-index]').dataset.index;
-                    if (cart[index].quantity < 10) {
-                        cart[index].quantity++;
+        }
+
+        /**
+         * Updates the checkout step UI based on current step
+         * Handles progress tracker and button states
+         */
+        function updateCheckoutStep() {
+            const stepsContainer = document.getElementById('checkout-steps');
+            const prevBtn = document.getElementById('prev-step');
+            const nextBtn = document.getElementById('next-step');
+            const stepNumbers = document.querySelectorAll('.step-number');
+
+            stepsContainer.innerHTML = `
+                <h3 class="text-lg font-medium mb-4">${checkoutSteps[currentStep].title}</h3>
+                ${checkoutSteps[currentStep].content()}
+            `;
+
+            stepNumbers.forEach((step, index) => {
+                step.classList.toggle('bg-red-600', index <= currentStep);
+                step.classList.toggle('text-white', index <= currentStep);
+                step.classList.toggle('bg-gray-200', index > currentStep);
+            });
+
+            prevBtn.classList.toggle('hidden', currentStep === 0);
+            nextBtn.textContent = currentStep === checkoutSteps.length - 1 ? 'Complete Order' : 'Next';
+        }
+
+        /**
+         * Handles all checkout modal navigation and functionality
+         * Includes opening/closing modal, step navigation, and order submission
+         */
+        function handleCheckoutNavigation() {
+            const modal = document.getElementById('checkout-modal');
+            const closeModal = document.getElementById('close-modal');
+            const prevBtn = document.getElementById('prev-step');
+            const nextBtn = document.getElementById('next-step');
+
+            // Open checkout modal when checkout button is clicked
+            checkoutBtn.addEventListener('click', () => {
+                if (cart.length === 0) {
+                    alert('Your cart is empty!');
+                    return;
+                }
+                currentStep = 0;
+                shippingData = {}; // Reset shipping data on new checkout
+                modal.classList.remove('hidden');
+                updateCheckoutStep();
+            });
+
+            // Close modal when X button is clicked
+            closeModal.addEventListener('click', () => {
+                modal.classList.add('hidden');
+            });
+
+            // Handle previous step button
+            prevBtn.addEventListener('click', () => {
+                if (currentStep > 0) {
+                    currentStep--;
+                    updateCheckoutStep();
+                }
+            });
+
+            // Handle next step button and order completion
+            nextBtn.addEventListener('click', () => {
+                try {
+                    if (currentStep < checkoutSteps.length - 1) {
+                        // Validate shipping form before proceeding to next step
+                        if (currentStep === 1) {
+                            const shippingForm = document.getElementById('shipping-form');
+                            if (!shippingForm || !shippingForm.checkValidity()) {
+                                shippingForm.reportValidity();
+                                return;
+                            }
+                            shippingData = {
+                                name: shippingForm.querySelector('input[name="name"]').value,
+                                address: shippingForm.querySelector('textarea[name="address"]').value,
+                                phone: shippingForm.querySelector('input[name="phone"]').value
+                            };
+                        }
+                        currentStep++;
+                        updateCheckoutStep();
+                    } else {
+                        // Final step - complete the order
+                        const paymentForm = document.getElementById('payment-form');
+                        if (!paymentForm) {
+                            throw new Error('Payment form not found');
+                        }
+
+                        const paymentInput = paymentForm.querySelector('input[name="payment"]:checked');
+                        if (!paymentInput) {
+                            throw new Error('Payment method not selected');
+                        }
+
+                        if (!shippingData.name || !shippingData.address || !shippingData.phone) {
+                            throw new Error('Shipping details are incomplete');
+                        }
+
+                        // Create order object
+                        const order = {
+                            items: [...cart],
+                            total: parseFloat(totalElement.textContent.replace('₹', '')),
+                            date: new Date().toISOString(),
+                            shipping: shippingData,
+                            paymentMethod: paymentInput.value === 'card' ? 'Credit/Debit Card' : 
+                                        paymentInput.value === 'upi' ? 'UPI' : 'Cash on Delivery',
+                            status: 'Processing'
+                        };
+
+                        // Save order to order history
+                        const existingOrders = JSON.parse(localStorage.getItem('orderHistory')) || [];
+                        existingOrders.unshift(order);
+                        localStorage.setItem('orderHistory', JSON.stringify(existingOrders));
+
+                        // Close modal and clear cart
+                        modal.classList.add('hidden');
+                        cart = [];
+                        localStorage.setItem('cart', JSON.stringify(cart));
                         renderCartItems();
                         updateCartCount();
                         updateOrderSummary();
+                        alert('Order placed successfully!');
                     }
-                });
-            });
-            // Add event listeners to decrease quantity
-            document.querySelectorAll('.quantity-btn.decrease').forEach(button => {
-                button.addEventListener('click', function() {
-                    const index = this.closest('[data-index]').dataset.index;
-                    if (cart[index].quantity > 1) {
-                        cart[index].quantity--;
-                        renderCartItems();
-                        updateCartCount();
-                        updateOrderSummary();
-                    }
-                });
-            });
-            // Add event listeners to remove item from cart
-            document.querySelectorAll('.remove-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const index = this.closest('[data-index]').dataset.index;
-                    cart.splice(index, 1);
-                    renderCartItems();
-                    updateCartCount();
-                    updateOrderSummary();
-                });
+                } catch (error) {
+                    console.error('Checkout error:', error.message);
+                    alert(`Checkout failed: ${error.message}. Please try again.`);
+                }
             });
         }
-        
-        /**
-         * Executes functions after the page has loaded.
-         * - Updates the navigation bar
-         * - Updates cart count
-         * - Renders cart items
-         * - Updates order summary
-         * - Adds event listener to menu toggle button
-         * - Adds event listener to checkout button
-         */
+
+        // Initialize the page when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
             updateNavigation();
             updateCartCount();
             renderCartItems();
             updateOrderSummary();
-            // Toggle navigation menu on mobile view
+            handleCheckoutNavigation();
+
+            // Toggle mobile menu
             document.getElementById('menu-toggle').addEventListener('click', function() {
-                const navLinks = document.getElementById('nav-links');
-                navLinks.classList.toggle('hidden');
+                document.getElementById('nav-links').classList.toggle('hidden');
             });
-            // Placeholder functionality for checkout button
-            checkoutBtn.addEventListener('click', function() {
-                alert('Checkout functionality would go here!');
+
+            // Event delegation for quantity buttons (since they're dynamically added)
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('quantity-btn')) {
+                    const itemDiv = e.target.closest('[data-index]');
+                    const index = itemDiv.dataset.index;
+                    
+                    if (e.target.classList.contains('increase')) {
+                        // Increase quantity
+                        if (cart[index].quantity < 10) {
+                            cart[index].quantity++;
+                            renderCartItems();
+                            updateCartCount();
+                            updateOrderSummary();
+                        }
+                    } else if (e.target.classList.contains('decrease')) {
+                        // Decrease quantity
+                        if (cart[index].quantity > 1) {
+                            cart[index].quantity--;
+                            renderCartItems();
+                            updateCartCount();
+                            updateOrderSummary();
+                        }
+                    }
+                } else if (e.target.classList.contains('remove-btn')) {
+                    // Remove item from cart
+                    const index = e.target.closest('[data-index]').dataset.index;
+                    cart.splice(index, 1);
+                    renderCartItems();
+                    updateCartCount();
+                    updateOrderSummary();
+                }
             });
         });
-        
+
         /**
-         * Hides the loading screen after a delay.
-         * Adds 'active' class to loader-container to hide it.
+         * Hides the loading animation after page is loaded
          */
         function hideLoader() {
             document.querySelector('.loader-container').classList.add('active');
         }
-        
-        /**
-         * Runs when the page is fully loaded.
-         * Calls hideLoader() after 1 second to ensure smooth loading transition.
-         */
+
+        // Hide loader after 1 second (simulating page load)
         window.onload = function() {
             setTimeout(hideLoader, 1000);
-        }
+        };
     </script>
 </body>
 </html>
