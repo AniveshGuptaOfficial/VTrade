@@ -65,39 +65,73 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if user is logged in
-            if (!localStorage.getItem('userLoggedIn')) {
-                window.location.href = "index.html";
+            // Redirect if not logged in
+            if (localStorage.getItem('userLoggedIn') !== 'true') {
+                window.location.href = "login.html";
                 return;
             }
 
-            // Retrieve stored user data and orders from localStorage
-            const userData = JSON.parse(localStorage.getItem('userData'));
             const accountInfo = document.getElementById('account-info');
             const orderHistory = document.getElementById('order-history');
             const clearOrdersBtn = document.getElementById('clear-orders');
-            
-            // Display user information
-            if (userData) {
-                accountInfo.innerHTML = `
-                    <div>
-                        <h3 class="font-semibold">Name:</h3>
-                        <p>${userData.firstName} ${userData.lastName}</p>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold">Email:</h3>
-                        <p>${userData.email}</p>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold">Phone:</h3>
-                        <p>${userData.phone || 'Not provided'}</p>
-                    </div>
-                `;
-            } else {
-                accountInfo.innerHTML = '<p class="text-red-500">No user data found. Please log in again.</p>';
+
+            // Priority 1: Full userData from signup
+            let userData = JSON.parse(localStorage.getItem('userData'));
+
+            // Priority 2: Fallback to email login details
+            if (!userData || !userData.firstName) {
+                const savedName = localStorage.getItem('userName');
+                const savedEmail = localStorage.getItem('userEmail');
+                if (savedName || savedEmail) {
+                    userData = {
+                        firstName: savedName || 'User',
+                        lastName: '',
+                        email: savedEmail || 'Not provided',
+                        phone: 'Not provided'
+                    };
+                }
             }
 
-            // Function to render orders
+            // Priority 3: Fallback to phone OTP login
+            if (!userData || !userData.phone || userData.phone === 'Not provided') {
+                const savedPhone = localStorage.getItem('phoneNumber');
+                if (savedPhone) {
+                    userData = {
+                        firstName: 'User',
+                        lastName: '',
+                        email: 'Not provided',
+                        phone: savedPhone.replace('+91', '').trim() || savedPhone
+                    };
+                }
+            }
+
+            // Final fallback
+            if (!userData) {
+                userData = {
+                    firstName: 'Guest User',
+                    lastName: '',
+                    email: 'Not provided',
+                    phone: 'Not provided'
+                };
+            }
+
+            // Display user information
+            accountInfo.innerHTML = `
+                <div>
+                    <h3 class="font-semibold">Name:</h3>
+                    <p>${userData.firstName} ${userData.lastName}</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold">Email:</h3>
+                    <p>${userData.email}</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold">Phone:</h3>
+                    <p>${userData.phone}</p>
+                </div>
+            `;
+
+            // Render orders (unchanged)
             function renderOrders() {
                 const orders = JSON.parse(localStorage.getItem('orderHistory')) || [];
                 orderHistory.innerHTML = '';
@@ -146,10 +180,9 @@
                 }
             }
 
-            // Initial render
             renderOrders();
 
-            // Remove single order functionality
+            // Remove single order
             document.addEventListener('click', function(e) {
                 if (e.target.classList.contains('remove-order')) {
                     const orderIndex = parseInt(e.target.getAttribute('data-order-index'));
@@ -160,7 +193,7 @@
                 }
             });
 
-            // Clear all orders functionality
+            // Clear all orders
             clearOrdersBtn.addEventListener('click', function() {
                 if (confirm('Are you sure you want to clear all your order history?')) {
                     localStorage.removeItem('orderHistory');
@@ -168,12 +201,16 @@
                 }
             });
             
-            // Logout button functionality
+            // Logout
             document.getElementById('logout-btn').addEventListener('click', function() {
                 if (confirm('Are you sure you want to logout?')) {
-                    // Clear user session and order history
                     localStorage.removeItem('userLoggedIn');
                     localStorage.removeItem('userData');
+                    localStorage.removeItem('userName');
+                    localStorage.removeItem('userEmail');
+                    localStorage.removeItem('userRole');
+                    localStorage.removeItem('phoneNumber');
+                    localStorage.removeItem('generatedOTP');
                     localStorage.removeItem('orderHistory');
                     window.location.href = "index.html";
                 }
