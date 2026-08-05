@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop All — VTrade</title>
+<link rel="stylesheet" href="vtrade.css">
+<script src="config.js"></script>
+<style>
+.shop-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:start}
+.filter-panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r3);overflow:hidden;position:sticky;top:16px;box-shadow:var(--s1)}
+.filter-head{background:linear-gradient(135deg,var(--brand),var(--brand-dark));padding:13px 18px}
+.filter-head h3{color:white;font-size:13px;font-weight:700}
+.filter-body{padding:14px}
+.filter-item{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-radius:var(--r2);cursor:pointer;transition:var(--ease);font-size:13px;color:var(--ink-2);font-weight:500}
+.filter-item:hover{background:var(--brand-light);color:var(--brand)}
+.filter-item.active{background:var(--brand);color:white}
+.filter-item .fi-label{display:flex;align-items:center;gap:7px}
+.filter-item .fi-count{font-size:11px;opacity:.7;background:rgba(0,0,0,.08);padding:1px 7px;border-radius:var(--r-full)}
+.filter-item.active .fi-count{background:rgba(255,255,255,.2)}
+.search-row{display:flex;gap:10px;margin-bottom:20px}
+.search-row input{flex:1;padding:10px 14px;border:1.5px solid var(--line-mid);border-radius:var(--r2);font-family:inherit;font-size:13px;outline:none;transition:var(--ease);background:var(--surface)}
+.search-row input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(0,0,0,.08)}
+.sort-select{padding:10px 13px;border:1.5px solid var(--line-mid);border-radius:var(--r2);font-family:inherit;font-size:13px;outline:none;background:var(--surface);cursor:pointer;min-width:140px;color:var(--ink)}
+.sort-select:focus{border-color:var(--brand)}
+.results-bar{font-size:13px;color:var(--ink-3);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+@media(max-width:760px){.shop-layout{grid-template-columns:1fr}.filter-panel{position:static}}
+</style>
+</head>
+<body>
+<header class="inst-header">
+  <div class="inst-header-inner">
+    <div class="inst-logo-area"><div class="inst-logo">VT</div><div><div class="inst-name">V<span>Trade</span></div><div class="inst-sub">Campus E-Commerce · VIT University, Vellore</div></div></div>
+    <div class="inst-tagline"><strong>VTrade — Campus First</strong>Shop, sell second-hand, request pickups.</div>
+  </div>
+</header>
+<nav class="inst-nav">
+  <div class="inst-nav-inner">
+    <ul class="inst-nav-links">
+      <li><a href="index.html">🏠 Home</a></li>
+      <li><a href="SeeAll.html" class="active">🛒 Shop</a></li>
+      <li><a href="Marketplace.html">♻️ Marketplace</a></li>
+      <li><a href="Pickup.html">📦 Pickup</a></li>
+      <li><a href="About.html">ℹ️ About</a></li>
+      <li><a href="ContactUs.html">📧 Contact</a></li>
+    </ul>
+    <div class="inst-nav-right">
+      <span class="inst-time" id="inst-time"></span>
+      <div id="auth-area"><a href="login.html" class="btn btn-primary btn-sm">Login / Register</a></div>
+      <a href="MyCart.html" class="btn btn-outline btn-sm">🛒 <span id="cart-count"></span></a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrapper-wide">
+  <div class="breadcrumb"><a href="index.html">Home</a><span class="sep">›</span><span>Shop All</span></div>
+  <div class="page-title-bar">
+    <div><h1 id="page-title">🛒 Shop All Products</h1><div class="page-subtitle">Browse everything available on campus</div></div>
+    <div class="title-actions">
+      <button class="btn btn-ghost btn-sm" id="add-btn" onclick="openAddModal()" style="display:none">➕ Add Product</button>
+    </div>
+  </div>
+
+  <div class="shop-layout">
+    <!-- FILTER SIDEBAR -->
+    <div class="filter-panel">
+      <div class="filter-head"><h3>🔍 Filter by Category</h3></div>
+      <div class="filter-body">
+        <div class="filter-item active" data-cat="all" onclick="setFilter(this,'all')">
+          <span class="fi-label">🗂️ All Products</span><span class="fi-count" id="cnt-all">0</span>
+        </div>
+        <div class="filter-item" data-cat="groceries" onclick="setFilter(this,'groceries')">
+          <span class="fi-label">🥑 Groceries</span><span class="fi-count" id="cnt-groceries">0</span>
+        </div>
+        <div class="filter-item" data-cat="beauty" onclick="setFilter(this,'beauty')">
+          <span class="fi-label">💄 Beauty</span><span class="fi-count" id="cnt-beauty">0</span>
+        </div>
+        <div class="filter-item" data-cat="stationery" onclick="setFilter(this,'stationery')">
+          <span class="fi-label">📚 Stationery</span><span class="fi-count" id="cnt-stationery">0</span>
+        </div>
+        <div class="filter-item" data-cat="undergarments" onclick="setFilter(this,'undergarments')">
+          <span class="fi-label">👕 Undergarments</span><span class="fi-count" id="cnt-undergarments">0</span>
+        </div>
+        <div style="border-top:1px solid var(--line);margin:10px 0"></div>
+        <div class="filter-item" onclick="window.location.href='Marketplace.html'" style="color:var(--brand);font-weight:600">
+          <span class="fi-label">♻️ Marketplace →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS AREA -->
+    <div>
+      <div class="search-row">
+        <input type="text" id="search" placeholder="Search products…" oninput="render()">
+        <select class="sort-select" id="sort" onchange="render()">
+          <option value="default">Sort: Default</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+          <option value="newest">Newest First</option>
+        </select>
+      </div>
+      <div class="results-bar">
+        <span id="results-txt">Loading…</span>
+        <button class="btn btn-ghost btn-sm" id="add-btn2" onclick="openAddModal()" style="display:none">➕ Add Product</button>
+      </div>
+      <div class="products-grid" id="products-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PRODUCT MODAL -->
+<div class="modal-overlay hidden" id="add-modal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>➕ List a New Product</h3><button class="modal-close" onclick="document.getElementById('add-modal').classList.add('hidden')">✕</button></div>
+    <div class="modal-body">
+      <div class="vt-field"><label class="vt-label">Product Name <span class="req">*</span></label><input id="ap-name" class="vt-input" placeholder="e.g. Dove Shampoo 200ml"></div>
+      <div class="form-grid-2">
+        <div class="vt-field"><label class="vt-label">Category <span class="req">*</span></label><select id="ap-cat" class="vt-input"><option value="groceries">🥑 Groceries</option><option value="beauty">💄 Beauty</option><option value="undergarments">👕 Undergarments</option><option value="stationery">📚 Stationery</option></select></div>
+        <div class="vt-field"><label class="vt-label">Price (₹) <span class="req">*</span></label><input id="ap-price" class="vt-input" type="number" placeholder="99" min="1"></div>
+      </div>
+      <div class="form-grid-2">
+        <div class="vt-field"><label class="vt-label">Stock <span class="req">*</span></label><input id="ap-stock" class="vt-input" type="number" placeholder="10" min="1"></div>
+        <div class="vt-field"><label class="vt-label">Original Price <span class="opt">optional</span></label><input id="ap-orig" class="vt-input" type="number" placeholder="120"></div>
+      </div>
+      <div class="vt-field"><label class="vt-label">Image URL <span class="opt">optional</span></label><input id="ap-img" class="vt-input" placeholder="https://…"></div>
+      <div style="display:flex;gap:10px;margin-top:6px">
+        <button class="btn btn-primary btn-full" onclick="saveProduct()">Publish Product</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('add-modal').classList.add('hidden')" style="flex-shrink:0;padding:10px 16px">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="vt-toast" id="toast"></div>
+<footer class="inst-footer">© 2025 VTrade Commerce Pvt. Ltd. · VIT University, Vellore 632 014 · Built by VIT Students</footer>
+
+<script>
+function showToast(m,t='ok'){const el=document.getElementById('toast');el.textContent=m;el.className=`vt-toast toast-${t} show`;setTimeout(()=>el.classList.remove('show'),3200)}
+function updateClock(){const el=document.getElementById('inst-time');if(el)el.textContent=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true})}
+setInterval(updateClock,1000);updateClock();
+
+const BASE=[
+  {id:1,name:'Premium A5 Notebook',cat:'stationery',price:89,orig:120,img:'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=400&fit=crop',badge:'Trending'},
+  {id:2,name:'Gel Pen Set (Pack of 12)',cat:'stationery',price:64,img:'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=400&fit=crop'},
+  {id:3,name:'Highlighter Set (6 colours)',cat:'stationery',price:49,img:'https://images.unsplash.com/photo-1583947581924-860bda6a26df?w=400&h=400&fit=crop'},
+  {id:4,name:'Himalaya Face Wash 100ml',cat:'beauty',price:95,orig:110,img:'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400&h=400&fit=crop',badge:'New'},
+  {id:5,name:'Dove Shampoo 180ml',cat:'beauty',price:149,img:'https://images.unsplash.com/photo-1631390339432-74094fc2efec?w=400&h=400&fit=crop'},
+  {id:6,name:"Nivea Men's Face Wash",cat:'beauty',price:109,img:'https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=400&h=400&fit=crop'},
+  {id:7,name:'Maggi Noodles (Pack of 12)',cat:'groceries',price:144,img:'https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=400&h=400&fit=crop'},
+  {id:8,name:'Lays Classic (Pack of 6)',cat:'groceries',price:120,img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop'},
+  {id:9,name:'Milk 500ml',cat:'groceries',price:28,img:'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&h=400&fit=crop'},
+  {id:10,name:"Men's Cotton Briefs 3-Pack",cat:'undergarments',price:199,img:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop'},
+  {id:11,name:"Women's Innerwear Set",cat:'undergarments',price:249,img:'https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=400&h=400&fit=crop'},
+  {id:12,name:'A4 Ruled Notebook (Pack of 6)',cat:'stationery',price:120,img:'https://images.unsplash.com/photo-1517971053567-8bde93bc6a58?w=400&h=400&fit=crop'},
+];
+
+function getAll(){return[...(JSON.parse(localStorage.getItem('customProducts')||'[]')),...BASE]}
+let currentCat=localStorage.getItem('activeSection')||'all';
+
+function setFilter(el,cat){
+  document.querySelectorAll('.filter-item[data-cat]').forEach(f=>f.classList.remove('active'));
+  el.classList.add('active');currentCat=cat;
+  localStorage.setItem('activeSection',cat);
+  const titles={all:'🛒 All Products',groceries:'🥑 Groceries',beauty:'💄 Beauty',stationery:'📚 Stationery',undergarments:'👕 Undergarments'};
+  document.getElementById('page-title').textContent=titles[cat]||'Shop All';
+  render();
+}
+
+function render(){
+  const all=getAll();
+  const q=(document.getElementById('search').value||'').toLowerCase();
+  const sort=document.getElementById('sort').value;
+  // Update counts
+  ['all','groceries','beauty','stationery','undergarments'].forEach(c=>{
+    const el=document.getElementById('cnt-'+c);
+    if(el)el.textContent=c==='all'?all.length:all.filter(p=>p.cat===c).length;
+  });
+  let filtered=all.filter(p=>(currentCat==='all'||p.cat===currentCat)&&(!q||p.name.toLowerCase().includes(q)));
+  if(sort==='price-asc')filtered.sort((a,b)=>a.price-b.price);
+  else if(sort==='price-desc')filtered.sort((a,b)=>b.price-a.price);
+  else if(sort==='newest')filtered.sort((a,b)=>(b.id+'').localeCompare(a.id+''));
+  document.getElementById('results-txt').textContent=`${filtered.length} product${filtered.length!==1?'s':''} found`;
+  const grid=document.getElementById('products-grid');
+  if(!filtered.length){grid.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="ei">🔍</div><h3>No products found</h3><p>Try a different search or category.</p></div>';return}
+  grid.innerHTML=filtered.map(p=>`
+    <div class="prod-card">
+      <div class="prod-img">
+        <img src="${p.img||'https://images.unsplash.com/photo-1560343776-97e7d202ff0e?w=400&h=400&fit=crop'}" alt="${p.name}" loading="lazy">
+        ${p.badge?`<span class="prod-badge badge badge-blue" style="position:absolute;top:8px;left:8px">${p.badge}</span>`:''}
+      </div>
+      <div class="prod-body">
+        <div class="prod-cat">${p.cat}</div>
+        <div class="prod-name">${p.name}</div>
+        ${p.seller?`<div class="prod-seller">by ${p.seller}</div>`:''}
+        <div class="prod-price">₹${p.price}${p.orig?`<span class="old">₹${p.orig}</span>`:''}</div>
+        <div class="prod-actions">
+          <div class="qty-row"><button class="qty-btn" onclick="cq(this,-1)">−</button><span class="qty-val">0</span><button class="qty-btn" onclick="cq(this,1)">+</button></div>
+          <button class="add-cart-btn" data-name="${p.name}" data-price="${p.price}" data-img="${p.img||''}">Add</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function cq(btn,d){const v=btn.closest('.qty-row').querySelector('.qty-val');v.textContent=Math.max(0,Math.min(10,parseInt(v.textContent)+d))}
+
+document.addEventListener('click',e=>{
+  if(!e.target.classList.contains('add-cart-btn'))return;
+  const card=e.target.closest('.prod-card'),qty=parseInt(card.querySelector('.qty-val').textContent);
+  if(!qty){showToast('Select a quantity first.','er');return}
+  const{name,price,img}=e.target.dataset;
+  const cart=JSON.parse(localStorage.getItem('cart')||'[]'),idx=cart.findIndex(i=>i.name===name);
+  if(idx>=0)cart[idx].quantity+=qty;else cart.push({name,price:parseFloat(price),quantity:qty,image:img});
+  localStorage.setItem('cart',JSON.stringify(cart));updateCartBadge();
+  card.querySelector('.qty-val').textContent='0';
+  e.target.textContent='✓ Added';e.target.style.background='var(--ok)';
+  setTimeout(()=>{e.target.textContent='Add';e.target.style.background=''},1500);
+});
+
+// Set active filter from saved category
+document.querySelectorAll('.filter-item[data-cat]').forEach(el=>{
+  if(el.dataset.cat===currentCat)el.classList.add('active');else el.classList.remove('active');
+});
+const titles={all:'🛒 All Products',groceries:'🥑 Groceries',beauty:'💄 Beauty',stationery:'📚 Stationery',undergarments:'👕 Undergarments'};
+document.getElementById('page-title').textContent=titles[currentCat]||'Shop All';
+
+function openAddModal(){if(!isLoggedIn()){window.location.href='login.html';return}document.getElementById('add-modal').classList.remove('hidden')}
+function saveProduct(){
+  const name=document.getElementById('ap-name').value.trim(),price=parseFloat(document.getElementById('ap-price').value),stock=parseInt(document.getElementById('ap-stock').value);
+  if(!name||!price||!stock){showToast('Fill in all required fields.','er');return}
+  const ud=JSON.parse(localStorage.getItem('userData')||'{}'),ex=JSON.parse(localStorage.getItem('customProducts')||'[]');
+  ex.unshift({id:'cp_'+Date.now(),name,cat:document.getElementById('ap-cat').value,price,orig:parseFloat(document.getElementById('ap-orig').value)||null,stock,img:document.getElementById('ap-img').value.trim(),seller:ud.first_name||'Seller',source_type:'seller',created_at:new Date().toISOString()});
+  localStorage.setItem('customProducts',JSON.stringify(ex));
+  document.getElementById('add-modal').classList.add('hidden');
+  render();showToast(`"${name}" published!`);
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  render();
+  if(isLoggedIn()){['add-btn','add-btn2'].forEach(id=>{const b=document.getElementById(id);if(b)b.style.display='inline-flex'})}
+});
+</script>
+</body>
+</html>

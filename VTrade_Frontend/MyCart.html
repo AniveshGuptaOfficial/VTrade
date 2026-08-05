@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Cart — VTrade</title>
+<link rel="stylesheet" href="vtrade.css"><script src="config.js"></script>
+<style>
+.cart-layout{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start}
+.cart-item{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--line);transition:var(--ease)}
+.cart-item:last-child{border-bottom:none}.cart-item:hover{background:var(--surface-2)}
+.cart-img{width:68px;height:68px;border-radius:var(--r3);object-fit:cover;border:1px solid var(--line);flex-shrink:0;background:var(--surface-2)}
+.cart-name{font-size:13px;font-weight:700;color:var(--ink)}
+.cart-price{font-size:15px;font-weight:800;color:var(--brand);margin-top:4px}
+.qty-ctrl{display:flex;align-items:center;border:1.5px solid var(--line-mid);border-radius:var(--r2);overflow:hidden;margin-top:6px;width:fit-content}
+.qb{width:28px;height:28px;border:none;background:var(--surface-2);font-size:15px;cursor:pointer;color:var(--ink-3);transition:var(--ease)}
+.qb:hover{background:var(--line);color:var(--ink)}.qv{width:30px;text-align:center;font-size:13px;font-weight:700}
+.rm{background:none;border:none;color:var(--ink-3);cursor:pointer;font-size:17px;padding:4px 8px;border-radius:var(--r2);transition:var(--ease);margin-left:auto;flex-shrink:0}
+.rm:hover{color:var(--err);background:var(--err-bg)}
+.sum-row{display:flex;justify-content:space-between;font-size:13px;padding:7px 0;border-bottom:1px solid var(--line)}
+.sum-row:last-child{border:none;font-weight:800;font-size:16px;color:var(--brand)}
+.pay-opt{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--line-mid);border-radius:var(--r2);cursor:pointer;transition:var(--ease);margin-bottom:8px}
+.pay-opt:hover{border-color:var(--brand)}.pay-opt.sel{border-color:var(--brand);background:var(--brand-light)}
+.checkout-modal{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:4000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.checkout-modal.open{display:flex}
+.co-box{background:white;border-radius:var(--r4);width:100%;max-width:520px;max-height:92vh;overflow-y:auto;box-shadow:var(--s3)}
+.co-head{background:linear-gradient(135deg,var(--brand),var(--brand-dark));padding:16px 22px;display:flex;align-items:center;justify-content:space-between}
+.co-head h3{color:white;font-size:15px;font-weight:700}
+.co-close{background:rgba(255,255,255,.15);border:none;color:white;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;transition:var(--ease)}
+.co-close:hover{background:rgba(255,255,255,.25)}
+@media(max-width:760px){.cart-layout{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="inst-header">
+  <div class="inst-header-inner">
+    <div class="inst-logo-area"><div class="inst-logo">VT</div><div><div class="inst-name">V<span>Trade</span></div><div class="inst-sub">Campus E-Commerce · VIT University, Vellore</div></div></div>
+    <div class="inst-tagline"><strong>VTrade — Campus First</strong>Secure checkout with OTP-verified delivery.</div>
+  </div>
+</header>
+<nav class="inst-nav">
+  <div class="inst-nav-inner">
+    <ul class="inst-nav-links">
+      <li><a href="index.html">🏠 Home</a></li>
+      <li><a href="SeeAll.html">🛒 Shop</a></li>
+      <li><a href="Marketplace.html">♻️ Marketplace</a></li>
+      <li><a href="Pickup.html">📦 Pickup</a></li>
+      <li><a href="About.html">ℹ️ About</a></li>
+      <li><a href="ContactUs.html">📧 Contact</a></li>
+    </ul>
+    <div class="inst-nav-right">
+      <span class="inst-time" id="inst-time"></span>
+      <div id="auth-area"><a href="login.html" class="btn btn-primary btn-sm">Login / Register</a></div>
+      <a href="MyCart.html" class="btn btn-outline btn-sm">🛒 <span id="cart-count"></span></a>
+    </div>
+  </div>
+</nav>
+<div class="page-wrapper-wide">
+  <div class="breadcrumb"><a href="index.html">Home</a><span class="sep">›</span><span>My Cart</span></div>
+  <div class="page-title-bar">
+    <div><h1>🛒 My Cart</h1><div class="page-subtitle" id="cart-sub">Loading…</div></div>
+    <div class="title-actions">
+      <a href="SeeAll.html" class="btn btn-ghost btn-sm">Continue Shopping</a>
+      <button class="btn btn-primary btn-sm" onclick="openCheckout()">Checkout →</button>
+    </div>
+  </div>
+  <div class="cart-layout">
+    <div>
+      <div class="card card-blue">
+        <div class="card-header"><h2>Cart Items</h2><button class="btn btn-ghost btn-sm" onclick="clearCart()">Clear All</button></div>
+        <div id="cart-list"></div>
+      </div>
+    </div>
+    <div>
+      <div class="card card-blue" style="margin-bottom:16px">
+        <div class="card-header"><h2>📋 Order Summary</h2></div>
+        <div class="card-body">
+          <div class="sum-row"><span>Subtotal</span><span id="s-sub">₹0.00</span></div>
+          <div class="sum-row"><span>GST (18%)</span><span id="s-tax">₹0.00</span></div>
+          <div class="sum-row"><span>Delivery</span><span style="color:var(--ok);font-weight:700">FREE</span></div>
+          <div class="sum-row"><span>Total</span><span id="s-total">₹0.00</span></div>
+          <button class="btn btn-primary btn-full" style="margin-top:16px" onclick="openCheckout()">Proceed to Checkout →</button>
+        </div>
+      </div>
+      <div class="alert alert-blue"><span class="alert-icon">🔒</span><div style="font-size:12px">Payments secured by VTrade Escrow. OTP-verified delivery to your hostel.</div></div>
+    </div>
+  </div>
+</div>
+<div class="checkout-modal" id="co-modal">
+  <div class="co-box">
+    <div class="co-head"><h3>🏪 Checkout</h3><button class="co-close" onclick="document.getElementById("co-modal").classList.remove("open")">✕</button></div>
+    <div style="padding:24px">
+      <div class="steps">
+        <div class="step active" id="stp1"><span class="step-n">1</span>Delivery</div>
+        <div class="step-line"></div>
+        <div class="step" id="stp2"><span class="step-n">2</span>Payment</div>
+        <div class="step-line"></div>
+        <div class="step" id="stp3"><span class="step-n">3</span>Confirm</div>
+      </div>
+      <div id="p-delivery">
+        <div class="section-title">📍 Delivery Details</div>
+        <div class="form-grid-2">
+          <div class="vt-field"><label class="vt-label">Hostel Block <span class="req">*</span></label><input id="d-hostel" class="vt-input" placeholder="e.g. A Block"></div>
+          <div class="vt-field"><label class="vt-label">Room Number <span class="req">*</span></label><input id="d-room" class="vt-input" placeholder="e.g. 204"></div>
+        </div>
+        <div class="vt-field"><label class="vt-label">Phone <span class="req">*</span></label><input id="d-phone" class="vt-input" type="tel" placeholder="10-digit" maxlength="10"></div>
+        <div class="vt-field"><label class="vt-label">Landmark <span class="vt-label opt">optional</span></label><input id="d-land" class="vt-input" placeholder="Near block entrance…"></div>
+        <button class="btn btn-primary btn-full" onclick="goStep(2)">Next: Payment →</button>
+      </div>
+      <div id="p-payment" style="display:none">
+        <div class="section-title">💳 Payment Method</div>
+        <div class="pay-opt sel" onclick="selPay(this)"><input type="radio" name="pay" value="upi" checked style="accent-color:var(--brand)"><span style="font-size:20px">📱</span><div><div style="font-size:13px;font-weight:700">UPI / QR</div><div style="font-size:11px;color:var(--ink-3)">GPay, PhonePe, Paytm</div></div></div>
+        <div class="pay-opt" onclick="selPay(this)"><input type="radio" name="pay" value="card" style="accent-color:var(--brand)"><span style="font-size:20px">💳</span><div><div style="font-size:13px;font-weight:700">Credit / Debit Card</div><div style="font-size:11px;color:var(--ink-3)">Visa, Mastercard, RuPay</div></div></div>
+        <div class="pay-opt" onclick="selPay(this)"><input type="radio" name="pay" value="cod" style="accent-color:var(--brand)"><span style="font-size:20px">💵</span><div><div style="font-size:13px;font-weight:700">Cash on Delivery</div><div style="font-size:11px;color:var(--ink-3)">Pay when order arrives</div></div></div>
+        <div style="display:flex;gap:8px;margin-top:8px"><button class="btn btn-ghost btn-sm" onclick="goStep(1)">← Back</button><button class="btn btn-primary" style="flex:1" onclick="goStep(3)">Review →</button></div>
+      </div>
+      <div id="p-confirm" style="display:none">
+        <div class="section-title">✅ Order Review</div>
+        <div id="order-review" style="background:var(--surface-2);border-radius:var(--r2);padding:16px;margin-bottom:12px;font-size:13px"></div>
+        <div class="alert alert-yellow" style="margin-bottom:12px"><span class="alert-icon">📱</span><div style="font-size:12px">An OTP will be sent to your phone for delivery confirmation.</div></div>
+        <div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm" onclick="goStep(2)">← Back</button><button class="btn btn-primary" style="flex:1" onclick="placeOrder()">✅ Place Order</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="vt-toast" id="toast"></div>
+<footer class="inst-footer">© 2025 VTrade Commerce Pvt. Ltd. · VIT University, Vellore 632 014 · Built by VIT Students</footer>
+<script>
+function showToast(m,t="ok"){const el=document.getElementById("toast");el.textContent=m;el.className=`vt-toast toast-${t} show`;setTimeout(()=>el.classList.remove("show"),3200)}
+function updateClock(){const el=document.getElementById("inst-time");if(el)el.textContent=new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true})}
+setInterval(updateClock,1000);updateClock();
+let cart=JSON.parse(localStorage.getItem("cart")||"[]");
+function save(){localStorage.setItem("cart",JSON.stringify(cart));updateCartBadge();render();calc()}
+function render(){
+  const el=document.getElementById("cart-list");
+  document.getElementById("cart-sub").textContent=cart.length+" item"+(cart.length!==1?"s":"")+" in cart";
+  if(!cart.length){el.innerHTML='<div class="empty-state"><div class="ei">🛒</div><h3>Cart is empty</h3><p>Browse our products and add items.</p><a href="SeeAll.html" class="btn btn-primary" style="margin-top:14px;display:inline-flex">Browse Shop</a></div>';return}
+  el.innerHTML=cart.map((it,i)=>`
+    <div class="cart-item">
+      <img class="cart-img" src="${it.image||"https://via.placeholder.com/68"}" alt="${it.name}">
+      <div style="flex:1">
+        <div class="cart-name">${it.name}</div>
+        <div class="cart-price">₹${it.price.toFixed(2)}</div>
+        <div class="qty-ctrl"><button class="qb" onclick="chg(${i},-1)">−</button><span class="qv">${it.quantity}</span><button class="qb" onclick="chg(${i},1)">+</button></div>
+      </div>
+      <div style="font-size:14px;font-weight:800;color:var(--brand);min-width:64px;text-align:right">₹${(it.price*it.quantity).toFixed(2)}</div>
+      <button class="rm" onclick="rm(${i})">✕</button>
+    </div>`).join("");
+}
+function chg(i,d){cart[i].quantity=Math.max(1,Math.min(10,cart[i].quantity+d));save()}
+function rm(i){cart.splice(i,1);save();showToast("Item removed")}
+function clearCart(){if(!cart.length)return;if(confirm("Clear cart?")){cart=[];save();showToast("Cart cleared")}}
+function calc(){const sub=cart.reduce((s,i)=>s+i.price*i.quantity,0);document.getElementById("s-sub").textContent="₹"+sub.toFixed(2);document.getElementById("s-tax").textContent="₹"+(sub*.18).toFixed(2);document.getElementById("s-total").textContent="₹"+(sub*1.18).toFixed(2)}
+function openCheckout(){if(!isLoggedIn()){showToast("Please login to checkout.","er");setTimeout(()=>window.location.href="login.html",1200);return}if(!cart.length){showToast("Cart is empty.","er");return}document.getElementById("co-modal").classList.add("open");goStep(1)}
+function selPay(el){document.querySelectorAll(".pay-opt").forEach(p=>p.classList.remove("sel"));el.classList.add("sel");el.querySelector("input").checked=true}
+function goStep(n){["delivery","payment","confirm"].forEach((s,i)=>document.getElementById("p-"+s).style.display=i+1===n?"block":"none");[1,2,3].forEach(i=>{const e=document.getElementById("stp"+i);e.classList.toggle("active",i===n);e.classList.toggle("done",i<n);e.querySelector(".step-n").textContent=i<n?"✓":i});if(n===3)buildReview()}
+function buildReview(){const h=document.getElementById("d-hostel").value||"—",r=document.getElementById("d-room").value||"—",p=document.getElementById("d-phone").value||"—",pay=document.querySelector("input[name=pay]:checked")?.value||"upi",tot=cart.reduce((s,i)=>s+i.price*i.quantity,0)*1.18;document.getElementById("order-review").innerHTML=`<div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between"><span style="color:var(--ink-3)">Deliver to</span><strong>${h}, Room ${r}</strong></div><div style="display:flex;justify-content:space-between"><span style="color:var(--ink-3)">Phone</span><strong>${p}</strong></div><div style="display:flex;justify-content:space-between"><span style="color:var(--ink-3)">Items</span><strong>${cart.length}</strong></div><div style="display:flex;justify-content:space-between"><span style="color:var(--ink-3)">Payment</span><strong>${pay.toUpperCase()}</strong></div><div style="display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:8px;margin-top:4px"><strong>Total</strong><strong style="color:var(--brand);font-size:15px">₹${tot.toFixed(2)}</strong></div></div>`}
+function placeOrder(){const h=document.getElementById("d-hostel").value.trim(),r=document.getElementById("d-room").value.trim(),p=document.getElementById("d-phone").value.trim();if(!h||!r){showToast("Enter hostel and room.","er");goStep(1);return}if(!p||p.length!==10){showToast("Enter valid phone.","er");goStep(1);return}const sub=cart.reduce((s,i)=>s+i.price*i.quantity,0),hist=JSON.parse(localStorage.getItem("orderHistory")||"[]");hist.unshift({id:"ORD"+Date.now(),items:[...cart],total:sub*1.18,date:new Date().toISOString(),status:"placed",hostel:h,room:r,phone:p});localStorage.setItem("orderHistory",JSON.stringify(hist));cart=[];save();document.getElementById("co-modal").classList.remove("open");showToast("🎉 Order placed! OTP will be sent for delivery.");setTimeout(()=>window.location.href="Account.html",2500)}
+document.getElementById("d-phone").addEventListener("input",function(){this.value=this.value.replace(/\D/g,"").slice(0,10)});
+document.addEventListener("DOMContentLoaded",()=>{render();calc()});
+</script>
+</body></html>

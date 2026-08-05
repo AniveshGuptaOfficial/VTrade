@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Account — VTrade</title>
+<link rel="stylesheet" href="vtrade.css">
+<script src="config.js"></script>
+<style>
+/* Account v5 overrides — lighter, more spacious */
+.account-wrap{max-width:1200px;margin:0 auto;padding:28px 28px 60px}
+.account-topbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:24px}
+.account-topbar h1{font-family:var(--font-display);font-size:26px;font-weight:800;color:var(--ink)}
+.account-grid{display:grid;grid-template-columns:280px 1fr;gap:22px;align-items:start}
+/* Profile card — avatar now sits at the very top inside the dark cover */
+.profile-card{background:white;border:1px solid var(--line);border-radius:var(--r4);overflow:hidden;position:sticky;top:16px;box-shadow:var(--s1)}
+.profile-cover{height:110px;background:linear-gradient(135deg,var(--gray-900) 0%,var(--black) 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:14px 16px 10px;position:relative}
+.profile-avatar-wrap{position:static;transform:none}
+.profile-avatar{width:72px;height:72px;border-radius:50%;background:var(--gray-700);color:white;font-family:var(--font-display);font-size:24px;font-weight:800;display:flex;align-items:center;justify-content:center;border:3px solid rgba(255,255,255,.25);overflow:hidden;cursor:pointer;position:relative;user-select:none;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+.profile-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.avatar-overlay{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;opacity:0;transition:var(--ease);border-radius:50%;font-size:16px;color:white}
+.profile-avatar:hover .avatar-overlay{opacity:1}
+#avatar-upload{display:none}
+/* Name + role shown inside the dark cover, below avatar */
+.profile-cover-name{font-family:var(--font-display);font-size:14px;font-weight:800;color:white;text-align:center;line-height:1.2;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.profile-cover-role{font-size:10px;font-weight:700;padding:2px 9px;border-radius:var(--r-full);background:rgba(255,255,255,.15);color:rgba(255,255,255,.85)}
+.profile-body{padding:14px 20px 20px;text-align:center}
+.profile-name{font-family:var(--font-display);font-size:17px;font-weight:800;color:var(--ink)}
+.profile-role-tag{display:inline-flex;align-items:center;gap:4px;margin-top:6px;padding:3px 10px;border-radius:var(--r-full);font-size:11px;font-weight:700}
+.role-buyer{background:var(--ok-bg);color:var(--ok)}
+.role-worker{background:var(--warn-bg);color:var(--warn)}
+.profile-info{margin-top:18px;text-align:left;display:flex;flex-direction:column;gap:10px}
+.info-row{display:flex;flex-direction:column;gap:2px}
+.info-label{font-size:10px;font-weight:700;color:var(--ink-4);text-transform:uppercase;letter-spacing:.6px}
+.info-val{font-size:13px;font-weight:600;color:var(--ink)}
+.info-val.missing{color:var(--ink-4);font-style:italic;font-weight:400}
+.profile-nav{margin-top:18px;border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:2px}
+.pnav-btn{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r2);font-size:13px;font-weight:500;color:var(--ink-2);cursor:pointer;transition:var(--ease);border:none;background:none;text-align:left;font-family:inherit;width:100%}
+.pnav-btn:hover{background:var(--surface-2);color:var(--ink)}
+.pnav-btn.active{background:var(--brand-light);color:var(--brand);font-weight:700}
+/* Right panels */
+.right-panel{display:flex;flex-direction:column;gap:20px}
+.panel-section{display:none}
+.panel-section.active{display:block}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:white;border:1px solid var(--line);border-radius:var(--r3);padding:18px;text-align:center;box-shadow:var(--s1)}
+.stat-num{font-family:var(--font-display);font-size:24px;font-weight:800;color:var(--brand);letter-spacing:-.5px}
+.stat-label{font-size:11px;color:var(--ink-3);margin-top:4px;text-transform:uppercase;letter-spacing:.4px}
+.panel-card{background:white;border:1px solid var(--line);border-radius:var(--r3);overflow:hidden;box-shadow:var(--s1)}
+.panel-card-header{padding:15px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;background:var(--surface-2)}
+.panel-card-header h2{font-size:15px;font-weight:700;color:var(--ink)}
+.panel-card-body{padding:20px}
+.edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fsec{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--ink-3);margin:16px 0 10px;grid-column:span 2;border-bottom:1px solid var(--line);padding-bottom:8px}
+.fsec:first-child{margin-top:0}
+/* Orders */
+.order-card{padding:16px 20px;border-bottom:1px solid var(--line);position:relative;transition:var(--ease)}
+.order-card:last-child{border-bottom:none}
+.order-card:hover{background:var(--surface-2)}
+.order-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.order-id{font-size:13px;font-weight:700;color:var(--brand)}
+.order-date{font-size:11px;color:var(--ink-3)}
+.order-items-list{display:flex;flex-direction:column;gap:3px;margin-bottom:10px}
+.order-item-row{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-2)}
+.order-item-row span:last-child{color:var(--ink-3)}
+.order-bottom{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.order-total{font-size:14px;font-weight:800;color:var(--brand)}
+.order-badges{display:flex;gap:6px;flex-wrap:wrap}
+.order-del{position:absolute;top:12px;right:14px;width:26px;height:26px;border-radius:var(--r2);border:none;background:none;cursor:pointer;color:var(--ink-3);font-size:13px;display:flex;align-items:center;justify-content:center;transition:var(--ease)}
+.order-del:hover{background:var(--err-bg);color:var(--err)}
+/* Worker portal */
+.wtype-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.wtype{border:1.5px solid var(--line-mid);border-radius:var(--r3);padding:18px;cursor:pointer;transition:var(--ease)}
+.wtype:has(input:checked){border-color:var(--brand);background:var(--brand-light)}
+.wtype input{display:none}
+.wtype-icon{font-size:26px;margin-bottom:8px}
+.wtype h4{font-size:14px;font-weight:700;color:var(--ink)}
+.wtype p{font-size:12px;color:var(--ink-3);margin-top:4px;line-height:1.5}
+.perk-list{list-style:none;display:flex;flex-direction:column;gap:7px;margin:14px 0}
+.perk-list li{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:var(--ink-2);padding:9px 13px;background:var(--surface-2);border-radius:var(--r2)}
+.perk-list li::before{content:"✓";color:var(--ok);font-weight:800;flex-shrink:0}
+/* Slots */
+.slots-grid{display:flex;flex-direction:column;gap:8px}
+.slot-item{display:flex;align-items:center;justify-content:space-between;padding:11px 15px;background:var(--surface-2);border-radius:var(--r2);border:1px solid var(--line)}
+.slot-info{font-size:13px;font-weight:700;color:var(--ink)}
+.slot-day{font-size:11px;color:var(--ink-3);margin-top:2px}
+.slot-del{background:none;border:none;cursor:pointer;color:var(--ink-3);font-size:15px;transition:var(--ease);padding:4px}
+.slot-del:hover{color:var(--err)}
+/* Worker feed */
+.feed-card{background:white;border:1px solid var(--line);border-radius:var(--r3);padding:16px 18px;margin-bottom:10px;transition:var(--ease);box-shadow:var(--s1)}
+.feed-card:hover{box-shadow:var(--s2);border-color:var(--gray-300)}
+.feed-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+.feed-type{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;padding:2px 8px;border-radius:var(--r-full)}
+.feed-type.order{background:#f0f0f0;color:#333}
+.feed-type.pickup{background:var(--accent-bg);color:#92400e}
+.feed-title{font-size:14px;font-weight:700;color:var(--ink);margin-top:4px}
+.feed-meta{font-size:12px;color:var(--ink-3);margin-top:3px;line-height:1.5}
+.feed-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.feed-fee{font-size:15px;font-weight:800;color:var(--ink)}
+.feed-fee small{font-size:11px;font-weight:400;color:var(--ink-3)}
+.feed-empty{padding:40px 20px;text-align:center;color:var(--ink-3)}
+.feed-empty .ei{font-size:40px;margin-bottom:12px}
+.feed-filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.feed-filter{padding:5px 14px;border-radius:var(--r-full);border:1.5px solid var(--line-mid);background:white;font-size:12px;font-weight:600;cursor:pointer;transition:var(--ease);font-family:inherit;color:var(--ink-3)}
+.feed-filter.active{border-color:var(--gray-900);background:var(--gray-900);color:white}
+.grab-btn{padding:7px 16px;background:var(--gray-900);color:white;border:none;border-radius:var(--r2);font-size:12px;font-weight:700;cursor:pointer;transition:var(--ease);font-family:inherit}
+.grab-btn:hover{background:var(--black)}
+.grab-btn:disabled{opacity:.45;cursor:not-allowed}
+.online-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.toggle-wrap{display:flex;align-items:center;gap:10px;cursor:pointer}
+.toggle-track{width:46px;height:24px;background:var(--line-mid);border-radius:var(--r-full);position:relative;transition:var(--ease)}
+.toggle-track.on{background:var(--ok)}
+.toggle-thumb{position:absolute;top:3px;left:3px;width:18px;height:18px;background:white;border-radius:50%;transition:var(--ease);box-shadow:var(--s1)}
+.toggle-track.on .toggle-thumb{transform:translateX(22px)}
+/* API badge */
+.api-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:var(--r-full);font-size:11px;font-weight:600}
+.api-badge.on{background:var(--ok-bg);color:var(--ok)}
+.api-badge.off{background:var(--surface-2);color:var(--ink-3)}
+.api-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);padding:12px 22px;border-radius:var(--r3);font-size:13px;font-weight:600;color:white;z-index:9999;opacity:0;transition:all .25s;max-width:360px;text-align:center;pointer-events:none;box-shadow:var(--s3)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.s{background:var(--ok)}.toast.e{background:var(--err)}
+@media(max-width:860px){.account-grid{grid-template-columns:1fr}.profile-card{position:static}.edit-grid{grid-template-columns:1fr}.fsec{grid-column:span 1}.wtype-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<body>
+<header class="inst-header">
+  <div class="inst-header-inner">
+    <div class="inst-logo-area"><div class="inst-logo">VT</div><div><div class="inst-name">V<span>Trade</span></div><div class="inst-sub">Campus E-Commerce Portal · VIT University, Vellore</div></div></div>
+    <div class="inst-tagline"><strong>VTrade — Campus First</strong>Shop, sell second-hand, request pickups.</div>
+  </div>
+</header>
+<nav class="inst-nav">
+  <div class="inst-nav-inner">
+    <ul class="inst-nav-links">
+      <li><a href="index.html">🏠 Home</a></li>
+      <li><a href="SeeAll.html">🛒 Shop</a></li>
+      <li><a href="Marketplace.html">♻️ Marketplace</a></li>
+      <li><a href="Pickup.html">📦 Pickup</a></li>
+      <li><a href="About.html">ℹ️ About</a></li>
+      <li><a href="ContactUs.html">📧 Contact</a></li>
+    </ul>
+    <div class="inst-nav-right">
+      <span class="inst-time" id="inst-time"></span>
+      <div id="auth-area"><a href="login.html" class="btn btn-primary btn-sm">Login / Register</a></div>
+      <a href="MyCart.html" class="btn btn-outline btn-sm">🛒 <span id="cart-count"></span></a>
+    </div>
+  </div>
+</nav>
+
+<div class="account-wrap">
+  <div class="account-topbar">
+    <h1>My Account</h1>
+    <div style="display:flex;gap:10px;align-items:center">
+      <span class="api-badge off" id="api-badge"><span class="api-dot"></span><span id="api-txt">Checking…</span></span>
+      <button class="btn btn-outline btn-sm" id="logout-btn">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="account-grid">
+    <!-- LEFT -->
+    <div class="profile-card">
+      <div class="profile-cover">
+        <div class="profile-avatar-wrap">
+          <div class="profile-avatar" id="avatar-trigger" title="Click to change photo">
+            <span id="avatar-initials">?</span>
+            <div class="avatar-overlay">📷</div>
+          </div>
+          <input type="file" id="avatar-upload" accept="image/jpeg,image/png,image/webp">
+        </div>
+        <div class="profile-cover-name" id="profile-name">Loading…</div>
+        <div class="profile-cover-role" id="role-tag">🎓 Buyer</div>
+      </div>
+      <div class="profile-body">
+        <div class="profile-info" id="profile-info"></div>
+        <nav class="profile-nav">
+          <button class="pnav-btn active" data-panel="overview"><span>📊</span> Overview</button>
+          <button class="pnav-btn" data-panel="edit"><span>✏️</span> Edit Profile</button>
+          <button class="pnav-btn" data-panel="orders"><span>📦</span> Order History</button>
+          <button class="pnav-btn" data-panel="worker"><span>🚴</span> Worker Portal</button>
+          <button class="pnav-btn" data-panel="feed"><span>📋</span> Work Feed</button>
+          <button class="pnav-btn" data-panel="bounty"><span>⭐</span> Bounty Points</button>
+        </nav>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right-panel">
+
+      <!-- OVERVIEW -->
+      <div class="panel-section active" id="panel-overview">
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-num" id="s-orders">0</div><div class="stat-label">Orders</div></div>
+          <div class="stat-card"><div class="stat-num" id="s-spent">₹0</div><div class="stat-label">Spent</div></div>
+          <div class="stat-card"><div class="stat-num" id="s-pts">0</div><div class="stat-label">Bounty Pts</div></div>
+        </div>
+        <div class="panel-card">
+          <div class="panel-card-header"><h2>Recent Orders</h2><button class="btn btn-ghost btn-sm" onclick="switchPanel('orders')">View All</button></div>
+          <div id="recent-list"></div>
+        </div>
+      </div>
+
+      <!-- EDIT PROFILE -->
+      <div class="panel-section" id="panel-edit">
+        <div class="panel-card">
+          <div class="panel-card-header"><h2>Edit Profile</h2></div>
+          <div class="panel-card-body">
+            <div class="edit-grid">
+              <div class="fsec">Personal Details</div>
+              <div class="field"><label class="label">First Name</label><input id="e-fn" class="input" placeholder="Arjun"></div>
+              <div class="field"><label class="label">Last Name</label><input id="e-ln" class="input" placeholder="Sharma"></div>
+              <div class="field"><label class="label">Email</label><input id="e-em" class="input" disabled style="opacity:.6;cursor:not-allowed" title="Cannot be changed"></div>
+              <div class="field"><label class="label">Phone</label><input id="e-ph" class="input" disabled style="opacity:.6;cursor:not-allowed" title="Cannot be changed"></div>
+              <div class="fsec">Campus Info</div>
+              <div class="field"><label class="label">Student ID (Reg. No.)</label><input id="e-sid" class="input" placeholder="22BCE0XXX"></div>
+              <div class="field"><label class="label">Hostel Block</label><input id="e-hb" class="input" placeholder="A Block"></div>
+              <div class="field" style="grid-column:span 2"><label class="label">Room Number</label><input id="e-rn" class="input" placeholder="Room 204"></div>
+            </div>
+            <div style="margin-top:24px;display:flex;gap:10px">
+              <button class="btn btn-primary" id="save-btn">✓ Save Changes</button>
+              <button class="btn btn-outline" onclick="switchPanel('overview')">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHANGE / SET PASSWORD CARD -->
+        <div class="panel-card" style="margin-top:18px">
+          <div class="panel-card-header">
+            <h2>🔑 Password</h2>
+            <span id="pwd-status-badge" class="badge badge-warn" style="font-size:11px">Not set</span>
+          </div>
+          <div class="panel-card-body">
+            <div class="alert alert-gray" id="pwd-hint" style="margin-bottom:16px">
+              <span class="alert-icon">💡</span>
+              <div style="font-size:12px">Set a password so you can also log in with your <strong>Registration Number</strong>. If you signed up via Phone OTP, no password was created — set one here.</div>
+            </div>
+            <div class="grid-2">
+              <div class="field">
+                <label class="label">New Password <span class="req">*</span></label>
+                <input type="password" id="e-pw1" class="input" placeholder="Min. 8 characters" autocomplete="new-password">
+                <div style="height:4px;border-radius:2px;background:var(--border);margin-top:5px;overflow:hidden">
+                  <div id="pw-strength-bar" style="height:100%;width:0;border-radius:2px;transition:all .3s"></div>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Confirm Password <span class="req">*</span></label>
+                <input type="password" id="e-pw2" class="input" placeholder="Repeat password" autocomplete="new-password">
+              </div>
+            </div>
+            <div style="margin-top:8px;display:flex;gap:10px;align-items:center">
+              <button class="btn btn-primary" id="save-pwd-btn" onclick="savePassword()">🔑 Set Password</button>
+              <span id="pwd-msg" style="font-size:12px;color:var(--ok);display:none">✓ Password saved!</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ORDERS -->
+      <div class="panel-section" id="panel-orders">
+        <div class="panel-card">
+          <div class="panel-card-header"><h2>Order History</h2>
+            <button class="btn btn-outline btn-sm" id="clear-btn" style="color:var(--red);border-color:var(--red)">Clear All</button>
+          </div>
+          <div id="full-list"></div>
+        </div>
+      </div>
+
+      <!-- WORKER PORTAL -->
+      <div class="panel-section" id="panel-worker">
+        <div id="w-apply">
+          <div class="panel-card">
+            <div class="panel-card-header"><h2>Become a Worker</h2></div>
+            <div class="panel-card-body">
+              <p style="font-size:15px;color:var(--ink-3);margin-bottom:20px;line-height:1.7">Join VTrade as a delivery worker. Earn bounty points and redeem for shopping discounts.</p>
+              <div class="wtype-grid">
+                <label class="wtype"><input type="radio" name="wt" value="student" checked>
+                  <div class="wtype-icon">🎓</div><h4>Student Worker</h4><p>Deliver in your V-TOP free slots. Earn bounty points.</p></label>
+                <label class="wtype"><input type="radio" name="wt" value="delivery_staff">
+                  <div class="wtype-icon">🚴</div><h4>Delivery Staff</h4><p>Fixed shifts, guaranteed ₹80/hr pay.</p></label>
+              </div>
+              <ul class="perk-list">
+                <li>10 pts per delivery · 15 pts per pickup service</li>
+                <li>+5 bonus pts for every 5-star rating</li>
+                <li>Weekly leaderboard Top 3 = +50 bonus pts</li>
+                <li>Redeem 10 pts = ₹1 discount (min 50 pts to redeem)</li>
+              </ul>
+              <div class="field"><label class="label">Student / Employee ID *</label><input id="w-sid" class="input" placeholder="22BCE0XXX"></div>
+              <div class="field"><label class="label">Short Bio (optional)</label><textarea id="w-bio" class="input" rows="2" style="resize:vertical" placeholder="Tell us about yourself…"></textarea></div>
+              <button class="btn btn-primary btn-full" id="apply-btn">🚀 Submit Worker Application</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="w-dash" style="display:none">
+          <div class="stats-row" style="margin-bottom:16px">
+            <div class="stat-card"><div class="stat-num" id="w-del">0</div><div class="stat-label">Deliveries</div></div>
+            <div class="stat-card"><div class="stat-num" id="w-rat">—</div><div class="stat-label">Avg Rating</div></div>
+            <div class="stat-card"><div class="stat-num" id="w-pts">0</div><div class="stat-label">Points</div></div>
+          </div>
+          <div class="panel-card" style="margin-bottom:16px">
+            <div class="panel-card-header"><h2>Worker Status</h2><span id="w-status" class="badge badge-gold">Pending</span></div>
+            <div class="panel-card-body">
+              <div class="online-row">
+                <div><div style="font-size:14px;color:var(--ink-3)">Online / Offline</div><div style="font-size:13px;color:var(--ink-3);margin-top:2px">Toggle to receive new assignments</div></div>
+                <div class="toggle-wrap" id="toggle-wrap">
+                  <span id="online-lbl" style="font-size:14px;font-weight:600;color:var(--ink-3)">Offline</span>
+                  <div class="toggle-track" id="tt"><div class="toggle-thumb"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel-card">
+            <div class="panel-card-header"><h2>Availability Slots</h2><button class="btn btn-primary btn-sm" id="add-slot-btn">+ Add Slot</button></div>
+            <div class="panel-card-body">
+              <div id="slot-form-wrap" style="display:none;background:var(--surface-2);border-radius:12px;padding:18px;margin-bottom:16px">
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+                  <div class="field"><label class="label">Day</label>
+                    <select id="s-day" class="input">
+                      <option value="mon">Monday</option><option value="tue">Tuesday</option>
+                      <option value="wed">Wednesday</option><option value="thu">Thursday</option>
+                      <option value="fri">Friday</option><option value="sat">Saturday</option>
+                      <option value="sun">Sunday</option>
+                    </select>
+                  </div>
+                  <div class="field"><label class="label">Start Time</label><input type="time" id="s-st" class="input"></div>
+                  <div class="field"><label class="label">End Time</label><input type="time" id="s-et" class="input"></div>
+                </div>
+                <div style="display:flex;gap:8px">
+                  <button class="btn btn-primary btn-sm" id="save-slot-btn">Save Slot</button>
+                  <button class="btn btn-outline btn-sm" id="cancel-slot-btn">Cancel</button>
+                </div>
+              </div>
+              <div class="slots-grid" id="slots-list"><div style="text-align:center;color:var(--ink-3);font-size:14px;padding:20px 0">No slots yet. Add your free time slots to start receiving assignments.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOUNTY WALLET -->
+      <div class="panel-section" id="panel-bounty">
+        <div class="panel-card">
+          <div class="panel-card-header"><h2>Bounty Wallet</h2></div>
+          <div class="panel-card-body">
+            <div style="text-align:center;padding:24px 0 32px">
+              <div style="font-size:52px;font-weight:800;font-family:var(--font-display);color:var(--brand)" id="b-bal">0</div>
+              <div style="font-size:14px;color:var(--ink-3);margin-top:4px">Redeemable Points</div>
+              <div style="font-size:13px;color:var(--ok);margin-top:8px;font-weight:600">10 pts = ₹1 · Min 50 pts · Max ₹50 per order</div>
+            </div>
+            <div style="background:var(--surface-2);border-radius:12px;padding:16px">
+              <div style="font-size:13px;font-weight:700;color:var(--brand);margin-bottom:10px">How to earn</div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--ink-3)">Complete delivery</span><strong>+10 pts</strong></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--ink-3)">Complete pickup service</span><strong>+15 pts</strong></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--ink-3)">5-star rating received</span><strong>+5 pts</strong></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--ink-3)">5 deliveries in one day</span><strong>+20 pts</strong></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--ink-3)">Weekly leaderboard Top 3</span><strong>+50 pts</strong></div>
+              </div>
+            </div>
+            <div style="margin-top:16px;text-align:center;color:var(--ink-3);font-size:14px;padding:12px 0" id="txn-list">No transactions yet. Start delivering to earn points!</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORK FEED -->
+      <div class="panel-section" id="panel-feed">
+        <div class="panel-card">
+          <div class="panel-card-header">
+            <h2>📋 Available Work</h2>
+            <button class="btn btn-outline btn-sm" onclick="loadFeed()">↻ Refresh</button>
+          </div>
+          <div class="panel-card-body">
+            <div class="alert alert-gray" style="margin-bottom:14px">
+              <span class="alert-icon">ℹ️</span>
+              <div style="font-size:12px">These are active orders and pickup requests from customers that need a worker. Click <strong>Grab</strong> to accept and start the delivery.</div>
+            </div>
+            <div class="feed-filter-row">
+              <button class="feed-filter active" data-filter="all" onclick="filterFeed(this)">All</button>
+              <button class="feed-filter" data-filter="order" onclick="filterFeed(this)">🛒 Shop Orders</button>
+              <button class="feed-filter" data-filter="pickup" onclick="filterFeed(this)">📦 Pickups</button>
+            </div>
+            <div id="feed-list"><div class="feed-empty"><div class="ei">📋</div><p>Loading available work…</p></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end right-panel -->
+  </div><!-- end account-grid -->
+</div><!-- end account-wrap -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Uses config.js: VTRADE_CONFIG, vtFetch, pingBackend, saveAuthData,
+//                   clearAuthData, isLoggedIn, getToken, assetURL ──
+
+let user = null, workerProfile = null, apiUp = false;
+let localSlots = JSON.parse(localStorage.getItem('vtrade_slots')) || [];
+let isOnline = false;
+
+function toast(msg, type = 's') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ── BOOT ──────────────────────────────────────────────────
+async function init() {
+  // Redirect if not logged in at all
+  if (!isLoggedIn()) { window.location.href = 'login.html'; return; }
+
+  // Cart badge (always works from localStorage)
+  updateCartBadge();
+
+  // Ping backend
+  apiUp = await pingBackend();
+  const badge = document.getElementById('api-badge');
+  if (apiUp) {
+    badge.className = 'api-badge on';
+    document.getElementById('api-txt').textContent = 'API Connected';
+  } else {
+    badge.className = 'api-badge off';
+    document.getElementById('api-txt').textContent = 'Offline Mode';
+  }
+
+  // Load user from API if online, else from localStorage
+  if (apiUp && getToken()) {
+    try {
+      const d = await vtFetch('GET', '/auth/me');
+      user = d.user;
+      workerProfile = d.worker;
+      // Keep localStorage in sync
+      localStorage.setItem('userData', JSON.stringify(user));
+    } catch (_) {
+      // Token may have expired — fall through to localStorage
+    }
+  }
+
+  if (!user) {
+    const stored = JSON.parse(localStorage.getItem('userData'));
+    if (stored) {
+      // Normalise: backend uses first_name/last_name, SignUp stores firstName/lastName
+      user = {
+        first_name: stored.first_name || stored.firstName || 'VIT',
+        last_name:  stored.last_name  || stored.lastName  || '',
+        email:      stored.email || '',
+        phone:      stored.phone || localStorage.getItem('phoneNumber') || '',
+        role:       stored.role  || 'buyer',
+        student_id: stored.student_id || '',
+        hostel_block: stored.hostel_block || '',
+        room_number:  stored.room_number  || '',
+        avatar_url:   stored.avatar_url   || null,
+      };
+    } else {
+      user = { first_name: 'VIT', last_name: 'Student', email: '', phone: '', role: 'buyer' };
+    }
+  }
+
+  renderProfile();
+  await loadOrders();
+  loadWorkerPanel();
+}
+
+// ── PROFILE ───────────────────────────────────────────────
+function renderProfile() {
+  const fn   = user.first_name || 'VIT';
+  const ln   = user.last_name  || '';
+  const full = (fn + ' ' + ln).trim();
+
+  // Update cover (avatar + name + role now in dark header)
+  document.getElementById('profile-name').textContent = full;
+
+  // Avatar: image or initials
+  const initEl = document.getElementById('avatar-initials');
+  if (user.avatar_url) {
+    const src = assetURL(user.avatar_url);
+    initEl.innerHTML = `<img src="${src}" alt="${full}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  } else {
+    initEl.textContent = ((fn[0] || 'V') + (ln[0] || '')).toUpperCase();
+  }
+
+  // Role tag (now inside cover)
+  const rt = document.getElementById('role-tag');
+  const roleMap = { buyer:['🎓 Buyer',''], student_worker:['🚴 Worker',''], delivery_staff:['🚴 Staff',''], admin:['⚙️ Admin',''] };
+  const [lbl] = roleMap[user.role] || ['🎓 Buyer',''];
+  rt.textContent = lbl;
+
+  // Info list
+  document.getElementById('profile-info').innerHTML = `
+    <div class="info-row"><div class="info-label">Email</div><div class="info-val ${!user.email?'missing':''}">${user.email||'Not set'}</div></div>
+    <div class="info-row"><div class="info-label">Phone</div><div class="info-val ${!user.phone?'missing':''}">${user.phone||'Not set'}</div></div>
+    <div class="info-row"><div class="info-label">Hostel</div><div class="info-val ${!user.hostel_block?'missing':''}">${user.hostel_block?(user.hostel_block+(user.room_number?', Room '+user.room_number:'')):'Not set'}</div></div>
+    <div class="info-row"><div class="info-label">Student ID</div><div class="info-val ${!user.student_id?'missing':''}">${user.student_id||'Not set'}</div></div>`;
+
+  // Prefill edit form
+  document.getElementById('e-fn').value  = user.first_name  || '';
+  document.getElementById('e-ln').value  = user.last_name   || '';
+  document.getElementById('e-em').value  = user.email       || '';
+  document.getElementById('e-ph').value  = user.phone       || '';
+  document.getElementById('e-sid').value = user.student_id  || '';
+  document.getElementById('e-hb').value  = user.hostel_block|| '';
+  document.getElementById('e-rn').value  = user.room_number || '';
+
+  // Password badge — has_password flag from backend, or assume not set if OTP user
+  const hasPwd = user.has_password === true;
+  const badge  = document.getElementById('pwd-status-badge');
+  const hint   = document.getElementById('pwd-hint');
+  if (badge) {
+    if (hasPwd) {
+      badge.textContent = '✓ Set';
+      badge.className   = 'badge badge-ok';
+      if (hint) hint.style.display = 'none';
+      const btn = document.getElementById('save-pwd-btn');
+      if (btn) btn.textContent = '🔑 Change Password';
+    } else {
+      badge.textContent = 'Not set';
+      badge.className   = 'badge badge-warn';
+      if (hint) hint.style.display = 'flex';
+    }
+  }
+}
+
+// ── ORDERS ────────────────────────────────────────────────
+async function loadOrders() {
+  let orders = [];
+
+  if (apiUp && getToken()) {
+    try {
+      const d = await vtFetch('GET', '/users/orders');
+      orders = d.orders || [];
+    } catch (_) {}
+  }
+
+  // Always merge with localStorage order history (from MyCart checkout)
+  if (!orders.length) {
+    const local = JSON.parse(localStorage.getItem('orderHistory')) || [];
+    orders = local.map((o, i) => ({
+      id: i + 1,
+      total_amount: o.total || 0,
+      created_at: o.date || new Date().toISOString(),
+      status: (o.status || 'delivered').toLowerCase(),
+      payment_method: o.paymentMethod || o.payment_method || 'COD',
+      items: (o.items || []).map(it => ({
+        name: it.name,
+        quantity: it.quantity,
+        unit_price: it.price || it.unit_price || 0
+      })),
+      _local: true,
+      _idx: i
+    }));
+  }
+
+  document.getElementById('s-orders').textContent = orders.length;
+  document.getElementById('s-spent').textContent  = '₹' + orders.reduce((s,o) => s+(o.total_amount||0),0).toFixed(0);
+
+  renderOrders('recent-list', orders.slice(0, 3), false);
+  renderOrders('full-list',   orders,              true);
+}
+
+const STATUS_COLORS = { delivered:'tag-green', placed:'tag-gold', processing:'tag-gold', cancelled:'tag-gray', disputed:'tag-red', awaiting_slot:'tag-gray' };
+
+function renderOrders(id, orders, showDel) {
+  const el = document.getElementById(id);
+  if (!orders.length) {
+    el.innerHTML = '<div class="empty-state"><div class="ei">📦</div><p>No orders yet.</p><a href="index.html" class="btn btn-primary btn-sm" style="margin-top:12px;display:inline-flex">Start Shopping</a></div>';
+    return;
+  }
+  el.innerHTML = orders.map(o => {
+    const items = (o.items||[]).map(i =>
+      `<div class="order-item-row"><span>${i.name} ×${i.quantity}</span><span>₹${((i.unit_price||0)*i.quantity).toFixed(2)}</span></div>`
+    ).join('');
+    const sc = STATUS_COLORS[o.status] || 'tag-gray';
+    return `<div class="order-card">
+      ${showDel ? `<button class="order-del" data-local="${o._local||false}" data-idx="${o._idx??''}">✕</button>` : ''}
+      <div class="order-top"><span class="order-id">Order #${o.id}</span>
+        <span class="order-date">${new Date(o.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</span></div>
+      <div class="order-items-list">${items||'<div style="font-size:13px;color:var(--ink-3)">No item details</div>'}</div>
+      <div class="order-bottom">
+        <span class="order-total">₹${(o.total_amount||0).toFixed(2)}</span>
+        <div class="order-badges">
+          <span class="vt-tag ${sc}">${o.status||'placed'}</span>
+          <span class="badge badge-gray">${o.payment_method||'COD'}</span>
+        </div>
+      </div></div>`;
+  }).join('');
+}
+
+// Delete an order
+document.addEventListener('click', e => {
+  if (!e.target.classList.contains('order-del')) return;
+  const local = e.target.dataset.local === 'true';
+  const idx   = parseInt(e.target.dataset.idx);
+  if (local && !isNaN(idx)) {
+    const h = JSON.parse(localStorage.getItem('orderHistory')) || [];
+    h.splice(idx, 1);
+    localStorage.setItem('orderHistory', JSON.stringify(h));
+    loadOrders(); toast('Order removed');
+  }
+});
+
+document.getElementById('clear-btn').addEventListener('click', () => {
+  if (!confirm('Clear all order history?')) return;
+  localStorage.removeItem('orderHistory'); loadOrders(); toast('Cleared');
+});
+
+// ── WORKER PANEL ──────────────────────────────────────────
+function loadWorkerPanel() {
+  if (workerProfile || user.role === 'student_worker' || user.role === 'delivery_staff') {
+    showWorkerDash();
+  } else if (user.student_id) {
+    document.getElementById('w-sid').value = user.student_id;
+  }
+}
+
+function showWorkerDash() {
+  document.getElementById('w-apply').style.display = 'none';
+  document.getElementById('w-dash').style.display  = 'block';
+  if (workerProfile) {
+    document.getElementById('w-del').textContent = workerProfile.total_deliveries || 0;
+    document.getElementById('w-pts').textContent = workerProfile.bounty_points    || 0;
+    document.getElementById('s-pts').textContent = workerProfile.bounty_points    || 0;
+    document.getElementById('b-bal').textContent = workerProfile.bounty_points    || 0;
+    const avg = workerProfile.rating_count > 0
+      ? (workerProfile.rating_sum / workerProfile.rating_count).toFixed(1) : '—';
+    document.getElementById('w-rat').textContent = avg;
+    const sb = document.getElementById('w-status');
+    if (workerProfile.verification_status === 'verified')      { sb.className='vt-tag tag-green'; sb.textContent='✓ Verified'; }
+    else if (workerProfile.verification_status === 'rejected') { sb.className='vt-tag tag-red';   sb.textContent='✗ Rejected'; }
+    else                                                       { sb.className='vt-tag tag-gold';   sb.textContent='⏳ Pending'; }
+    isOnline = !!workerProfile.is_online;
+    updateToggle();
+  }
+}
+
+function updateToggle() {
+  const tt = document.getElementById('tt');
+  tt.className = 'toggle-track' + (isOnline ? ' on' : '');
+  document.getElementById('online-lbl').textContent = isOnline ? 'Online' : 'Offline';
+  document.getElementById('online-lbl').style.color = isOnline ? 'var(--green)' : 'var(--text-muted)';
+}
+
+document.getElementById('toggle-wrap').addEventListener('click', async () => {
+  isOnline = !isOnline; updateToggle();
+  if (apiUp && getToken()) {
+    try { await vtFetch('PUT', '/users/worker-profile', { is_online: isOnline }); }
+    catch (_) { toast('Could not sync status', 'e'); }
+  }
+  toast(isOnline ? 'You are Online — ready for assignments!' : 'You are Offline');
+});
+
+// ── APPLY AS WORKER ───────────────────────────────────────
+document.getElementById('apply-btn').addEventListener('click', async () => {
+  const wt  = document.querySelector('input[name="wt"]:checked')?.value || 'student';
+  const sid = document.getElementById('w-sid').value.trim();
+  const bio = document.getElementById('w-bio').value.trim();
+  if (!sid) { toast('Please enter your Student / Employee ID', 'e'); document.getElementById('w-sid').classList.add('error'); return; }
+
+  const btn = document.getElementById('apply-btn');
+  btn.disabled = true; btn.textContent = 'Submitting…';
+
+  try {
+    if (apiUp && getToken()) {
+      const d = await vtFetch('POST', '/users/become-worker', { worker_type: wt, student_id: sid, bio });
+      // Backend returns updated user + worker
+      user = d.user; workerProfile = d.worker;
+      localStorage.setItem('userData', JSON.stringify(user));
+    } else {
+      // Offline: update localStorage only
+      user.role       = wt === 'student' ? 'student_worker' : 'delivery_staff';
+      user.student_id = sid;
+      localStorage.setItem('userData', JSON.stringify(user));
+      workerProfile = { verification_status:'pending', bounty_points:0, total_deliveries:0, rating_sum:0, rating_count:0, is_online:0 };
+    }
+    showWorkerDash(); renderProfile();
+    toast('Application submitted! Pending admin verification 🎉');
+  } catch (err) {
+    toast(err.message || 'Submission failed. Try again.', 'e');
+    btn.disabled = false; btn.textContent = '🚀 Submit Worker Application';
+  }
+});
+
+// ── SAVE PROFILE ──────────────────────────────────────────
+document.getElementById('save-btn').addEventListener('click', async () => {
+  const fn = document.getElementById('e-fn').value.trim();
+  if (!fn || !/^[A-Za-z]+$/.test(fn)) { toast('First name must contain letters only', 'e'); return; }
+  const payload = {
+    first_name:   fn,
+    last_name:    document.getElementById('e-ln').value.trim(),
+    student_id:   document.getElementById('e-sid').value.trim(),
+    hostel_block: document.getElementById('e-hb').value.trim(),
+    room_number:  document.getElementById('e-rn').value.trim()
+  };
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    if (apiUp && getToken()) {
+      const d = await vtFetch('PUT', '/users/profile', payload);
+      user = d.user;
+    } else {
+      Object.assign(user, { first_name:payload.first_name, last_name:payload.last_name,
+        student_id:payload.student_id, hostel_block:payload.hostel_block, room_number:payload.room_number });
+    }
+    localStorage.setItem('userData', JSON.stringify(user));
+    renderProfile(); toast('Profile saved!'); switchPanel('overview');
+  } catch (err) { toast(err.message || 'Save failed', 'e'); }
+  finally { btn.disabled = false; btn.textContent = '✓ Save Changes'; }
+});
+
+// ── AVATAR UPLOAD ─────────────────────────────────────────
+document.getElementById('avatar-trigger').addEventListener('click', () => {
+  document.getElementById('avatar-upload').click();
+});
+
+document.getElementById('avatar-upload').addEventListener('change', async function() {
+  const file = this.files[0]; if (!file) return;
+
+  // Instant local preview
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('avatar-initials').innerHTML =
+      `<img src="${e.target.result}" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  };
+  reader.readAsDataURL(file);
+
+  // Upload to backend if online
+  if (apiUp && getToken()) {
+    try {
+      const fd = new FormData();
+      fd.append('avatar', file);               // field name must match backend ('avatar')
+      // vtFetch with isFormData=true — do NOT set Content-Type, let browser set multipart boundary
+      const d = await vtFetch('POST', '/users/avatar', fd, true);
+      user.avatar_url = d.avatar_url;          // e.g. /uploads/avatars/1234567.jpg
+      localStorage.setItem('userData', JSON.stringify(user));
+      toast('Profile picture updated!');
+    } catch (err) { toast(err.message || 'Upload failed', 'e'); }
+  } else {
+    // Store base64 locally so it persists across page loads offline
+    const b64 = await new Promise(res => { const r = new FileReader(); r.onload = e => res(e.target.result); r.readAsDataURL(file); });
+    user.avatar_url = b64;
+    localStorage.setItem('userData', JSON.stringify(user));
+    toast('Photo saved locally. Upload will sync when backend is connected.');
+  }
+  this.value = '';
+});
+
+// ── AVAILABILITY SLOTS ────────────────────────────────────
+function renderSlots() {
+  const el = document.getElementById('slots-list');
+  if (!localSlots.length) {
+    el.innerHTML = '<div style="text-align:center;color:var(--ink-3);font-size:14px;padding:20px 0">No slots yet. Add your free time so assignments match your schedule.</div>';
+    return;
+  }
+  const dm = { mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday' };
+  el.innerHTML = localSlots.map(s => `
+    <div class="slot-item">
+      <div><div class="slot-info">${s.start_time} – ${s.end_time}</div><div class="slot-day">${dm[s.day_of_week]||s.day_of_week}</div></div>
+      <button class="slot-del" data-id="${s.id}">✕</button>
+    </div>`).join('');
+}
+
+document.getElementById('add-slot-btn').addEventListener('click', () => {
+  const f = document.getElementById('slot-form-wrap');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+});
+document.getElementById('cancel-slot-btn').addEventListener('click', () => {
+  document.getElementById('slot-form-wrap').style.display = 'none';
+});
+
+document.getElementById('save-slot-btn').addEventListener('click', async () => {
+  const day = document.getElementById('s-day').value;
+  const st  = document.getElementById('s-st').value;
+  const et  = document.getElementById('s-et').value;
+  if (!st || !et) { toast('Set both start and end time', 'e'); return; }
+  const [sh,sm] = st.split(':').map(Number);
+  const [eh,em] = et.split(':').map(Number);
+  if ((eh*60+em)-(sh*60+sm) < 30) { toast('Slot must be at least 30 minutes', 'e'); return; }
+
+  try {
+    if (apiUp && getToken()) {
+      const d = await vtFetch('POST', '/users/slots', { day_of_week:day, start_time:st, end_time:et });
+      localSlots.push(d.slot);
+    } else {
+      localSlots.push({ id: Date.now(), day_of_week:day, start_time:st, end_time:et });
+    }
+    localStorage.setItem('vtrade_slots', JSON.stringify(localSlots));
+    renderSlots();
+    document.getElementById('slot-form-wrap').style.display = 'none';
+    toast('Slot added!');
+  } catch (err) { toast(err.message || 'Failed to add slot', 'e'); }
+});
+
+// Delete slot
+document.addEventListener('click', async e => {
+  if (!e.target.classList.contains('slot-del')) return;
+  const sid = e.target.dataset.id;
+  // Only send delete to API if it's a real DB id (not a Date.now() offline id)
+  if (apiUp && getToken() && parseInt(sid) < 1e12) {
+    try { await vtFetch('DELETE', `/users/slots/${sid}`); } catch(_) {}
+  }
+  localSlots = localSlots.filter(s => String(s.id) !== sid);
+  localStorage.setItem('vtrade_slots', JSON.stringify(localSlots));
+  renderSlots(); toast('Slot removed');
+});
+
+async function loadSlots() {
+  if (apiUp && getToken()) {
+    try {
+      const d = await vtFetch('GET', '/users/worker-profile');
+      localSlots = d.slots || [];
+      localStorage.setItem('vtrade_slots', JSON.stringify(localSlots));
+    } catch (_) {}
+  }
+  renderSlots();
+}
+
+// ── PANEL NAV ─────────────────────────────────────────────
+function switchPanel(name) {
+  document.querySelectorAll('.panel-section').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.pnav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name)?.classList.add('active');
+  document.querySelector(`[data-panel="${name}"]`)?.classList.add('active');
+  if (name === 'worker') loadSlots();
+  if (name === 'feed') loadFeed();
+}
+document.querySelectorAll('.pnav-btn').forEach(b => b.addEventListener('click', () => switchPanel(b.dataset.panel)));
+
+// ── WORK FEED ──────────────────────────────────────────────
+let feedItems = [];
+let feedFilter = 'all';
+
+async function loadFeed() {
+  const el = document.getElementById('feed-list');
+  el.innerHTML = '<div class="feed-empty"><div class="ei">⏳</div><p>Loading available work…</p></div>';
+  feedItems = [];
+
+  if (!apiUp || !getToken()) {
+    // Offline demo data
+    feedItems = [
+      { _type:'order', id:1001, hostel_block:'A Block', room_number:'204', items:[{name:'Maggi Noodles x2',quantity:2,unit_price:24},{name:'Lays Classic',quantity:1,unit_price:20}], total_amount:75.0, payment_method:'upi', status:'placed', created_at: new Date().toISOString(), _fee: 15 },
+      { _type:'pickup', id:2001, kart_name:'Amazon Kart', product_details:'OnePlus Buds Z2 — 1 parcel', hostel_block:'C Block', room_number:'312', amount:1299, payment_mode:'paid', status:'pending', created_at: new Date().toISOString(), _fee: 20 },
+      { _type:'pickup', id:2002, kart_name:'Flipkart Hub', product_details:'Books — Engineering Maths Vol 2', hostel_block:'B Block', room_number:'108', amount:450, payment_mode:'cod', status:'pending', created_at: new Date().toISOString(), _fee: 25 },
+    ];
+  } else {
+    try {
+      // Fetch pending orders and open pickup requests in parallel
+      const [ordersRes, pickupsRes] = await Promise.allSettled([
+        vtFetch('GET', '/orders/pending'),
+        vtFetch('GET', '/pickup/open')
+      ]);
+      if (ordersRes.status === 'fulfilled') {
+        const orders = ordersRes.value.orders || ordersRes.value || [];
+        orders.forEach(o => feedItems.push({ ...o, _type: 'order', _fee: 15 }));
+      }
+      if (pickupsRes.status === 'fulfilled') {
+        const pickups = pickupsRes.value.requests || pickupsRes.value || [];
+        pickups.forEach(p => feedItems.push({ ...p, _type: 'pickup', _fee: 20 }));
+      }
+    } catch (err) {
+      toast('Could not load feed — showing demo data', 'e');
+      feedItems = [];
+    }
+  }
+
+  renderFeed();
+}
+
+function filterFeed(btn) {
+  document.querySelectorAll('.feed-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  feedFilter = btn.dataset.filter;
+  renderFeed();
+}
+
+function renderFeed() {
+  const el = document.getElementById('feed-list');
+  const items = feedFilter === 'all' ? feedItems : feedItems.filter(i => i._type === feedFilter);
+
+  if (!items.length) {
+    el.innerHTML = `<div class="feed-empty">
+      <div class="ei">${feedFilter === 'pickup' ? '📦' : '🛒'}</div>
+      <p>No ${feedFilter === 'all' ? 'active requests' : feedFilter === 'pickup' ? 'open pickups' : 'pending orders'} right now.</p>
+      <p style="font-size:12px;margin-top:6px">Check back soon — new requests appear here in real time.</p>
+    </div>`;
+    return;
+  }
+
+  el.innerHTML = items.map(item => {
+    if (item._type === 'order') {
+      const itemNames = (item.items || []).map(i => `${i.name} ×${i.quantity}`).join(', ');
+      const dt = new Date(item.created_at).toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit'});
+      return `<div class="feed-card">
+        <div class="feed-card-top">
+          <div>
+            <span class="feed-type order">🛒 Shop Order</span>
+            <div class="feed-title">Deliver to ${item.hostel_block}, Room ${item.room_number}</div>
+            <div class="feed-meta">${itemNames || 'Multiple items'}</div>
+            <div class="feed-meta">Ordered at ${dt} · Pay: ${(item.payment_method||'upi').toUpperCase()}</div>
+          </div>
+        </div>
+        <div class="feed-footer">
+          <div class="feed-fee">₹${(item._fee||15).toFixed(0)} <small>your fee</small></div>
+          <button class="grab-btn" onclick="grabOrder(${item.id}, this)">Grab & Deliver</button>
+        </div>
+      </div>`;
+    } else {
+      const dt = new Date(item.created_at).toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit'});
+      const cod = item.payment_mode === 'cod' ? ' · <strong>COD ₹' + item.amount + '</strong>' : '';
+      return `<div class="feed-card">
+        <div class="feed-card-top">
+          <div>
+            <span class="feed-type pickup">📦 Pickup</span>
+            <div class="feed-title">${item.kart_name} → ${item.hostel_block}, Room ${item.room_number}</div>
+            <div class="feed-meta">${item.product_details}</div>
+            <div class="feed-meta">Requested at ${dt}${cod}</div>
+          </div>
+        </div>
+        <div class="feed-footer">
+          <div class="feed-fee">₹${(item._fee||20).toFixed(0)} <small>your fee</small></div>
+          <button class="grab-btn" onclick="grabPickup(${item.id}, this)">Grab Pickup</button>
+        </div>
+      </div>`;
+    }
+  }).join('');
+}
+
+async function grabOrder(orderId, btn) {
+  if (!user?.worker) { toast('You must be a registered worker to grab orders.', 'e'); return; }
+  btn.disabled = true; btn.textContent = 'Grabbing…';
+  if (apiUp && getToken()) {
+    try {
+      await vtFetch('PATCH', `/orders/${orderId}/accept`, {});
+      toast('Order grabbed! Head to the shop to collect items. 🚴');
+    } catch (err) {
+      toast(err.message || 'Could not grab order.', 'e');
+      btn.disabled = false; btn.textContent = 'Grab & Deliver'; return;
+    }
+  } else {
+    toast('Order grabbed (demo)! 🚴');
+  }
+  // Remove from feed
+  feedItems = feedItems.filter(i => !(i._type === 'order' && i.id === orderId));
+  renderFeed();
+}
+
+async function grabPickup(pickupId, btn) {
+  if (!user?.worker) { toast('You must be a registered worker to grab pickups.', 'e'); return; }
+  btn.disabled = true; btn.textContent = 'Grabbing…';
+  if (apiUp && getToken()) {
+    try {
+      await vtFetch('PATCH', `/pickup/${pickupId}/accept`, {});
+      toast('Pickup grabbed! Head to ' + (feedItems.find(i => i.id === pickupId)?.kart_name || 'the kart') + '. 📦');
+    } catch (err) {
+      toast(err.message || 'Could not grab pickup.', 'e');
+      btn.disabled = false; btn.textContent = 'Grab Pickup'; return;
+    }
+  } else {
+    toast('Pickup grabbed (demo)! 📦');
+  }
+  feedItems = feedItems.filter(i => !(i._type === 'pickup' && i.id === pickupId));
+  renderFeed();
+}
+
+// ── PASSWORD STRENGTH BAR ─────────────────────────────────
+document.getElementById('e-pw1')?.addEventListener('input', function() {
+  const v = this.value;
+  let s = 0;
+  if (v.length >= 8) s += 25;
+  if (/[A-Z]/.test(v)) s += 25;
+  if (/[0-9]/.test(v)) s += 25;
+  if (/[^A-Za-z0-9]/.test(v)) s += 25;
+  const bar = document.getElementById('pw-strength-bar');
+  bar.style.width = s + '%';
+  bar.style.background = s <= 25 ? 'var(--err)' : s <= 50 ? '#E89C1A' : s <= 75 ? 'var(--ok)' : '#1A6B38';
+});
+
+// ── SAVE PASSWORD ─────────────────────────────────────────
+async function savePassword() {
+  const pw1 = document.getElementById('e-pw1').value;
+  const pw2 = document.getElementById('e-pw2').value;
+  if (!pw1 || pw1.length < 8) { toast('Password must be at least 8 characters.', 'e'); return; }
+  if (pw1 !== pw2) { toast('Passwords do not match.', 'e'); return; }
+
+  const btn = document.getElementById('save-pwd-btn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  if (apiUp && getToken()) {
+    try {
+      await vtFetch('PUT', '/users/password', { password: pw1 });
+    } catch(err) {
+      toast(err.message || 'Could not save password.', 'e');
+      btn.disabled = false; btn.textContent = '🔑 Set Password';
+      return;
+    }
+  } else {
+    // Offline: store hashed locally (demo only — real hash happens on backend)
+    const stored = JSON.parse(localStorage.getItem('userData') || '{}');
+    stored.localPassword = pw1;
+    localStorage.setItem('userData', JSON.stringify(stored));
+  }
+
+  // Update badge
+  document.getElementById('pwd-status-badge').textContent = '✓ Set';
+  document.getElementById('pwd-status-badge').className = 'badge badge-ok';
+  document.getElementById('pwd-hint').style.display = 'none';
+  document.getElementById('pwd-msg').style.display = 'inline';
+  document.getElementById('e-pw1').value = '';
+  document.getElementById('e-pw2').value = '';
+  document.getElementById('pw-strength-bar').style.width = '0';
+  btn.textContent = '🔑 Change Password';
+  btn.disabled = false;
+  toast('Password saved! You can now log in with your Registration Number.', 'ok');
+}
+document.getElementById('logout-btn').addEventListener('click', () => {
+  if (!confirm('Sign out of VTrade?')) return;
+  clearAuthData();
+  localStorage.removeItem('orderHistory');
+  localStorage.removeItem('vtrade_slots');
+  window.location.href = 'index.html';
+});
+
+// ── START ─────────────────────────────────────────────────
+init();
+</script>
+<footer class="inst-footer">© 2025 VTrade Commerce Pvt. Ltd. · VIT University, Vellore 632 014 · Built by VIT Students</footer>
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketplace — VTrade</title>
+<link rel="stylesheet" href="vtrade.css">
+<script src="config.js"></script>
+<style>
+.mp-layout{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start}
+.listings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.chip{padding:7px 16px;border-radius:var(--r-full);border:1.5px solid var(--line-mid);background:var(--surface);font-size:12px;font-weight:600;color:var(--ink-3);cursor:pointer;transition:var(--ease)}
+.chip:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-light)}
+.chip.active{background:var(--brand);color:white;border-color:var(--brand)}
+.sell-panel{position:sticky;top:16px}
+.img-zone{border:2px dashed var(--line-mid);border-radius:var(--r3);padding:22px;text-align:center;cursor:pointer;transition:var(--ease);background:var(--surface-2)}
+.img-zone:hover{border-color:var(--brand);background:var(--brand-light)}
+.img-zone-icon{font-size:26px;margin-bottom:8px}
+.img-zone p{font-size:12px;color:var(--ink-3)}
+.thumb-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.thumb{width:56px;height:56px;border-radius:var(--r2);object-fit:cover;border:1px solid var(--line)}
+@media(max-width:900px){.mp-layout{grid-template-columns:1fr}.sell-panel{position:static}}
+</style>
+</head>
+<body>
+<header class="inst-header">
+  <div class="inst-header-inner">
+    <div class="inst-logo-area"><div class="inst-logo">VT</div><div><div class="inst-name">V<span>Trade</span></div><div class="inst-sub">Campus E-Commerce · VIT University, Vellore</div></div></div>
+    <div class="inst-tagline"><strong>VTrade — Campus First</strong>Buy and sell second-hand within VIT campus.</div>
+  </div>
+</header>
+<nav class="inst-nav">
+  <div class="inst-nav-inner">
+    <ul class="inst-nav-links">
+      <li><a href="index.html">🏠 Home</a></li>
+      <li><a href="SeeAll.html">🛒 Shop</a></li>
+      <li><a href="Marketplace.html" class="active">♻️ Marketplace</a></li>
+      <li><a href="Pickup.html">📦 Pickup</a></li>
+      <li><a href="About.html">ℹ️ About</a></li>
+      <li><a href="ContactUs.html">📧 Contact</a></li>
+    </ul>
+    <div class="inst-nav-right">
+      <span class="inst-time" id="inst-time"></span>
+      <div id="auth-area"><a href="login.html" class="btn btn-primary btn-sm">Login / Register</a></div>
+      <a href="MyCart.html" class="btn btn-outline btn-sm">🛒 <span id="cart-count"></span></a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrapper-wide">
+  <div class="breadcrumb"><a href="index.html">Home</a><span class="sep">›</span><span>Marketplace</span></div>
+  <div class="page-title-bar">
+    <div>
+      <h1>♻️ Second-hand Marketplace</h1>
+      <div class="page-subtitle">Buy directly from VIT students — every listing shows condition &amp; reason for selling</div>
+    </div>
+    <button class="btn btn-primary btn-sm" onclick="toggleSell()">➕ Sell an Item</button>
+  </div>
+
+  <div class="mp-layout">
+    <div>
+      <div class="chip-row">
+        <span class="chip active" data-cat="all" onclick="setMCat(this,'all')">All</span>
+        <span class="chip" data-cat="books" onclick="setMCat(this,'books')">📚 Books</span>
+        <span class="chip" data-cat="electronics" onclick="setMCat(this,'electronics')">💻 Electronics</span>
+        <span class="chip" data-cat="clothing" onclick="setMCat(this,'clothing')">👗 Clothing</span>
+        <span class="chip" data-cat="sports" onclick="setMCat(this,'sports')">🏏 Sports</span>
+        <span class="chip" data-cat="others" onclick="setMCat(this,'others')">📦 Others</span>
+      </div>
+      <div class="listings-grid" id="listings-grid"></div>
+    </div>
+
+    <!-- SELL PANEL -->
+    <div class="sell-panel" id="sell-panel" style="display:none">
+      <div class="vt-card" style="border-top:3px solid var(--brand)">
+        <div class="vt-card-header">
+          <h2>🏷️ List an Item</h2>
+          <span style="background:var(--brand-light);color:var(--brand);font-size:10px;font-weight:700;padding:2px 8px;border-radius:var(--r-full)">Any Student</span>
+        </div>
+        <div class="vt-card-body">
+          <div class="alert alert-blue"><span class="alert-icon">ℹ️</span><div>Any logged-in student — buyer or worker — can list items here.</div></div>
+          <div class="vt-field"><label class="vt-label">Item Title <span class="req">*</span></label><input id="s-title" class="vt-input" placeholder="e.g. CLRS Algorithms Book"></div>
+          <div class="form-grid-2">
+            <div class="vt-field"><label class="vt-label">Category <span class="req">*</span></label>
+              <select id="s-cat" class="vt-input"><option value="books">📚 Books</option><option value="electronics">💻 Electronics</option><option value="clothing">👗 Clothing</option><option value="sports">🏏 Sports</option><option value="others">📦 Others</option></select>
+            </div>
+            <div class="vt-field"><label class="vt-label">Condition <span class="req">*</span></label>
+              <select id="s-cond" class="vt-input"><option value="Like New">✨ Like New</option><option value="Good">👍 Good</option><option value="Fair">🟡 Fair</option><option value="For Parts">🔧 For Parts</option></select>
+            </div>
+          </div>
+          <div class="vt-field"><label class="vt-label">Reason for Selling <span class="req">*</span></label><textarea id="s-reason" class="vt-input" style="height:60px" placeholder="e.g. Completed the course, switching to PDF…"></textarea></div>
+          <div class="form-grid-2">
+            <div class="vt-field"><label class="vt-label">Your Price (₹) <span class="req">*</span></label><input id="s-price" class="vt-input" type="number" placeholder="350"></div>
+            <div class="vt-field"><label class="vt-label">Original (₹) <span class="opt">optional</span></label><input id="s-orig" class="vt-input" type="number" placeholder="900"></div>
+          </div>
+          <div class="vt-field">
+            <label class="vt-label">Photos <span class="opt">optional</span></label>
+            <div class="img-zone" onclick="document.getElementById('s-imgs').click()">
+              <div class="img-zone-icon">📷</div>
+              <p>Click to add photos of your item</p>
+              <div id="img-prev" class="thumb-row"></div>
+            </div>
+            <input type="file" id="s-imgs" accept="image/*" multiple style="display:none" onchange="prevImgs(this)">
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary btn-full" onclick="publishListing()">Publish Listing</button>
+            <button class="btn btn-ghost" onclick="toggleSell()" style="flex-shrink:0;padding:10px 16px">✕</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT MODAL -->
+<div class="chat-overlay hidden" id="chat-overlay">
+  <div class="chat-box">
+    <div class="chat-head">
+      <div class="chat-head-info">
+        <div class="chat-av" id="chat-av">S</div>
+        <div><div class="chat-head-name" id="chat-seller"></div><div class="chat-head-sub" id="chat-item"></div></div>
+      </div>
+      <button class="chat-close-btn" onclick="closeChat()">✕</button>
+    </div>
+    <div class="chat-msgs" id="chat-msgs"></div>
+    <div class="chat-offer-bar">
+      <input type="number" id="offer-amt" placeholder="Make an offer ₹" min="0">
+      <button class="chat-offer-btn" onclick="sendOffer()">💰 Offer</button>
+    </div>
+    <div class="chat-input-bar">
+      <textarea class="chat-input-field" id="chat-input" placeholder="Type a message…" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
+      <button class="chat-send-btn" onclick="sendMsg()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<div class="vt-toast" id="toast"></div>
+<footer class="inst-footer">© 2025 VTrade Commerce Pvt. Ltd. · VIT University, Vellore 632 014 · Built by VIT Students</footer>
+<script>
+function showToast(m,t='ok'){const el=document.getElementById('toast');el.textContent=m;el.className=`vt-toast toast-${t} show`;setTimeout(()=>el.classList.remove('show'),3200)}
+function updateClock(){const el=document.getElementById('inst-time');if(el)el.textContent=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true})}
+setInterval(updateClock,1000);updateClock();
+
+const COND_BADGE={
+  'Like New':'badge-green','Good':'badge-gold','Fair':'badge-gray','For Parts':'badge-red'
+};
+let activeCat='all',chatMsgs={},curChat=null;
+
+function getListings(){
+  const s=localStorage.getItem('mp_listings');
+  if(s)return JSON.parse(s);
+  return[
+    {id:1,title:'Data Structures by CLRS',cat:'books',cond:'Good',reason:'Completed the course, using PDF now',price:320,orig:700,seller:'Priya K.',img:'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&h=400&fit=crop'},
+    {id:2,title:'Casio FX-991ES Calculator',cat:'electronics',cond:'Like New',reason:'Got a better model as birthday gift',price:450,orig:900,seller:'Rahul M.',img:'https://images.unsplash.com/photo-1564406687-6a5c0a68e4b2?w=400&h=400&fit=crop'},
+    {id:3,title:'Adjustable Laptop Stand',cat:'electronics',cond:'Good',reason:'Switching to a table setup',price:350,orig:700,seller:'Anjali S.',img:'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400&h=400&fit=crop'},
+    {id:4,title:'Introduction to Algorithms (Cormen)',cat:'books',cond:'Fair',reason:'Done with DS course',price:180,orig:450,seller:'Vignesh R.',img:'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=400&fit=crop'},
+    {id:5,title:'Yonex Badminton Racket',cat:'sports',cond:'Good',reason:'No space in hostel room',price:600,orig:1200,seller:'Sneha P.',img:'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=400&h=400&fit=crop'},
+    {id:6,title:'VIT Hoodie (Size M)',cat:'clothing',cond:'Like New',reason:'Wrong size, wore just once',price:250,orig:600,seller:'Arjun K.',img:'https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=400&h=400&fit=crop'},
+  ];
+}
+function saveListings(l){localStorage.setItem('mp_listings',JSON.stringify(l))}
+
+function setMCat(el,cat){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');activeCat=cat;renderListings();
+}
+
+function renderListings(){
+  const all=getListings().filter(l=>activeCat==='all'||l.cat===activeCat);
+  const grid=document.getElementById('listings-grid');
+  if(!all.length){grid.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="ei">🔍</div><h3>No listings found</h3><p>Be the first to sell in this category!</p></div>';return}
+  grid.innerHTML=all.map(l=>`
+    <div class="listing-card">
+      <div class="listing-img">
+        <img src="${l.img||'https://via.placeholder.com/300'}" alt="${l.title}" loading="lazy">
+        <span class="badge ${COND_BADGE[l.cond]||'badge-gray'}" style="position:absolute;top:8px;left:8px">${l.cond}</span>
+      </div>
+      <div class="listing-body">
+        <div class="prod-cat">${l.cat}</div>
+        <div class="l-title">${l.title}</div>
+        <div class="l-reason">"${l.reason}"</div>
+        <div class="l-price">₹${l.price}${l.orig?`<span class="old">₹${l.orig}</span>`:''} ${l.orig?`<span class="badge badge-green" style="font-size:10px">${Math.round((1-l.price/l.orig)*100)}% off</span>`:''}</div>
+        <div style="font-size:11px;color:var(--ink-3);margin-top:4px">👤 ${l.seller}</div>
+        <div style="display:flex;gap:6px;margin-top:10px">
+          <button class="btn btn-primary btn-sm" style="flex:1" onclick="openChat(${l.id})">💬 Chat</button>
+          <button class="btn btn-outline btn-sm" style="flex:1" onclick="addCart('${l.title}',${l.price})">🛒 Cart</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function addCart(name,price){
+  const cart=JSON.parse(localStorage.getItem('cart')||'[]'),idx=cart.findIndex(i=>i.name===name);
+  if(idx>=0)cart[idx].quantity++;else cart.push({name,price,quantity:1,image:''});
+  localStorage.setItem('cart',JSON.stringify(cart));updateCartBadge();showToast(`${name} added to cart!`);
+}
+
+function toggleSell(){
+  if(!isLoggedIn()){showToast('Please login to sell.','er');setTimeout(()=>window.location.href='login.html',1200);return}
+  const p=document.getElementById('sell-panel');
+  p.style.display=p.style.display==='none'?'block':'none';
+  if(p.style.display==='block')setTimeout(()=>p.scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+
+function prevImgs(inp){
+  const prev=document.getElementById('img-prev');prev.innerHTML='';
+  Array.from(inp.files).forEach(f=>{const r=new FileReader();r.onload=e=>{const img=document.createElement('img');img.src=e.target.result;img.className='thumb';prev.appendChild(img)};r.readAsDataURL(f)});
+}
+
+function publishListing(){
+  const title=document.getElementById('s-title').value.trim(),reason=document.getElementById('s-reason').value.trim(),price=parseFloat(document.getElementById('s-price').value);
+  if(!title){showToast('Enter item title.','er');return}
+  if(!reason){showToast('Enter reason for selling.','er');return}
+  if(!price||price<=0){showToast('Enter a valid price.','er');return}
+  const ud=JSON.parse(localStorage.getItem('userData')||'{}');
+  const seller=((ud.first_name||'Student')+' '+((ud.last_name||'')[0]||'')+'.').trim();
+  const listings=getListings();
+  listings.unshift({id:Date.now(),title,cat:document.getElementById('s-cat').value,cond:document.getElementById('s-cond').value,reason,price,orig:parseFloat(document.getElementById('s-orig').value)||null,seller,img:document.querySelector('#img-prev img')?.src||'https://images.unsplash.com/photo-1560343776-97e7d202ff0e?w=400&h=400&fit=crop'});
+  saveListings(listings);renderListings();
+  document.getElementById('sell-panel').style.display='none';
+  ['s-title','s-reason','s-price','s-orig'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('img-prev').innerHTML='';
+  showToast('Listing published! 🎉');
+}
+
+function openChat(lid){
+  if(!isLoggedIn()){showToast('Please login to chat.','er');setTimeout(()=>window.location.href='login.html',1200);return}
+  const l=getListings().find(x=>x.id===lid);if(!l)return;
+  curChat=l;
+  document.getElementById('chat-seller').textContent=l.seller;
+  document.getElementById('chat-item').textContent=l.title+' · ₹'+l.price;
+  document.getElementById('chat-av').textContent=l.seller[0];
+  if(!chatMsgs[lid])chatMsgs[lid]=[{from:'them',text:`Hi! Yes, the ${l.title} is still available. Condition: ${l.cond}.`}];
+  renderMsgs(lid);
+  document.getElementById('chat-overlay').classList.remove('hidden');
+}
+function closeChat(){document.getElementById('chat-overlay').classList.add('hidden');curChat=null}
+function renderMsgs(lid){
+  const msgs=chatMsgs[lid]||[];
+  const el=document.getElementById('chat-msgs');
+  el.innerHTML=msgs.map(m=>`<div class="cmsg ${m.from}${m.isOffer?' offer':m.sys?' system':''}">${m.text}</div>`).join('');
+  el.scrollTop=el.scrollHeight;
+}
+function sendMsg(){
+  if(!curChat)return;
+  const inp=document.getElementById('chat-input'),txt=inp.value.trim();if(!txt)return;
+  const lid=curChat.id;chatMsgs[lid].push({from:'me',text:txt});inp.value='';renderMsgs(lid);
+  setTimeout(()=>{
+    const r=['Sure, still available!','Can you come to the hostel lobby?','Let me check and get back.','That price is a bit low.','Deal! When can you come?'];
+    chatMsgs[lid].push({from:'them',text:r[Math.floor(Math.random()*r.length)]});renderMsgs(lid);
+  },1100);
+}
+function sendOffer(){
+  if(!curChat)return;
+  const amt=document.getElementById('offer-amt').value;
+  if(!amt||parseFloat(amt)<=0){showToast('Enter a valid offer.','er');return}
+  const lid=curChat.id;
+  chatMsgs[lid].push({from:'me',text:`💰 My offer: ₹${amt}`,isOffer:true});
+  document.getElementById('offer-amt').value='';renderMsgs(lid);
+  setTimeout(()=>{
+    const acc=Math.random()>0.45;
+    chatMsgs[lid].push({from:'them',text:acc?`✅ Deal at ₹${amt}! Let's meet.`:`🤔 Can you do ₹${Math.round(parseFloat(amt)*1.12)}?`,isOffer:true});
+    renderMsgs(lid);
+  },1400);
+}
+document.addEventListener('DOMContentLoaded',()=>renderListings());
+</script>
+</body>
+</html>

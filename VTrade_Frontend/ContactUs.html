@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us — VTrade</title>
+
+
+
+<style>
+.contact-wrap { max-width: 1100px; margin: 0 auto; padding: 56px 28px; }
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+.contact-left h1 { font-family: 'Syne', sans-serif; font-size: 42px; font-weight: 800; color: var(--brand); letter-spacing: -1px; margin-bottom: 12px; }
+.contact-left p { font-size: 15px; color: var(--ink-3); line-height: 1.75; margin-bottom: 36px; }
+.contact-info { display: flex; flex-direction: column; gap: 18px; }
+.contact-info-item {
+  display: flex; gap: 16px;
+  background: white; border: 1px solid var(--line);
+  border-radius: 14px; padding: 18px 20px; transition: var(--t);
+}
+.contact-info-item:hover { box-shadow: var(--s1); }
+.contact-info-icon {
+  width: 44px; height: 44px; flex-shrink: 0;
+  background: #fdf4e4; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
+}
+.contact-info-item h4 { font-size: 14px; font-weight: 700; color: var(--brand); margin-bottom: 2px; }
+.contact-info-item p { font-size: 13px; color: var(--ink-3); }
+
+.contact-form-box {
+  background: white; border: 1px solid var(--line);
+  border-radius: 24px; padding: 36px;
+}
+.contact-form-box h2 { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; color: var(--brand); margin-bottom: 24px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+textarea.vt-input { resize: vertical; min-height: 120px; }
+.char-count { font-size: 12px; color: var(--ink-3); text-align: right; margin-top: 4px; }
+
+@media (max-width: 768px) {
+  .contact-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+}
+</style>
+
+
+
+
+<link rel="stylesheet" href="vtrade.css">
+<script src="config.js"></script>
+<script>function updateClock(){const el=document.getElementById("inst-time");if(el)el.textContent=new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true})}
+setInterval(updateClock,1000);updateClock();</script>
+</head>
+<body>
+
+<header class="inst-header">
+  <div class="inst-header-inner">
+    <div class="inst-logo-area"><div class="inst-logo">VT</div><div><div class="inst-name">V<span>Trade</span></div><div class="inst-sub">Campus E-Commerce · VIT University, Vellore</div></div></div>
+    <div class="inst-tagline"><strong>VTrade — Campus First</strong>Get in touch with the VTrade team.</div>
+  </div>
+</header>
+<nav class="inst-nav">
+  <div class="inst-nav-inner">
+    <ul class="inst-nav-links">
+      <li><a href="index.html">🏠 Home</a></li>
+      <li><a href="SeeAll.html">🛒 Shop</a></li>
+      <li><a href="Marketplace.html">♻️ Marketplace</a></li>
+      <li><a href="Pickup.html">📦 Pickup</a></li>
+      <li><a href="About.html">ℹ️ About</a></li>
+      <li><a href="ContactUs.html" class="active">📧 Contact</a></li>
+    </ul>
+    <div class="inst-nav-right">
+      <span class="inst-time" id="inst-time"></span>
+      <div id="auth-area"><a href="login.html" class="btn btn-primary btn-sm">Login / Register</a></div>
+      <a href="MyCart.html" class="btn btn-outline btn-sm">🛒 <span id="cart-count"></span></a>
+    </div>
+  </div>
+</nav>
+
+<div class="contact-wrap">
+  <div class="contact-grid">
+    <div class="contact-left">
+      <h1>Get in Touch</h1>
+      <p>Have a question, want to partner with us, or just want to say hello? We're a VIT student team and we respond fast.</p>
+      <div class="contact-info">
+        <div class="contact-info-item">
+          <div class="contact-info-icon">📧</div>
+          <div><h4>Email</h4><p>hello@vtrade.in</p></div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">📍</div>
+          <div><h4>Campus</h4><p>VIT University, Vellore — Tamil Nadu</p></div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">⏰</div>
+          <div><h4>Response Time</h4><p>Usually within 2–4 hours on weekdays</p></div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">🚨</div>
+          <div><h4>Order Issues</h4><p>Use the dispute system in your Account page for faster resolution</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form-box">
+      <h2>Send a Message</h2>
+      <form id="contactForm">
+        <div class="form-row">
+          <div class="field">
+            <label class="label">Your Name</label>
+            <input type="text" id="name" class="input" placeholder="Arjun Sharma">
+          </div>
+          <div class="field">
+            <label class="label">Email</label>
+            <input type="email" id="email" class="input" placeholder="arjun@vit.ac.in">
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Subject</label>
+          <select id="subject" class="input">
+            <option value="">Select a topic…</option>
+            <option>Order / Delivery Issue</option>
+            <option>Marketplace Dispute</option>
+            <option>Pickup Service Query</option>
+            <option>Become a Worker</option>
+            <option>Partner Store Enquiry</option>
+            <option>General Feedback</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label">Message</label>
+          <textarea id="message" class="input" placeholder="Describe your issue or question…" maxlength="500" id="msg-area"></textarea>
+          <div class="char-count"><span id="char-left">500</span> characters remaining</div>
+        </div>
+        <button type="submit" class="btn-primary btn-full" style="margin-top:4px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Send Message
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<footer class="inst-footer">© 2025 VTrade Commerce Pvt. Ltd. · VIT University, Vellore 632 014 · Built by VIT Students · <a href="PrivacyPolicy.html">Privacy</a> · <a href="TermsAndCondition.html">Terms</a></footer>
+
+<script>
+const msgArea = document.getElementById('message');
+msgArea.addEventListener('input', () => {
+  document.getElementById('char-left').textContent = 500 - msgArea.value.length;
+});
+
+document.getElementById('contactForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const msg = document.getElementById('message').value.trim();
+
+  if (!name) { document.getElementById('name').classList.add('error'); alert('Please enter your name.'); return; }
+  if (!/^[A-Za-z\s]{1,40}$/.test(name)) { alert('Name should only contain letters (max 40 chars).'); return; }
+  if (!email || !/^\S+@\S+\.\S+$/.test(email)) { document.getElementById('email').classList.add('error'); alert('Please enter a valid email.'); return; }
+  if (!msg) { document.getElementById('message').classList.add('error'); alert('Please enter your message.'); return; }
+
+  alert('Message sent! We\'ll get back to you soon. 👋');
+  document.getElementById('contactForm').reset();
+  document.getElementById('char-left').textContent = '500';
+  document.querySelectorAll('.vt-input.error').forEach(el => el.classList.remove('error'));
+});
+
+document.querySelectorAll('.vt-input').forEach(el => {
+  el.addEventListener('input', () => el.classList.remove('error'));
+});
+</script>
+</body>
+</html>
