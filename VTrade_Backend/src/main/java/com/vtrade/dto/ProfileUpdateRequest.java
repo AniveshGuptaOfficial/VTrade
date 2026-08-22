@@ -14,6 +14,8 @@ public class ProfileUpdateRequest {
 
     private String email;
 
+    private String phone;
+
     @JsonProperty("student_id")
     private String studentId;
 

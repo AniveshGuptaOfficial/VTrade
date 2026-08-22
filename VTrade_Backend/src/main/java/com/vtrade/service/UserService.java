@@ -37,6 +37,16 @@ public class UserService {
         if (req.getFirstName() != null) user.setFirstName(req.getFirstName());
         if (req.getLastName() != null) user.setLastName(req.getLastName());
         if (req.getEmail() != null) user.setEmail(req.getEmail());
+        if (req.getPhone() != null && !req.getPhone().isBlank()) {
+            String phone = req.getPhone().trim();
+            if (!phone.matches("\\d{10}")) {
+                throw new IllegalArgumentException("Phone must be exactly 10 digits.");
+            }
+            if (!phone.equals(user.getPhone()) && userRepository.existsByPhone(phone)) {
+                throw new IllegalArgumentException("An account with this phone number already exists.");
+            }
+            user.setPhone(phone);
+        }
         if (req.getStudentId() != null) user.setStudentId(req.getStudentId());
         if (req.getHostelBlock() != null) user.setHostelBlock(req.getHostelBlock());
         if (req.getRoomNumber() != null) user.setRoomNumber(req.getRoomNumber());

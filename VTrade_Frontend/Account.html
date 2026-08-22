@@ -212,7 +212,7 @@
               <div class="field"><label class="label">First Name</label><input id="e-fn" class="input" placeholder="Arjun"></div>
               <div class="field"><label class="label">Last Name</label><input id="e-ln" class="input" placeholder="Sharma"></div>
               <div class="field"><label class="label">Email</label><input id="e-em" class="input" disabled style="opacity:.6;cursor:not-allowed" title="Cannot be changed"></div>
-              <div class="field"><label class="label">Phone</label><input id="e-ph" class="input" disabled style="opacity:.6;cursor:not-allowed" title="Cannot be changed"></div>
+              <div class="field"><label class="label">Phone</label><input id="e-ph" class="input" type="tel" placeholder="10-digit number" maxlength="10"></div>
               <div class="fsec">Campus Info</div>
               <div class="field"><label class="label">Student ID (Reg. No.)</label><input id="e-sid" class="input" placeholder="22BCE0XXX"></div>
               <div class="field"><label class="label">Hostel Block</label><input id="e-hb" class="input" placeholder="A Block"></div>
@@ -234,7 +234,7 @@
           <div class="panel-card-body">
             <div class="alert alert-gray" id="pwd-hint" style="margin-bottom:16px">
               <span class="alert-icon">💡</span>
-              <div style="font-size:12px">Set a password so you can also log in with your <strong>Registration Number</strong>. If you signed up via Phone OTP, no password was created — set one here.</div>
+              <div style="font-size:12px">Set a password so you can also log in with your <strong>Registration Number</strong>. If you signed up via Google or don't have a password yet, set one here.</div>
             </div>
             <div class="grid-2">
               <div class="field">
@@ -684,9 +684,12 @@ document.getElementById('apply-btn').addEventListener('click', async () => {
 document.getElementById('save-btn').addEventListener('click', async () => {
   const fn = document.getElementById('e-fn').value.trim();
   if (!fn || !/^[A-Za-z]+$/.test(fn)) { toast('First name must contain letters only', 'e'); return; }
+  const phoneVal = document.getElementById('e-ph').value.trim();
+  if (phoneVal && !/^\d{10}$/.test(phoneVal)) { toast('Phone must be exactly 10 digits', 'e'); return; }
   const payload = {
     first_name:   fn,
     last_name:    document.getElementById('e-ln').value.trim(),
+    phone:        phoneVal,
     student_id:   document.getElementById('e-sid').value.trim(),
     hostel_block: document.getElementById('e-hb').value.trim(),
     room_number:  document.getElementById('e-rn').value.trim()
@@ -698,13 +701,17 @@ document.getElementById('save-btn').addEventListener('click', async () => {
       const d = await vtFetch('PUT', '/users/profile', payload);
       user = d.user;
     } else {
-      Object.assign(user, { first_name:payload.first_name, last_name:payload.last_name,
+      Object.assign(user, { first_name:payload.first_name, last_name:payload.last_name, phone:payload.phone,
         student_id:payload.student_id, hostel_block:payload.hostel_block, room_number:payload.room_number });
     }
     localStorage.setItem('userData', JSON.stringify(user));
     renderProfile(); toast('Profile saved!'); switchPanel('overview');
   } catch (err) { toast(err.message || 'Save failed', 'e'); }
   finally { btn.disabled = false; btn.textContent = '✓ Save Changes'; }
+});
+
+document.getElementById('e-ph').addEventListener('input', function() {
+  this.value = this.value.replace(/\D/g, '').slice(0, 10);
 });
 
 // ── AVATAR UPLOAD ─────────────────────────────────────────

@@ -31,7 +31,6 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f4;min-height:100vh
   color:#1a1a1a;border:3px solid #f59e0b;
   flex-shrink:0;
 }
-.inst-name-block{}
 .inst-name{
   font-family:'Syne',sans-serif;
   font-size:26px;font-weight:800;color:white;
@@ -158,13 +157,6 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f4;min-height:100vh
 .field-input::placeholder{color:#bbb}
 .field-input.error{border-color:#dc3545;background:#fff8f8}
 
-.phone-row{display:flex;border:1.5px solid #d4d4d4;border-radius:5px;overflow:hidden;transition:all 0.2s}
-.phone-row:focus-within{border-color:#1a1a1a;box-shadow:0 0 0 3px rgba(0,0,0,.06)}
-.phone-row.error{border-color:#dc3545}
-.phone-code{padding:10px 12px;background:#f5f5f5;border-right:1.5px solid #d4d4d4;font-size:13px;color:#555;font-family:inherit;outline:none;cursor:pointer}
-.phone-num{flex:1;padding:10px 14px;border:none;background:transparent;font-size:14px;color:#222;outline:none;font-family:inherit}
-.phone-num::placeholder{color:#bbb}
-
 .captcha-box{
   background:#fafafa;border:1px solid #d4d4d4;
   border-radius:5px;padding:12px 16px;
@@ -191,17 +183,9 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f4;min-height:100vh
 .form-links a{color:#1a1a1a;text-decoration:none}
 .form-links a:hover{text-decoration:underline}
 
-.otp-sent-notice{
-  background:#edf7ed;border:1px solid #a8d5a8;
-  border-radius:5px;padding:10px 14px;
-  font-size:12px;color:#2d6a2d;margin-bottom:14px;
-  display:none;
-}
-.otp-sent-notice.visible{display:block}
-
 /* ── GOOGLE SIGN-IN ── */
 #google-btn-wrap{display:flex;justify-content:center;margin-bottom:16px}
-.google-divider{text-align:center;font-size:12px;color:#999;margin-bottom:16px;position:relative}
+.google-divider{text-align:center;font-size:12px;color:#999;margin-bottom:20px;position:relative}
 .google-divider::before,.google-divider::after{content:'';position:absolute;top:50%;width:38%;height:1px;background:#e5e5e5}
 .google-divider::before{left:0}
 .google-divider::after{right:0}
@@ -362,7 +346,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f4;min-height:100vh
         <div class="form-header-icon">🎓</div>
         <div class="form-header-text">
           <h3>Student / Student Worker Login</h3>
-          <p>Use your VIT registered phone number or registration number</p>
+          <p>Sign in with your official VIT Google account or your registration number</p>
         </div>
       </div>
 
@@ -370,70 +354,29 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f4;min-height:100vh
       <div id="google-btn-wrap"></div>
       <div class="google-divider">— or —</div>
 
-      <!-- Tabs: Phone OTP or Reg No. -->
-      <div style="display:flex;gap:0;border:1.5px solid #d4d4d4;border-radius:6px;overflow:hidden;margin-bottom:18px">
-        <button class="tab-btn active" id="tab-phone" onclick="switchTab('phone')" style="flex:1;padding:9px;background:#1a1a1a;color:white;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s">📱 Phone OTP</button>
-        <button class="tab-btn" id="tab-reg" onclick="switchTab('reg')" style="flex:1;padding:9px;background:white;color:#1a1a1a;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s">🎫 Reg. Number</button>
+      <!-- Reg No. + Password -->
+      <div class="field-group">
+        <label class="field-label">Registration Number</label>
+        <input type="text" class="field-input" id="s-reg" placeholder="e.g. 22BCE0001" style="text-transform:uppercase">
       </div>
-
-      <!-- Phone OTP panel -->
-      <div id="panel-phone">
-        <div class="field-group">
-          <label class="field-label">Phone Number</label>
-          <div class="phone-row" id="s-phone-row">
-            <select class="phone-code" id="s-code">
-              <option value="+91">🇮🇳 +91</option>
-              <option value="+1">🇺🇸 +1</option>
-              <option value="+44">🇬🇧 +44</option>
-            </select>
-            <input type="tel" class="phone-num" id="s-phone" placeholder="Enter 10-digit number" maxlength="10">
-          </div>
-        </div>
-        <div class="otp-sent-notice" id="s-otp-notice">
-          ✅ OTP sent to your phone. Enter it below.
-        </div>
-        <div class="field-group" id="s-otp-field" style="display:none">
-          <label class="field-label">One-Time Password (OTP)</label>
-          <input type="text" class="field-input" id="s-otp" placeholder="Enter 6-digit OTP" maxlength="6" inputmode="numeric">
-        </div>
-        <div class="captcha-box">
-          <label class="captcha-check">
-            <input type="checkbox" id="s-captcha">
-            I'm not a robot
-          </label>
-          <div class="captcha-logo"><strong>reCAPTCHA</strong>Privacy · Terms</div>
-        </div>
-        <button class="login-btn" id="s-otp-btn" onclick="studentOtpAction()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.12 1.12 2 2 0 012.11 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.56-.56a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-          Send OTP
-        </button>
+      <div class="field-group">
+        <label class="field-label">Password</label>
+        <input type="password" class="field-input" id="s-pass" placeholder="Enter your password">
       </div>
-
-      <!-- Reg No. + Password panel -->
-      <div id="panel-reg" style="display:none">
-        <div class="field-group">
-          <label class="field-label">Registration Number</label>
-          <input type="text" class="field-input" id="s-reg" placeholder="e.g. 22BCE0001" style="text-transform:uppercase">
-        </div>
-        <div class="field-group">
-          <label class="field-label">Password</label>
-          <input type="password" class="field-input" id="s-pass" placeholder="Enter your password">
-        </div>
-        <div class="captcha-box">
-          <label class="captcha-check">
-            <input type="checkbox" id="s-captcha2">
-            I'm not a robot
-          </label>
-          <div class="captcha-logo"><strong>reCAPTCHA</strong>Privacy · Terms</div>
-        </div>
-        <button class="login-btn" onclick="studentRegLogin()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          Sign In
-        </button>
-        <div class="form-links">
-          <a href="#">Forgot Password?</a>
-          <a href="SignUp.html">Create Account</a>
-        </div>
+      <div class="captcha-box">
+        <label class="captcha-check">
+          <input type="checkbox" id="s-captcha2">
+          I'm not a robot
+        </label>
+        <div class="captcha-logo"><strong>reCAPTCHA</strong>Privacy · Terms</div>
+      </div>
+      <button class="login-btn" onclick="studentRegLogin()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Sign In
+      </button>
+      <div class="form-links">
+        <a href="#">Forgot Password?</a>
+        <a href="SignUp.html">Create Account</a>
       </div>
     </div>
 
@@ -532,7 +475,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f4;min-height:100vh
       <div class="info-row"><span class="info-row-icon">🏫</span>VIT University, Vellore — 632 014</div>
       <div class="info-row"><span class="info-row-icon">📧</span>hello@vtrade.in</div>
       <div class="info-row"><span class="info-row-icon">⏰</span>Support: 8 AM – 10 PM daily</div>
-      <div class="info-row"><span class="info-row-icon">📱</span>OTP login recommended</div>
+      <div class="info-row"><span class="info-row-icon">🔐</span>Google or Reg. Number login</div>
     </div>
 
     <div class="info-card">
@@ -588,87 +531,6 @@ function selectRole(role) {
   setTimeout(() => document.getElementById(formMap[role]).scrollIntoView({ behavior:'smooth', block:'nearest' }), 100);
 }
 
-// Tab switching (phone vs reg)
-let otpSent = false;
-function switchTab(tab) {
-  document.getElementById('tab-phone').style.background = tab === 'phone' ? '#1a1a1a' : 'white';
-  document.getElementById('tab-phone').style.color = tab === 'phone' ? 'white' : '#1a1a1a';
-  document.getElementById('tab-reg').style.background = tab === 'reg' ? '#1a1a1a' : 'white';
-  document.getElementById('tab-reg').style.color = tab === 'reg' ? 'white' : '#1a1a1a';
-  document.getElementById('panel-phone').style.display = tab === 'phone' ? 'block' : 'none';
-  document.getElementById('panel-reg').style.display = tab === 'reg' ? 'block' : 'none';
-}
-
-// Student OTP flow
-async function studentOtpAction() {
-  if (!otpSent) {
-    const phone = document.getElementById('s-phone').value.trim();
-    const code  = document.getElementById('s-code').value;
-    if (!phone || !/^\d{10}$/.test(phone)) {
-      document.getElementById('s-phone-row').classList.add('error');
-      showToast('Enter a valid 10-digit phone number.', 'er'); return;
-    }
-    if (!document.getElementById('s-captcha').checked) { showToast('Please verify the captcha.', 'er'); return; }
-
-    const btn = document.getElementById('s-otp-btn');
-    btn.disabled = true; btn.textContent = 'Sending OTP…';
-    const fullPhone = code + phone;
-
-    const online = await pingBackend();
-    if (online) {
-      try {
-        const data = await vtFetch('POST', '/auth/login/otp/send', { phone: fullPhone });
-        if (data.otp) localStorage.setItem('generatedOTP', data.otp);
-        localStorage.setItem('phoneNumber', fullPhone);
-        showToast(data.otp ? `Demo OTP: ${data.otp}` : 'OTP sent successfully.', 'ok');
-      } catch (err) { showToast(err.message || 'Failed to send OTP.', 'er'); btn.disabled = false; btn.textContent = 'Send OTP'; return; }
-    } else {
-      const otp = Math.floor(100000 + Math.random() * 900000).toString();
-      localStorage.setItem('generatedOTP', otp);
-      localStorage.setItem('phoneNumber', fullPhone);
-      showToast(`OTP: ${otp} (offline mode)`, 'ok');
-    }
-
-    otpSent = true;
-    document.getElementById('s-otp-notice').classList.add('visible');
-    document.getElementById('s-otp-field').style.display = 'block';
-    btn.disabled = false;
-    btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Verify OTP &amp; Sign In';
-    const demoOtp = localStorage.getItem('generatedOTP');
-    if (demoOtp) document.getElementById('s-otp').value = demoOtp;
-    document.getElementById('s-otp').focus();
-  } else {
-    // Verify OTP
-    const entered = document.getElementById('s-otp').value.trim();
-    if (entered.length !== 6) { showToast('Enter the 6-digit OTP.', 'er'); return; }
-    const btn = document.getElementById('s-otp-btn');
-    btn.disabled = true; btn.textContent = 'Verifying…';
-
-    const online = await pingBackend();
-    if (online) {
-      try {
-        const phone = localStorage.getItem('phoneNumber');
-        const data = await vtFetch('POST', '/auth/login/otp/verify', { phone, otp: entered });
-        saveAuthData(data.token, data.user);
-        if (data.user) { localStorage.setItem('userName', data.user.first_name || ''); localStorage.setItem('userRole', data.user.role || 'buyer'); }
-        showToast('Verified! Signing you in…', 'ok');
-        setTimeout(() => window.location.href = 'index.html', 900);
-        return;
-      } catch (err) { showToast(err.message || 'Invalid OTP.', 'er'); btn.disabled = false; btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Verify OTP &amp; Sign In'; return; }
-    }
-    const stored = localStorage.getItem('generatedOTP');
-    if (entered === stored) {
-      localStorage.setItem('userLoggedIn', 'true');
-      showToast('Verified! Signing you in…', 'ok');
-      setTimeout(() => window.location.href = 'index.html', 900);
-    } else {
-      showToast('Incorrect OTP. Try again.', 'er');
-      btn.disabled = false;
-      btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Verify OTP &amp; Sign In';
-    }
-  }
-}
-
 function studentRegLogin() {
   const reg  = document.getElementById('s-reg').value.trim().toUpperCase();
   const pass = document.getElementById('s-pass').value;
@@ -695,7 +557,7 @@ function studentRegLogin() {
       } catch (err) {
         const msg = err.message || '';
         if (msg.toLowerCase().includes('incorrect password')) {
-          showToast('Incorrect password. If you signed up via Phone OTP, set a password first in Account → Edit Profile.', 'er');
+          showToast('Incorrect password. If you signed up via Google, set a password first in Account → Edit Profile.', 'er');
         } else if (msg.toLowerCase().includes('no account') || msg.toLowerCase().includes('registration')) {
           showToast('Registration number not found. Make sure you\'ve set your Student ID in Edit Profile.', 'er');
         } else {
@@ -742,14 +604,6 @@ function storeLogin() {
   showToast('Signed in as Partner Store!', 'ok');
   setTimeout(() => window.location.href = 'index.html', 900);
 }
-
-document.getElementById('s-phone').addEventListener('input', function() {
-  this.value = this.value.replace(/\D/g, '').slice(0, 10);
-  document.getElementById('s-phone-row').classList.remove('error');
-});
-document.getElementById('s-otp').addEventListener('input', function() {
-  this.value = this.value.replace(/\D/g, '').slice(0, 6);
-});
 
 // Auto-select student role on load for familiarity
 window.addEventListener('DOMContentLoaded', () => selectRole('student'));
