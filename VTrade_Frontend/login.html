@@ -199,6 +199,13 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f4;min-height:100vh
 }
 .otp-sent-notice.visible{display:block}
 
+/* ── GOOGLE SIGN-IN ── */
+#google-btn-wrap{display:flex;justify-content:center;margin-bottom:16px}
+.google-divider{text-align:center;font-size:12px;color:#999;margin-bottom:16px;position:relative}
+.google-divider::before,.google-divider::after{content:'';position:absolute;top:50%;width:38%;height:1px;background:#e5e5e5}
+.google-divider::before{left:0}
+.google-divider::after{right:0}
+
 /* ── RIGHT PANEL ── */
 .portal-right{width:300px;flex-shrink:0}
 
@@ -281,7 +288,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f4;min-height:100vh
 </style>
 <link rel="stylesheet" href="vtrade.css">
 <script src="config.js"></script>
-<script></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
@@ -358,6 +365,10 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f4;min-height:100vh
           <p>Use your VIT registered phone number or registration number</p>
         </div>
       </div>
+
+      <!-- Google Sign-In -->
+      <div id="google-btn-wrap"></div>
+      <div class="google-divider">— or —</div>
 
       <!-- Tabs: Phone OTP or Reg No. -->
       <div style="display:flex;gap:0;border:1.5px solid #d4d4d4;border-radius:6px;overflow:hidden;margin-bottom:18px">
@@ -742,6 +753,37 @@ document.getElementById('s-otp').addEventListener('input', function() {
 
 // Auto-select student role on load for familiarity
 window.addEventListener('DOMContentLoaded', () => selectRole('student'));
+
+// ── GOOGLE SIGN-IN ─────────────────────────────────────────
+window.addEventListener('load', () => {
+  if (typeof google === 'undefined') return;
+  google.accounts.id.initialize({
+    client_id: '101215014340-cr6sqhrd2krnfichm13muvpdcr0lhsf9.apps.googleusercontent.com',
+    callback: handleGoogleCredential
+  });
+  google.accounts.id.renderButton(
+    document.getElementById('google-btn-wrap'),
+    { theme: 'outline', size: 'large', width: 300 }
+  );
+});
+
+async function handleGoogleCredential(resp) {
+  showToast('Verifying with Google…', 'ok');
+  const online = await pingBackend();
+  if (!online) { showToast('Backend is offline — cannot verify Google sign-in.', 'er'); return; }
+  try {
+    const d = await vtFetch('POST', '/auth/google', { idToken: resp.credential });
+    saveAuthData(d.token, d.user);
+    if (d.user) {
+      localStorage.setItem('userName', d.user.first_name || '');
+      localStorage.setItem('userRole', d.user.role || 'buyer');
+    }
+    showToast('Signed in with Google!', 'ok');
+    setTimeout(() => window.location.href = 'index.html', 800);
+  } catch (err) {
+    showToast(err.message || 'Google sign-in failed.', 'er');
+  }
+}
 </script>
 </body>
 </html>

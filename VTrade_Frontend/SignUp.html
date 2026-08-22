@@ -36,7 +36,7 @@
 
 <link rel="stylesheet" href="vtrade.css">
 <script src="config.js"></script>
-<script></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 <header class="inst-header">
@@ -104,7 +104,8 @@
             Create Account
           </button>
           <div class="divider">or</div>
-          <button class="google-btn"><img src="https://img.icons8.com/color/48/google-logo.png" alt="G">Sign up with Google</button>
+          <button class="google-btn" id="google-signup-btn"><img src="https://img.icons8.com/color/48/google-logo.png" alt="G">Sign up with Google</button>
+          <div id="hidden-google-btn" style="display:none"></div>
           <div class="auth-foot" style="margin-top:14px">Already have an account? <a href="login.html">Sign in →</a></div>
         </div>
       </div>
@@ -152,6 +153,36 @@ document.getElementById('signup-btn').addEventListener('click',async()=>{
   showToast('Account saved locally. Connect backend to sync.','ok');
   setTimeout(()=>window.location.href='index.html',1000);
 });
+
+// ── GOOGLE SIGN-IN ─────────────────────────────────────────
+window.addEventListener('load', () => {
+  if (typeof google === 'undefined') return;
+  google.accounts.id.initialize({
+    client_id: '101215014340-cr6sqhrd2krnfichm13muvpdcr0lhsf9.apps.googleusercontent.com',
+    callback: handleGoogleCredential
+  });
+  google.accounts.id.renderButton(
+    document.getElementById('hidden-google-btn'),
+    { theme: 'outline', size: 'large' }
+  );
+  document.getElementById('google-signup-btn').addEventListener('click', () => {
+    document.querySelector('#hidden-google-btn div[role="button"]')?.click();
+  });
+});
+
+async function handleGoogleCredential(resp) {
+  const online = await pingBackend();
+  if (!online) { showToast('Backend is offline — cannot verify Google sign-in.', 'er'); return; }
+  try {
+    const d = await vtFetch('POST', '/auth/google', { idToken: resp.credential });
+    saveAuthData(d.token, d.user);
+    if (d.user) { localStorage.setItem('userName', d.user.first_name || ''); }
+    showToast('Account created with Google!', 'ok');
+    setTimeout(() => window.location.href = 'index.html', 800);
+  } catch (err) {
+    showToast(err.message || 'Google sign-in failed.', 'er');
+  }
+}
 </script>
 </body>
 </html>

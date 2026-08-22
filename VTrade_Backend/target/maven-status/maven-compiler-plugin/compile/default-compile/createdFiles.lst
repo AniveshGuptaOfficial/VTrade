@@ -30,6 +30,7 @@ com\vtrade\repository\MarketplaceListingRepository.class
 com\vtrade\config\SecurityConfig.class
 com\vtrade\dto\MarketplaceListingRequest.class
 com\vtrade\model\Product.class
+com\vtrade\dto\GoogleAuthRequest.class
 com\vtrade\service\PickupService.class
 com\vtrade\dto\AuthResponse.class
 com\vtrade\model\User.class

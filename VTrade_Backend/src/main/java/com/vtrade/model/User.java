@@ -27,7 +27,8 @@ public class User {
     @Column(unique = true)
     private String email;
 
-    @Column(unique = true, nullable = false)
+    /** No longer required — Google Sign-In users may not have a phone on record. */
+    @Column(unique = true)
     private String phone;
 
     @JsonIgnore
@@ -42,7 +43,7 @@ public class User {
 
     private String roomNumber;
 
-    @Column(name = "student_id")
+    @Column(name = "student_id", unique = true)
     private String studentId;
 
     @Column(length = 1000)
@@ -55,6 +56,10 @@ public class User {
     private String verificationStatus;
 
     private String avatarUrl;
+
+    /** Google account subject ID — set when the user signs in/up via Google. */
+    @Column(name = "google_id", unique = true)
+    private String googleId;
 
     /** Whether this user has opted into the worker program */
     private boolean worker = false;

@@ -50,6 +50,13 @@ public class AuthController {
         return ResponseEntity.ok(authService.verifyOtp(req.getPhone(), req.getOtp()));
     }
 
+    // ── GOOGLE SIGN-IN ────────────────────────────────────────────
+    // Frontend sends the Google ID token credential from Google Identity Services.
+    @PostMapping("/google")
+    public ResponseEntity<AuthResponse> googleLogin(@Valid @RequestBody GoogleAuthRequest req) {
+        return ResponseEntity.ok(authService.googleLogin(req.getIdToken()));
+    }
+
     // ── GET /auth/me ─────────────────────────────────────────────
     // Account.html calls this on load to get {user, worker} for the logged-in user
     @GetMapping("/me")
