@@ -34,22 +34,6 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(req));
     }
 
-    @PostMapping("/login/otp/send")
-    public ResponseEntity<Map<String, Object>> sendOtp(@Valid @RequestBody OtpSendRequest req) {
-        String otp = authService.sendOtp(req.getPhone());
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "OTP sent successfully.");
-        if (otp != null) {
-            response.put("otp", otp); // demo mode only
-        }
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/login/otp/verify")
-    public ResponseEntity<AuthResponse> verifyOtp(@Valid @RequestBody OtpVerifyRequest req) {
-        return ResponseEntity.ok(authService.verifyOtp(req.getPhone(), req.getOtp()));
-    }
-
     // ── GOOGLE SIGN-IN ────────────────────────────────────────────
     // Frontend sends the Google ID token credential from Google Identity Services.
     @PostMapping("/google")

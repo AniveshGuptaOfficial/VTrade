@@ -5,9 +5,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.vtrade.dto.*;
-import com.vtrade.model.OtpToken;
 import com.vtrade.model.User;
-import com.vtrade.repository.OtpTokenRepository;
 import com.vtrade.repository.UserRepository;
 import com.vtrade.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,15 +21,8 @@ import java.util.regex.Pattern;
 public class AuthService {
 
     private final UserRepository userRepository;
-    private final OtpTokenRepository otpTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-
-    @Value("${vtrade.otp.demo-mode}")
-    private boolean demoMode;
-
-    @Value("${vtrade.otp.expiry-minutes}")
-    private int otpExpiryMinutes;
 
     @Value("${vtrade.google.client-id}")
     private String googleClientId;
@@ -43,16 +34,6 @@ public class AuthService {
     /** firstname.lastname — VIT staff/faculty email */
     private static final Pattern VIT_STAFF_EMAIL =
             Pattern.compile("^[a-z]+\\.[a-z]+@vit\\.ac\\.in$");
-
-    public AuthService(UserRepository userRepository,
-                        OtpTokenRepository otpTokenRepository,
-                        PasswordEncoder passwordEncoder,
-                        JwtUtil jwtUtil) {
-        this.userRepository = userRepository;
-        this.otpTokenRepository = otpTokenRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtUtil = jwtUtil;
-    }
 
     public AuthResponse register(RegisterRequest req) {
         if (userRepository.existsByPhone(req.getPhone())) {
@@ -97,50 +78,6 @@ public class AuthService {
 
         String token = jwtUtil.generateToken(user.getId(), user.getPhone(), user.getRole());
         return new AuthResponse(token, user);
-    }
-
-    /** Sends (generates) an OTP for the given phone. In demo mode the OTP is returned to the caller. */
-    public String sendOtp(String phone) {
-        String code = String.format("%06d", new Random().nextInt(1_000_000));
-
-        OtpToken token = new OtpToken();
-        token.setPhone(phone);
-        token.setCode(code);
-        token.setExpiresAt(LocalDateTime.now().plusMinutes(otpExpiryMinutes));
-        otpTokenRepository.save(token);
-
-        return demoMode ? code : null;
-    }
-
-    /** Verifies the OTP. If valid, finds-or-creates the user and returns an auth response. */
-    public AuthResponse verifyOtp(String phone, String code) {
-        OtpToken token = otpTokenRepository.findTopByPhoneAndUsedFalseOrderByCreatedAtDesc(phone)
-                .orElseThrow(() -> new IllegalArgumentException("No OTP was requested for this phone number."));
-
-        if (token.isUsed()) {
-            throw new IllegalArgumentException("This OTP has already been used.");
-        }
-        if (token.getExpiresAt().isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("OTP has expired. Please request a new one.");
-        }
-        if (!token.getCode().equals(code)) {
-            throw new IllegalArgumentException("Incorrect OTP.");
-        }
-
-        token.setUsed(true);
-        otpTokenRepository.save(token);
-
-        User user = userRepository.findByPhone(phone).orElseGet(() -> {
-            User u = new User();
-            u.setFirstName("Student");
-            u.setLastName("");
-            u.setPhone(phone);
-            u.setRole("buyer");
-            return userRepository.save(u);
-        });
-
-        String jwt = jwtUtil.generateToken(user.getId(), user.getPhone(), user.getRole());
-        return new AuthResponse(jwt, user);
     }
 
     /**
