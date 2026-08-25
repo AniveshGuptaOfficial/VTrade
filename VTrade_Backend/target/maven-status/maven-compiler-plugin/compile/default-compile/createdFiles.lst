@@ -1,6 +1,5 @@
 com\vtrade\dto\BecomeWorkerRequest.class
 com\vtrade\dto\RegisterRequest.class
-com\vtrade\repository\OtpTokenRepository.class
 com\vtrade\repository\PickupRequestRepository.class
 com\vtrade\model\OrderItem.class
 com\vtrade\controller\PickupController.class
@@ -36,9 +35,7 @@ com\vtrade\dto\AuthResponse.class
 com\vtrade\model\User.class
 com\vtrade\service\MarketplaceService.class
 com\vtrade\repository\OrderItemRepository.class
-com\vtrade\dto\OtpSendRequest.class
 com\vtrade\controller\ChatController.class
-com\vtrade\dto\OtpVerifyRequest.class
 com\vtrade\dto\OrderRequest.class
 com\vtrade\controller\OrderController.class
 com\vtrade\repository\ProductRepository.class
@@ -53,7 +50,6 @@ com\vtrade\model\MarketplaceListing.class
 com\vtrade\dto\LoginRequest.class
 com\vtrade\model\ChatMessage.class
 com\vtrade\config\WebConfig.class
-com\vtrade\model\OtpToken.class
 com\vtrade\service\ProductService.class
 com\vtrade\service\UserService.class
 com\vtrade\controller\MarketplaceController.class

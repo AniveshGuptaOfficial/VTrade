@@ -20,8 +20,6 @@ C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\
 C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\dto\LoginRequest.java
 C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\dto\MarketplaceListingRequest.java
 C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\dto\OrderRequest.java
-C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\dto\OtpSendRequest.java
-C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\dto\OtpVerifyRequest.java
 C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\dto\PasswordUpdateRequest.java
 C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\dto\PickupRequestDto.java
 C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\dto\ProductRequest.java
@@ -32,7 +30,6 @@ C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\
 C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\model\MarketplaceListing.java
 C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\model\Order.java
 C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\model\OrderItem.java
-C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\model\OtpToken.java
 C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\model\PickupRequest.java
 C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\model\Product.java
 C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\model\User.java
@@ -41,7 +38,6 @@ C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\
 C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\repository\MarketplaceListingRepository.java
 C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\repository\OrderItemRepository.java
 C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\repository\OrderRepository.java
-C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\repository\OtpTokenRepository.java
 C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\repository\PickupRequestRepository.java
 C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\repository\ProductRepository.java
 C:\Users\Anivesh\OneDrive\Desktop\Coding\hTmL\Web Dev Projects\VIT_Trade\VTrade\VTrade_Backend\src\main\java\com\vtrade\repository\UserRepository.java

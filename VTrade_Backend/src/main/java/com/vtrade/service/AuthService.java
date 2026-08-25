@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Random;
 import java.util.regex.Pattern;
 
 @Service
@@ -27,13 +25,21 @@ public class AuthService {
     @Value("${vtrade.google.client-id}")
     private String googleClientId;
 
-    /** firstname.lastname + 4-digit batch year + optional trailing 0/1 (for duplicate-name suffixes) */
+    /** firstname.lastname + 4-digit batch year — VIT student email */
     private static final Pattern VIT_STUDENT_EMAIL =
             Pattern.compile("^[a-z]+\\.[a-z]+[0-9]{4}@vitstudent\\.ac\\.in$");
 
     /** firstname.lastname — VIT staff/faculty email */
     private static final Pattern VIT_STAFF_EMAIL =
             Pattern.compile("^[a-z]+\\.[a-z]+@vit\\.ac\\.in$");
+
+    public AuthService(UserRepository userRepository,
+                        PasswordEncoder passwordEncoder,
+                        JwtUtil jwtUtil) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
+    }
 
     public AuthResponse register(RegisterRequest req) {
         if (userRepository.existsByPhone(req.getPhone())) {
