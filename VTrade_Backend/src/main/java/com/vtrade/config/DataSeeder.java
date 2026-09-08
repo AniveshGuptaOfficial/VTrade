@@ -2,6 +2,7 @@ package com.vtrade.config;
 
 import com.vtrade.model.Product;
 import com.vtrade.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -10,12 +11,21 @@ public class DataSeeder implements CommandLineRunner {
 
     private final ProductRepository productRepository;
 
+    /**
+     * Set vtrade.seed.enabled=true in application.properties (or as an env var)
+     * only when you deliberately want demo products inserted on a fresh database.
+     * Defaults to false so restarts never silently repopulate data you deleted.
+     */
+    @Value("${vtrade.seed.enabled:false}")
+    private boolean seedEnabled;
+
     public DataSeeder(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
     @Override
     public void run(String... args) {
+        if (!seedEnabled) return;
         if (productRepository.count() > 0) return;
 
         seed("Premium A5 Notebook", "stationery", 89.0, 120.0,
