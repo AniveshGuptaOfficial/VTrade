@@ -205,19 +205,25 @@ function showToast(m,t='ok'){const el=document.getElementById('toast');el.textCo
 function updateClock(){const el=document.getElementById('inst-time');if(el)el.textContent=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true})}
 setInterval(updateClock,1000);updateClock();
 
-const BASE=[
-  {id:1,name:'Premium A5 Notebook',cat:'stationery',price:89,orig:120,img:'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=400&fit=crop',badge:'Trending'},
-  {id:2,name:'Gel Pen Set (Pack of 12)',cat:'stationery',price:64,img:'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=400&fit=crop'},
-  {id:3,name:'Himalaya Face Wash 100ml',cat:'beauty',price:95,orig:110,img:'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400&h=400&fit=crop',badge:'New'},
-  {id:4,name:'Dove Shampoo 180ml',cat:'beauty',price:149,img:'https://images.unsplash.com/photo-1631390339432-74094fc2efec?w=400&h=400&fit=crop'},
-  {id:5,name:'Maggi Noodles (Pack of 12)',cat:'groceries',price:144,img:'https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=400&h=400&fit=crop'},
-  {id:6,name:'Lays Classic (Pack of 6)',cat:'groceries',price:120,img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop'},
-  {id:7,name:"Men's Cotton Briefs 3-Pack",cat:'undergarments',price:199,img:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop'},
-  {id:8,name:'Highlighter Set (6 colours)',cat:'stationery',price:49,img:'https://images.unsplash.com/photo-1583947581924-860bda6a26df?w=400&h=400&fit=crop'},
-];
+let allProducts = [];
+let activeCat = 'all';
 
-function getAll(){return[...(JSON.parse(localStorage.getItem('customProducts')||'[]')),...BASE]}
-let activeCat='all';
+function normalizeProduct(p) {
+  return {
+    id: p.id, name: p.name, cat: p.category, price: p.price,
+    orig: p.original_price, img: p.image_url, badge: p.badge, seller: p.seller_name
+  };
+}
+
+async function fetchProducts() {
+  try {
+    const data = await vtFetch('GET', '/products');
+    allProducts = (data || []).map(normalizeProduct);
+  } catch (err) {
+    showToast('Could not load products from server.', 'er');
+    allProducts = [];
+  }
+}
 
 function setCatFilter(el,cat){
   document.querySelectorAll('.cat-pill-btn').forEach(b=>b.classList.remove('active'));
@@ -229,7 +235,7 @@ function setCatFilter(el,cat){
 
 function renderProducts(){
   const area=document.getElementById('products-area');
-  const all=getAll().filter(p=>activeCat==='all'||p.cat===activeCat).slice(0,8);
+  const all=allProducts.filter(p=>activeCat==='all'||p.cat===activeCat).slice(0,8);
   if(!all.length){area.innerHTML='<div class="empty-state"><div class="ei">🔍</div><h3>No products in this category yet</h3><p>Be the first to add one!</p></div>';return}
   const g=document.createElement('div');g.className='products-grid';
   g.innerHTML=all.map(p=>`
@@ -268,18 +274,31 @@ document.addEventListener('click',e=>{
 });
 
 function openAddModal(){if(!isLoggedIn()){window.location.href='login.html';return}document.getElementById('add-modal').classList.remove('hidden')}
-function saveProduct(){
+async function saveProduct(){
   const name=document.getElementById('ap-name').value.trim(),price=parseFloat(document.getElementById('ap-price').value),stock=parseInt(document.getElementById('ap-stock').value);
   if(!name||!price||!stock){showToast('Fill in all required fields.','er');return}
-  const ud=JSON.parse(localStorage.getItem('userData')||'{}'),ex=JSON.parse(localStorage.getItem('customProducts')||'[]');
-  ex.unshift({id:'cp_'+Date.now(),name,cat:document.getElementById('ap-cat').value,price,orig:parseFloat(document.getElementById('ap-orig').value)||null,stock,img:document.getElementById('ap-img').value.trim(),seller:ud.first_name||'Seller',source_type:'seller',created_at:new Date().toISOString()});
-  localStorage.setItem('customProducts',JSON.stringify(ex));
-  document.getElementById('add-modal').classList.add('hidden');
-  ['ap-name','ap-price','ap-stock','ap-orig','ap-img'].forEach(id=>document.getElementById(id).value='');
-  renderProducts();showToast(`"${name}" is now live!`);
+  const payload={
+    name, category:document.getElementById('ap-cat').value, price,
+    original_price:parseFloat(document.getElementById('ap-orig').value)||null,
+    stock, image_url:document.getElementById('ap-img').value.trim()||null, badge:null
+  };
+  const btn=event.target; btn.disabled=true; btn.textContent='Publishing…';
+  try{
+    await vtFetch('POST','/products',payload);
+    document.getElementById('add-modal').classList.add('hidden');
+    ['ap-name','ap-price','ap-stock','ap-orig','ap-img'].forEach(id=>document.getElementById(id).value='');
+    await fetchProducts();
+    renderProducts();
+    showToast(`"${name}" is now live!`);
+  }catch(err){
+    showToast(err.message||'Could not publish product.','er');
+  }finally{
+    btn.disabled=false; btn.textContent='Publish Product';
+  }
 }
 
-document.addEventListener('DOMContentLoaded',()=>{
+document.addEventListener('DOMContentLoaded',async ()=>{
+  await fetchProducts();
   renderProducts();
   if(isLoggedIn()){const b=document.getElementById('add-product-btn');if(b)b.style.display='inline-flex'}
 });

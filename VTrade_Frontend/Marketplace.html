@@ -145,21 +145,25 @@ setInterval(updateClock,1000);updateClock();
 const COND_BADGE={
   'Like New':'badge-green','Good':'badge-gold','Fair':'badge-gray','For Parts':'badge-red'
 };
-let activeCat='all',chatMsgs={},curChat=null;
+let activeCat='all',chatMsgs={},curChat=null,allListings=[];
 
-function getListings(){
-  const s=localStorage.getItem('mp_listings');
-  if(s)return JSON.parse(s);
-  return[
-    {id:1,title:'Data Structures by CLRS',cat:'books',cond:'Good',reason:'Completed the course, using PDF now',price:320,orig:700,seller:'Priya K.',img:'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&h=400&fit=crop'},
-    {id:2,title:'Casio FX-991ES Calculator',cat:'electronics',cond:'Like New',reason:'Got a better model as birthday gift',price:450,orig:900,seller:'Rahul M.',img:'https://images.unsplash.com/photo-1564406687-6a5c0a68e4b2?w=400&h=400&fit=crop'},
-    {id:3,title:'Adjustable Laptop Stand',cat:'electronics',cond:'Good',reason:'Switching to a table setup',price:350,orig:700,seller:'Anjali S.',img:'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400&h=400&fit=crop'},
-    {id:4,title:'Introduction to Algorithms (Cormen)',cat:'books',cond:'Fair',reason:'Done with DS course',price:180,orig:450,seller:'Vignesh R.',img:'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=400&fit=crop'},
-    {id:5,title:'Yonex Badminton Racket',cat:'sports',cond:'Good',reason:'No space in hostel room',price:600,orig:1200,seller:'Sneha P.',img:'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=400&h=400&fit=crop'},
-    {id:6,title:'VIT Hoodie (Size M)',cat:'clothing',cond:'Like New',reason:'Wrong size, wore just once',price:250,orig:600,seller:'Arjun K.',img:'https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=400&h=400&fit=crop'},
-  ];
+function normalizeListing(l){
+  return {
+    id:l.id, title:l.title, cat:l.category, cond:l.condition,
+    reason:l.reason_for_selling, price:l.price, orig:l.original_price,
+    seller:l.seller_name, img:l.image_url, status:l.status
+  };
 }
-function saveListings(l){localStorage.setItem('mp_listings',JSON.stringify(l))}
+
+async function fetchListings(){
+  try{
+    const data=await vtFetch('GET','/marketplace');
+    allListings=(data||[]).map(normalizeListing);
+  }catch(err){
+    showToast('Could not load marketplace listings.','er');
+    allListings=[];
+  }
+}
 
 function setMCat(el,cat){
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
@@ -167,7 +171,7 @@ function setMCat(el,cat){
 }
 
 function renderListings(){
-  const all=getListings().filter(l=>activeCat==='all'||l.cat===activeCat);
+  const all=allListings.filter(l=>activeCat==='all'||l.cat===activeCat);
   const grid=document.getElementById('listings-grid');
   if(!all.length){grid.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="ei">🔍</div><h3>No listings found</h3><p>Be the first to sell in this category!</p></div>';return}
   grid.innerHTML=all.map(l=>`
@@ -208,25 +212,34 @@ function prevImgs(inp){
   Array.from(inp.files).forEach(f=>{const r=new FileReader();r.onload=e=>{const img=document.createElement('img');img.src=e.target.result;img.className='thumb';prev.appendChild(img)};r.readAsDataURL(f)});
 }
 
-function publishListing(){
+async function publishListing(){
   const title=document.getElementById('s-title').value.trim(),reason=document.getElementById('s-reason').value.trim(),price=parseFloat(document.getElementById('s-price').value);
   if(!title){showToast('Enter item title.','er');return}
   if(!reason){showToast('Enter reason for selling.','er');return}
   if(!price||price<=0){showToast('Enter a valid price.','er');return}
-  const ud=JSON.parse(localStorage.getItem('userData')||'{}');
-  const seller=((ud.first_name||'Student')+' '+((ud.last_name||'')[0]||'')+'.').trim();
-  const listings=getListings();
-  listings.unshift({id:Date.now(),title,cat:document.getElementById('s-cat').value,cond:document.getElementById('s-cond').value,reason,price,orig:parseFloat(document.getElementById('s-orig').value)||null,seller,img:document.querySelector('#img-prev img')?.src||'https://images.unsplash.com/photo-1560343776-97e7d202ff0e?w=400&h=400&fit=crop'});
-  saveListings(listings);renderListings();
-  document.getElementById('sell-panel').style.display='none';
-  ['s-title','s-reason','s-price','s-orig'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('img-prev').innerHTML='';
-  showToast('Listing published! 🎉');
+
+  const payload={
+    title, category:document.getElementById('s-cat').value, condition:document.getElementById('s-cond').value,
+    reason_for_selling:reason, price, original_price:parseFloat(document.getElementById('s-orig').value)||null,
+    image_url:document.querySelector('#img-prev img')?.src||null
+  };
+
+  try{
+    await vtFetch('POST','/marketplace',payload);
+    await fetchListings();
+    renderListings();
+    document.getElementById('sell-panel').style.display='none';
+    ['s-title','s-reason','s-price','s-orig'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('img-prev').innerHTML='';
+    showToast('Listing published! 🎉');
+  }catch(err){
+    showToast(err.message||'Could not publish listing.','er');
+  }
 }
 
 function openChat(lid){
   if(!isLoggedIn()){showToast('Please login to chat.','er');setTimeout(()=>window.location.href='login.html',1200);return}
-  const l=getListings().find(x=>x.id===lid);if(!l)return;
+  const l=allListings.find(x=>x.id===lid);if(!l)return;
   curChat=l;
   document.getElementById('chat-seller').textContent=l.seller;
   document.getElementById('chat-item').textContent=l.title+' · ₹'+l.price;
@@ -264,7 +277,10 @@ function sendOffer(){
     renderMsgs(lid);
   },1400);
 }
-document.addEventListener('DOMContentLoaded',()=>renderListings());
+document.addEventListener('DOMContentLoaded',async ()=>{
+  await fetchListings();
+  renderListings();
+});
 </script>
 </body>
 </html>
