@@ -1,0 +1,42 @@
+Folder PATH listing for volume OS
+Volume serial number is E687-9509
+C:.
++---.github
+|   \---modernize
+|       \---java-upgrade
+|           \---hooks
+|               \---scripts
++---.vscode
++---VTrade_Backend
+|   +---data
+|   +---src
+|   |   \---main
+|   |       +---java
+|   |       |   \---com
+|   |       |       \---vtrade
+|   |       |           +---config
+|   |       |           +---controller
+|   |       |           +---dto
+|   |       |           +---model
+|   |       |           +---repository
+|   |       |           +---security
+|   |       |           \---service
+|   |       \---resources
+|   \---target
+|       +---classes
+|       |   \---com
+|       |       \---vtrade
+|       |           +---config
+|       |           +---controller
+|       |           +---dto
+|       |           +---model
+|       |           +---repository
+|       |           +---security
+|       |           \---service
+|       +---generated-sources
+|       |   \---annotations
+|       \---maven-status
+|           \---maven-compiler-plugin
+|               \---compile
+|                   \---default-compile
+\---VTrade_Frontend
