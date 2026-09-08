@@ -1,12 +1,12 @@
 /**
  * VTrade Frontend Config
- * Updated for Spring Boot Backend (Port 8080)
+ * Updated for Spring Boot Backend (Render)
  */
 
 const VTRADE_CONFIG = {
-  BACKEND_URL: 'http://localhost:8080',        // ← Changed to Spring Boot
-  API_BASE:    'http://localhost:8080/api',     // ← Updated
-  UPLOADS_URL: 'http://localhost:8080/uploads',
+  BACKEND_URL: 'https://vtrade-backends.onrender.com',
+  API_BASE:    'https://vtrade-backends.onrender.com/api',
+  UPLOADS_URL: 'https://vtrade-backends.onrender.com/uploads',
 };
 
 // Helper: build full URL for avatar/image
