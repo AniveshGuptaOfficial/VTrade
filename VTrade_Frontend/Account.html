@@ -125,7 +125,6 @@
 </style>
 </head>
 <body>
-<body>
 <header class="inst-header">
   <div class="inst-header-inner">
     <div class="inst-logo-area"><div class="inst-logo">VT</div><div><div class="inst-name">V<span>Trade</span></div><div class="inst-sub">Campus E-Commerce Portal · VIT University, Vellore</div></div></div>
@@ -572,7 +571,7 @@ function renderOrders(id, orders, showDel) {
     ).join('');
     const sc = STATUS_COLORS[o.status] || 'tag-gray';
     return `<div class="order-card">
-      ${showDel ? `<button class="order-del" data-local="${o._local||false}" data-idx="${o._idx??''}">✕</button>` : ''}
+      ${showDel ? `<button class="order-del" data-local="${o._local||false}" data-idx="${o._idx??''}" data-id="${o.id}">✕</button>` : ''}
       <div class="order-top"><span class="order-id">Order #${o.id}</span>
         <span class="order-date">${new Date(o.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</span></div>
       <div class="order-items-list">${items||'<div style="font-size:13px;color:var(--ink-3)">No item details</div>'}</div>
@@ -587,7 +586,7 @@ function renderOrders(id, orders, showDel) {
 }
 
 // Delete an order
-document.addEventListener('click', e => {
+document.addEventListener('click', async e => {
   if (!e.target.classList.contains('order-del')) return;
   const local = e.target.dataset.local === 'true';
   const idx   = parseInt(e.target.dataset.idx);
@@ -596,6 +595,16 @@ document.addEventListener('click', e => {
     h.splice(idx, 1);
     localStorage.setItem('orderHistory', JSON.stringify(h));
     loadOrders(); toast('Order removed');
+    return;
+  }
+  const orderId = e.target.dataset.id;
+  if (!apiUp || !getToken()) { toast('Connect to sync before cancelling this order.', 'e'); return; }
+  try {
+    await vtFetch('DELETE', `/orders/${orderId}`);
+    loadOrders();
+    toast('Order cancelled');
+  } catch (err) {
+    toast(err.message || 'Could not cancel order.', 'e');
   }
 });
 
@@ -637,7 +646,7 @@ function updateToggle() {
   const tt = document.getElementById('tt');
   tt.className = 'toggle-track' + (isOnline ? ' on' : '');
   document.getElementById('online-lbl').textContent = isOnline ? 'Online' : 'Offline';
-  document.getElementById('online-lbl').style.color = isOnline ? 'var(--green)' : 'var(--text-muted)';
+  document.getElementById('online-lbl').style.color = isOnline ? 'var(--green)' : 'var(--ink-3)';
 }
 
 document.getElementById('toggle-wrap').addEventListener('click', async () => {
