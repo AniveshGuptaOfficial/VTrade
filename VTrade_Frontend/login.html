@@ -184,7 +184,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f4;min-height:100vh
 .form-links a:hover{text-decoration:underline}
 
 /* ── GOOGLE SIGN-IN ── */
-#google-btn-wrap{display:flex;justify-content:center;margin-bottom:16px}
+#google-btn-wrap, #worker-google-btn-wrap, #store-google-btn-wrap{display:flex;justify-content:center;margin-bottom:16px}
 .google-divider{text-align:center;font-size:12px;color:#999;margin-bottom:20px;position:relative}
 .google-divider::before,.google-divider::after{content:'';position:absolute;top:50%;width:38%;height:1px;background:#e5e5e5}
 .google-divider::before{left:0}
@@ -386,7 +386,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f4;min-height:100vh
         <div class="form-header-icon">🚴</div>
         <div class="form-header-text">
           <h3>Hired Delivery Staff Login</h3>
-          <p>Use your VTrade employee ID and password</p>
+          <p>Sign in with a Gmail account, or use your VTrade employee ID and password</p>
         </div>
       </div>
 
@@ -425,7 +425,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f4;min-height:100vh
         <div class="form-header-icon">🏪</div>
         <div class="form-header-text">
           <h3>Partner Store Login</h3>
-          <p>Registered groceries, beauty, stationery &amp; undergarment stores</p>
+          <p>Sign in with a Gmail account, or use registered store credentials</p>
         </div>
       </div>
 
@@ -511,6 +511,77 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f4;min-height:100vh
 <div class="toast" id="toast"></div>
 
 <script>
+function showToast(m,t='ok'){const el=document.getElementById('toast');el.textContent=m;el.className=`toast ${t} show`;setTimeout(()=>el.classList.remove('show'),3200)}
+function updateClock(){const el=document.getElementById('inst-time');if(el)el.textContent=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true})}
+setInterval(updateClock,1000);updateClock();
+
+if (typeof isLoggedIn === 'function' && isLoggedIn()) window.location.href = 'index.html';
+
+// ── ROLE SELECTION ──────────────────────────────────────────
+let currentRole = null;
+
+function selectRole(role) {
+  currentRole = role;
+
+  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('role-' + role).classList.add('selected');
+
+  document.querySelectorAll('.login-form-area').forEach(f => f.classList.remove('visible'));
+  const form = document.getElementById('form-' + role);
+  if (form) {
+    form.classList.add('visible');
+    setTimeout(() => form.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
+  }
+}
+
+// ── STUDENT: Registration Number + Password login ───────────
+async function studentRegLogin() {
+  const reg = document.getElementById('s-reg').value.trim().toUpperCase();
+  const pass = document.getElementById('s-pass').value;
+  if (!reg) { showToast('Enter your registration number.', 'er'); return; }
+  if (!pass) { showToast('Enter your password.', 'er'); return; }
+
+  const btn = document.getElementById('s-reg-btn');
+  btn.disabled = true; btn.textContent = 'Signing in…';
+
+  const online = await pingBackend();
+  if (!online) {
+    showToast('Backend is offline. Please try again shortly.', 'er');
+    btn.disabled = false; btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Sign In';
+    return;
+  }
+
+  try {
+    const d = await vtFetch('POST', '/auth/login', { student_id: reg, password: pass });
+    saveAuthData(d.token, d.user);
+    if (d.user) {
+      localStorage.setItem('userName', d.user.first_name || '');
+      localStorage.setItem('userRole', d.user.role || 'buyer');
+    }
+    showToast('Signed in!', 'ok');
+    setTimeout(() => window.location.href = 'index.html', 700);
+  } catch (err) {
+    showToast(err.message || 'Sign in failed.', 'er');
+    btn.disabled = false; btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Sign In';
+  }
+}
+
+// ── DELIVERY STAFF: local fallback login (not yet wired to a real endpoint) ──
+function workerLogin() {
+  const id = document.getElementById('w-id').value.trim();
+  const pass = document.getElementById('w-pass').value;
+  if (!id || !pass) { showToast('Enter your Employee ID and password.', 'er'); return; }
+  showToast('Delivery Staff manual login is not yet connected — use Google Sign-In above.', 'er');
+}
+
+// ── PARTNER STORE: local fallback login (not yet wired to a real endpoint) ──
+function storeLogin() {
+  const email = document.getElementById('p-email').value.trim();
+  const pass = document.getElementById('p-pass').value;
+  if (!email || !pass) { showToast('Enter your Store Email/ID and password.', 'er'); return; }
+  showToast('Partner Store manual login is not yet connected — use Google Sign-In above.', 'er');
+}
+
 // ── GOOGLE SIGN-IN (shared across all three portals) ──────────
 window.addEventListener('load', () => {
   if (typeof google === 'undefined') return;
