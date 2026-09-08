@@ -389,6 +389,11 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f4;min-height:100vh
           <p>Use your VTrade employee ID and password</p>
         </div>
       </div>
+
+      <!-- Google Sign-In -->
+      <div id="worker-google-btn-wrap"></div>
+      <div class="google-divider">— or —</div>
+
       <div class="field-group">
         <label class="field-label">Employee ID</label>
         <input type="text" class="field-input" id="w-id" placeholder="e.g. VTD-2025-0042">
@@ -423,6 +428,11 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f4;min-height:100vh
           <p>Registered groceries, beauty, stationery &amp; undergarment stores</p>
         </div>
       </div>
+
+      <!-- Google Sign-In -->
+      <div id="store-google-btn-wrap"></div>
+      <div class="google-divider">— or —</div>
+
       <div class="field-group">
         <label class="field-label">Store Email / ID</label>
         <input type="email" class="field-input" id="p-email" placeholder="store@yourshop.com">
@@ -501,114 +511,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f4;min-height:100vh
 <div class="toast" id="toast"></div>
 
 <script>
-if (isLoggedIn()) window.location.href = 'index.html';
-
-// Live clock
-function updateClock() {
-  const el = document.getElementById('inst-time');
-  if (el) el.textContent = new Date().toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true });
-}
-setInterval(updateClock, 1000); updateClock();
-
-function showToast(msg, type) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.className = `toast ${type} show`;
-  setTimeout(() => t.classList.remove('show'), 3500);
-}
-
-// Role selection
-let currentRole = null;
-function selectRole(role) {
-  ['student','worker','store'].forEach(r => {
-    document.getElementById('role-' + r).classList.remove('selected');
-    document.getElementById('form-' + (r === 'student' ? 'student' : r === 'worker' ? 'worker' : 'store')).classList.remove('visible');
-  });
-  document.getElementById('role-' + role).classList.add('selected');
-  const formMap = { student:'form-student', worker:'form-worker', store:'form-store' };
-  document.getElementById(formMap[role]).classList.add('visible');
-  currentRole = role;
-  // Scroll to form
-  setTimeout(() => document.getElementById(formMap[role]).scrollIntoView({ behavior:'smooth', block:'nearest' }), 100);
-}
-
-function studentRegLogin() {
-  const reg  = document.getElementById('s-reg').value.trim().toUpperCase();
-  const pass = document.getElementById('s-pass').value;
-  if (!reg) { showToast('Enter your registration number.', 'er'); return; }
-  if (!pass) { showToast('Enter your password.', 'er'); return; }
-  if (!document.getElementById('s-captcha2').checked) { showToast('Please verify the captcha.', 'er'); return; }
-
-  const btn = document.getElementById('s-reg-btn');
-  if (btn) { btn.disabled = true; btn.textContent = 'Signing in…'; }
-
-  (async () => {
-    const online = await pingBackend();
-    if (online) {
-      try {
-        const d = await vtFetch('POST', '/auth/login', { student_id: reg, password: pass });
-        saveAuthData(d.token, d.user);
-        if (d.user) {
-          localStorage.setItem('userName', d.user.first_name || '');
-          localStorage.setItem('userRole', d.user.role || 'buyer');
-        }
-        showToast('Signed in! Redirecting…', 'ok');
-        setTimeout(() => window.location.href = 'index.html', 900);
-        return;
-      } catch (err) {
-        const msg = err.message || '';
-        if (msg.toLowerCase().includes('incorrect password')) {
-          showToast('Incorrect password. If you signed up via Google, set a password first in Account → Edit Profile.', 'er');
-        } else if (msg.toLowerCase().includes('no account') || msg.toLowerCase().includes('registration')) {
-          showToast('Registration number not found. Make sure you\'ve set your Student ID in Edit Profile.', 'er');
-        } else {
-          showToast(msg || 'Login failed. Please try again.', 'er');
-        }
-        if (btn) { btn.disabled = false; btn.textContent = 'Sign In'; }
-        return;
-      }
-    }
-    // Offline fallback — check if locally stored user has this student_id
-    const stored = JSON.parse(localStorage.getItem('userData') || '{}');
-    if (stored.student_id === reg || stored.studentId === reg) {
-      localStorage.setItem('userLoggedIn', 'true');
-      showToast('Signed in (offline)! Redirecting…', 'ok');
-      setTimeout(() => window.location.href = 'index.html', 900);
-    } else {
-      showToast('Registration number not found locally. Connect to backend to verify.', 'er');
-    }
-    if (btn) { btn.disabled = false; btn.textContent = 'Sign In'; }
-  })();
-}
-
-function workerLogin() {
-  const eid  = document.getElementById('w-id').value.trim();
-  const pass = document.getElementById('w-pass').value;
-  if (!eid) { showToast('Enter your Employee ID.', 'er'); return; }
-  if (!pass) { showToast('Enter your password.', 'er'); return; }
-  if (!document.getElementById('w-captcha').checked) { showToast('Please verify the captcha.', 'er'); return; }
-  localStorage.setItem('userLoggedIn', 'true');
-  localStorage.setItem('userData', JSON.stringify({ first_name: 'Delivery', last_name: 'Staff', role: 'delivery_staff', student_id: eid }));
-  showToast('Signed in as Delivery Staff!', 'ok');
-  setTimeout(() => window.location.href = 'index.html', 900);
-}
-
-function storeLogin() {
-  const email = document.getElementById('p-email').value.trim();
-  const pass  = document.getElementById('p-pass').value;
-  if (!email || !/^\S+@\S+\.\S+$/.test(email)) { showToast('Enter a valid email.', 'er'); return; }
-  if (!pass) { showToast('Enter your password.', 'er'); return; }
-  if (!document.getElementById('p-captcha').checked) { showToast('Please verify the captcha.', 'er'); return; }
-  localStorage.setItem('userLoggedIn', 'true');
-  localStorage.setItem('userData', JSON.stringify({ first_name: 'Partner', last_name: 'Store', role: 'store', email }));
-  localStorage.setItem('userRole', 'store');
-  showToast('Signed in as Partner Store!', 'ok');
-  setTimeout(() => window.location.href = 'index.html', 900);
-}
-
-// Auto-select student role on load for familiarity
-window.addEventListener('DOMContentLoaded', () => selectRole('student'));
-
-// ── GOOGLE SIGN-IN ─────────────────────────────────────────
+// ── GOOGLE SIGN-IN (shared across all three portals) ──────────
 window.addEventListener('load', () => {
   if (typeof google === 'undefined') return;
   google.accounts.id.initialize({
@@ -619,14 +522,25 @@ window.addEventListener('load', () => {
     document.getElementById('google-btn-wrap'),
     { theme: 'outline', size: 'large', width: 300 }
   );
+  google.accounts.id.renderButton(
+    document.getElementById('worker-google-btn-wrap'),
+    { theme: 'outline', size: 'large', width: 300 }
+  );
+  google.accounts.id.renderButton(
+    document.getElementById('store-google-btn-wrap'),
+    { theme: 'outline', size: 'large', width: 300 }
+  );
 });
 
 async function handleGoogleCredential(resp) {
+  // currentRole is set by selectRole('student'|'worker'|'store') when the person
+  // picked their portal — that tells the backend which domain rule to apply.
+  const role = currentRole || 'student';
   showToast('Verifying with Google…', 'ok');
   const online = await pingBackend();
   if (!online) { showToast('Backend is offline — cannot verify Google sign-in.', 'er'); return; }
   try {
-    const d = await vtFetch('POST', '/auth/google', { idToken: resp.credential });
+    const d = await vtFetch('POST', '/auth/google', { idToken: resp.credential, role });
     saveAuthData(d.token, d.user);
     if (d.user) {
       localStorage.setItem('userName', d.user.first_name || '');

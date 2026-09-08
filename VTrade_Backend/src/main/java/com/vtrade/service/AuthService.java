@@ -33,6 +33,10 @@ public class AuthService {
     private static final Pattern VIT_STAFF_EMAIL =
             Pattern.compile("^[a-z]+\\.[a-z]+@vit\\.ac\\.in$");
 
+    /** Temporary: Delivery Staff & Partner Store sign-in restricted to plain Gmail accounts. */
+    private static final Pattern GMAIL_EMAIL =
+            Pattern.compile("^[a-zA-Z0-9._%+-]+@gmail\\.com$");
+
     public AuthService(UserRepository userRepository,
                         PasswordEncoder passwordEncoder,
                         JwtUtil jwtUtil) {
@@ -87,11 +91,14 @@ public class AuthService {
     }
 
     /**
-     * Verifies a Google ID token, restricts sign-in to official VIT email addresses,
-     * then finds an existing user by googleId or email, or creates a new one.
+     * Verifies a Google ID token, then applies domain restrictions based on which
+     * portal ("student" | "worker" | "store") the person signed in from:
+     *   - student: must be an official VIT email (@vitstudent.ac.in or @vit.ac.in)
+     *   - worker / store: temporarily restricted to plain @gmail.com accounts, since
+     *     VIT doesn't yet issue official emails for hired staff or partner stores.
      * Returns the same AuthResponse shape as every other login path.
      */
-    public AuthResponse googleLogin(String idTokenString) {
+    public AuthResponse googleLogin(String idTokenString, String intendedRole) {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
                 new NetHttpTransport(), GsonFactory.getDefaultInstance())
                 .setAudience(Collections.singletonList(googleClientId))
@@ -118,22 +125,18 @@ public class AuthService {
         }
 
         String normalizedEmail = email.trim().toLowerCase();
-        boolean isStudent = VIT_STUDENT_EMAIL.matcher(normalizedEmail).matches();
-        boolean isStaff = VIT_STAFF_EMAIL.matcher(normalizedEmail).matches();
+        String normalizedRole = intendedRole == null ? "student" : intendedRole.trim().toLowerCase();
 
-        if (!isStudent && !isStaff) {
-            throw new IllegalArgumentException(
-                    "Please sign in with your official VIT email (@vitstudent.ac.in or @vit.ac.in).");
-        }
+        String assignedRole = resolveAndValidate(normalizedEmail, normalizedRole);
 
         User user = userRepository.findByGoogleId(googleId)
                 .or(() -> userRepository.findByEmail(normalizedEmail))
                 .orElseGet(() -> {
                     User u = new User();
-                    u.setFirstName(firstName != null ? firstName : "Student");
+                    u.setFirstName(firstName != null ? firstName : "User");
                     u.setLastName(lastName != null ? lastName : "");
                     u.setEmail(normalizedEmail);
-                    u.setRole("buyer");
+                    u.setRole(assignedRole);
                     return u;
                 });
 
@@ -145,5 +148,36 @@ public class AuthService {
 
         String jwt = jwtUtil.generateToken(user.getId(), user.getPhone(), user.getRole());
         return new AuthResponse(jwt, user);
+    }
+
+    /** Checks the email against the domain rule for the requested portal and returns the role to assign new users. */
+    private String resolveAndValidate(String normalizedEmail, String normalizedRole) {
+        boolean isVitStudent = VIT_STUDENT_EMAIL.matcher(normalizedEmail).matches();
+        boolean isVitStaff = VIT_STAFF_EMAIL.matcher(normalizedEmail).matches();
+        boolean isGmail = GMAIL_EMAIL.matcher(normalizedEmail).matches();
+
+        switch (normalizedRole) {
+            case "worker":
+                if (!isGmail) {
+                    throw new IllegalArgumentException(
+                            "Delivery Staff sign-in currently requires a Gmail account (@gmail.com).");
+                }
+                return "delivery_staff";
+
+            case "store":
+                if (!isGmail) {
+                    throw new IllegalArgumentException(
+                            "Partner Store sign-in currently requires a Gmail account (@gmail.com).");
+                }
+                return "store";
+
+            case "student":
+            default:
+                if (!isVitStudent && !isVitStaff) {
+                    throw new IllegalArgumentException(
+                            "Please sign in with your official VIT email (@vitstudent.ac.in or @vit.ac.in).");
+                }
+                return "buyer";
+        }
     }
 }

@@ -35,10 +35,11 @@ public class AuthController {
     }
 
     // ── GOOGLE SIGN-IN ────────────────────────────────────────────
-    // Frontend sends the Google ID token credential from Google Identity Services.
+    // Frontend sends the Google ID token credential from Google Identity Services,
+    // plus which portal ("student" | "worker" | "store") the person signed in from.
     @PostMapping("/google")
     public ResponseEntity<AuthResponse> googleLogin(@Valid @RequestBody GoogleAuthRequest req) {
-        return ResponseEntity.ok(authService.googleLogin(req.getIdToken()));
+        return ResponseEntity.ok(authService.googleLogin(req.getIdToken(), req.getRole()));
     }
 
     // ── GET /auth/me ─────────────────────────────────────────────
