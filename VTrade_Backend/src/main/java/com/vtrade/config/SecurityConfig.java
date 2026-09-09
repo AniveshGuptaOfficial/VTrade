@@ -37,6 +37,9 @@ public class SecurityConfig {
                 .requestMatchers("/api/health").permitAll()
                 // Only these three auth endpoints are public — NOT /api/auth/me
                 .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login", "/api/auth/google").permitAll()
+                // Admin provisioning is protected by its own X-Admin-Secret header check
+                // inside AdminController, not by JWT — so it must be public at this layer.
+                .requestMatchers(HttpMethod.POST, "/api/admin/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/uploads/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()

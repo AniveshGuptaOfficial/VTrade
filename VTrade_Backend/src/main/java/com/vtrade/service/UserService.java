@@ -97,10 +97,15 @@ public class UserService {
         workerSlotRepository.deleteByWorkerIdAndId(userId, slotId);
     }
 
-    /** Set or change the user's password. Enables Registration Number login. */
+    /**
+     * Set or change the user's password. Also clears mustResetPassword, since this
+     * is the endpoint an admin-provisioned Delivery Staff / Partner Store account
+     * calls to complete their forced first-time password reset.
+     */
     public User setPassword(Long userId, String rawPassword) {
         User user = getProfile(userId);
         user.setPasswordHash(passwordEncoder.encode(rawPassword));
+        user.setMustResetPassword(false);
         return userRepository.save(user);
     }
 }

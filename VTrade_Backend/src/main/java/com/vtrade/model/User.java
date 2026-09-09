@@ -35,7 +35,7 @@ public class User {
     @Column(name = "password_hash")
     private String passwordHash;
 
-    /** buyer | student_worker | delivery_staff | admin */
+    /** buyer | student_worker | delivery_staff | store | admin */
     @Column(nullable = false)
     private String role = "buyer";
 
@@ -66,6 +66,14 @@ public class User {
 
     /** Online/available toggle for workers */
     private boolean workerOnline = false;
+
+    /**
+     * True for admin-provisioned Delivery Staff / Partner Store accounts that must
+     * set their own password before normal use (a temporary password is issued
+     * out-of-band by the admin). Defaults to false for all normal self-service
+     * accounts (buyers/students via register or Google Sign-In).
+     */
+    private boolean mustResetPassword = false;
 
     /** Accumulated bounty points */
     private Integer bountyPoints = 0;

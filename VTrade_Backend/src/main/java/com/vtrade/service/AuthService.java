@@ -93,9 +93,12 @@ public class AuthService {
     /**
      * Verifies a Google ID token, then applies domain restrictions based on which
      * portal ("student" | "worker" | "store") the person signed in from:
-     *   - student: must be an official VIT email (@vitstudent.ac.in or @vit.ac.in)
-     *   - worker / store: temporarily restricted to plain @gmail.com accounts, since
-     *     VIT doesn't yet issue official emails for hired staff or partner stores.
+     *   - student: must be an official VIT email (@vitstudent.ac.in or @vit.ac.in);
+     *     new accounts are created automatically on first sign-in.
+     *   - worker / store: temporarily restricted to plain @gmail.com accounts.
+     *     These accounts are NEVER auto-created here — an admin must provision
+     *     them first via POST /api/admin/provision-user. If no matching account
+     *     exists, sign-in is refused with a clear message.
      * Returns the same AuthResponse shape as every other login path.
      */
     public AuthResponse googleLogin(String idTokenString, String intendedRole) {
@@ -129,16 +132,28 @@ public class AuthService {
 
         String assignedRole = resolveAndValidate(normalizedEmail, normalizedRole);
 
-        User user = userRepository.findByGoogleId(googleId)
+        User existing = userRepository.findByGoogleId(googleId)
                 .or(() -> userRepository.findByEmail(normalizedEmail))
-                .orElseGet(() -> {
-                    User u = new User();
-                    u.setFirstName(firstName != null ? firstName : "User");
-                    u.setLastName(lastName != null ? lastName : "");
-                    u.setEmail(normalizedEmail);
-                    u.setRole(assignedRole);
-                    return u;
-                });
+                .orElse(null);
+
+        User user;
+        if (existing != null) {
+            user = existing;
+        } else {
+            // No existing account. Only the Student portal is allowed to self-provision
+            // via Google Sign-In. Delivery Staff / Partner Store accounts must already
+            // exist — created by an admin through /api/admin/provision-user.
+            if (!"student".equals(normalizedRole)) {
+                String portalLabel = "worker".equals(normalizedRole) ? "Delivery Staff" : "Partner Store";
+                throw new IllegalArgumentException(
+                        "No " + portalLabel + " account found for this email. Please contact the admin to get access.");
+            }
+            user = new User();
+            user.setFirstName(firstName != null ? firstName : "User");
+            user.setLastName(lastName != null ? lastName : "");
+            user.setEmail(normalizedEmail);
+            user.setRole(assignedRole);
+        }
 
         user.setGoogleId(googleId);
         if (user.getEmail() == null) {
