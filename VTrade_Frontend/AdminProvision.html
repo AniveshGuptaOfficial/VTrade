@@ -81,6 +81,8 @@ document.getElementById('provision-btn').addEventListener('click', async () => {
   btn.disabled = true; btn.textContent = 'Creating…';
 
   try {
+    // NOTE: backend uses a global snake_case JSON naming strategy, so keys here
+    // must be temp_password / first_name / last_name — NOT camelCase.
     const res = await fetch(VTRADE_CONFIG.API_BASE + '/admin/provision-user', {
       method: 'POST',
       headers: {
@@ -88,9 +90,11 @@ document.getElementById('provision-btn').addEventListener('click', async () => {
         'X-Admin-Secret': secret
       },
       body: JSON.stringify({
-        email, tempPassword, role,
-        firstName: firstName || undefined,
-        lastName: lastName || undefined
+        email,
+        temp_password: tempPassword,
+        role,
+        first_name: firstName || undefined,
+        last_name: lastName || undefined
       })
     });
     const data = await res.json().catch(() => ({}));
