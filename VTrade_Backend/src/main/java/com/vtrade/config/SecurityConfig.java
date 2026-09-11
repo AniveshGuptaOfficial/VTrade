@@ -43,6 +43,9 @@ public class SecurityConfig {
                 // Anyone (not yet a VTrade user) can submit a request to become Delivery
                 // Staff or a Partner Store — reviewed manually by the admin afterward.
                 .requestMatchers(HttpMethod.POST, "/api/access-requests").permitAll()
+                // Contact Us: submitting is public; viewing/updating the list is protected
+                // by its own X-Admin-Secret header check inside ContactMessageController.
+                .requestMatchers("/api/contact", "/api/contact/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/uploads/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()

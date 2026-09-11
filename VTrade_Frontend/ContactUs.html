@@ -132,7 +132,7 @@ setInterval(updateClock,1000);updateClock();</script>
           <textarea id="message" class="input" placeholder="Describe your issue or question…" maxlength="500"></textarea>
           <div class="char-count"><span id="char-left">500</span> characters remaining</div>
         </div>
-        <button type="submit" class="btn-primary btn-full" style="margin-top:4px;">
+        <button type="submit" class="btn-primary btn-full" id="submit-btn" style="margin-top:4px;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           Send Message
         </button>
@@ -141,32 +141,46 @@ setInterval(updateClock,1000);updateClock();</script>
   </div>
 </div>
 
+<div class="vt-toast" id="toast"></div>
 <footer class="inst-footer">© 2025 VTrade Commerce Pvt. Ltd. · VIT University, Vellore 632 014 · Built by VIT Students · <a href="PrivacyPolicy.html">Privacy</a> · <a href="TermsAndCondition.html">Terms</a></footer>
 
 <script>
+function showToast(m,t='ok'){const el=document.getElementById('toast');el.textContent=m;el.className=`vt-toast toast-${t} show`;setTimeout(()=>el.classList.remove('show'),3200)}
+
 const msgArea = document.getElementById('message');
 msgArea.addEventListener('input', () => {
   document.getElementById('char-left').textContent = 500 - msgArea.value.length;
 });
 
-document.getElementById('contactForm').addEventListener('submit', e => {
+document.getElementById('contactForm').addEventListener('submit', async e => {
   e.preventDefault();
   const name = document.getElementById('name').value.trim();
   const email = document.getElementById('email').value.trim();
+  const subject = document.getElementById('subject').value;
   const msg = document.getElementById('message').value.trim();
 
-  if (!name) { document.getElementById('name').classList.add('error'); alert('Please enter your name.'); return; }
-  if (!/^[A-Za-z\s]{1,40}$/.test(name)) { alert('Name should only contain letters (max 40 chars).'); return; }
-  if (!email || !/^\S+@\S+\.\S+$/.test(email)) { document.getElementById('email').classList.add('error'); alert('Please enter a valid email.'); return; }
-  if (!msg) { document.getElementById('message').classList.add('error'); alert('Please enter your message.'); return; }
+  if (!name) { document.getElementById('name').classList.add('error'); showToast('Please enter your name.', 'er'); return; }
+  if (!/^[A-Za-z\s]{1,40}$/.test(name)) { showToast('Name should only contain letters (max 40 chars).', 'er'); return; }
+  if (!email || !/^\S+@\S+\.\S+$/.test(email)) { document.getElementById('email').classList.add('error'); showToast('Please enter a valid email.', 'er'); return; }
+  if (!msg) { document.getElementById('message').classList.add('error'); showToast('Please enter your message.', 'er'); return; }
 
-  alert('Message sent! We\'ll get back to you soon. 👋');
-  document.getElementById('contactForm').reset();
-  document.getElementById('char-left').textContent = '500';
-  document.querySelectorAll('.vt-input.error').forEach(el => el.classList.remove('error'));
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+
+  try {
+    await vtFetch('POST', '/contact', { name, email, subject: subject || null, message: msg });
+    showToast('Message sent! We\'ll get back to you soon. 👋');
+    document.getElementById('contactForm').reset();
+    document.getElementById('char-left').textContent = '500';
+    document.querySelectorAll('.vt-input.error, .input.error').forEach(el => el.classList.remove('error'));
+  } catch (err) {
+    showToast(err.message || 'Could not send message. Please try again.', 'er');
+  } finally {
+    btn.disabled = false;
+  }
 });
 
-document.querySelectorAll('.vt-input').forEach(el => {
+document.querySelectorAll('.input').forEach(el => {
   el.addEventListener('input', () => el.classList.remove('error'));
 });
 </script>
