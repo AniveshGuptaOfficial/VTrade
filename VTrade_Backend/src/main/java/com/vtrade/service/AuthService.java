@@ -99,6 +99,10 @@ public class AuthService {
      *     These accounts are NEVER auto-created here — an admin must provision
      *     them first via POST /api/admin/provision-user. If no matching account
      *     exists, sign-in is refused with a clear message.
+     * Additionally, an admin-provisioned account (mustResetPassword == true) must
+     * complete its first login using the temporary email + password issued by the
+     * admin before Google Sign-In becomes available — this prevents someone from
+     * bypassing the forced password setup simply by clicking "Sign in with Google".
      * Returns the same AuthResponse shape as every other login path.
      */
     public AuthResponse googleLogin(String idTokenString, String intendedRole) {
@@ -138,6 +142,14 @@ public class AuthService {
 
         User user;
         if (existing != null) {
+            // Admin-provisioned accounts (Delivery Staff / Partner Store) must sign in at
+            // least once using the temporary email + password issued by the admin, which
+            // clears mustResetPassword, before Google Sign-In is allowed for that account.
+            if (existing.isMustResetPassword()) {
+                throw new IllegalArgumentException(
+                        "Please sign in first using the email and temporary password provided by your admin. " +
+                        "You'll be asked to set your own password, after which Google Sign-In will work too.");
+            }
             user = existing;
         } else {
             // No existing account. Only the Student portal is allowed to self-provision
