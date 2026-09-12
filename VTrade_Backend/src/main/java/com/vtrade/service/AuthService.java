@@ -45,18 +45,36 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
+    /**
+     * Self-registration (email/password) for the Student portal only. Enforces the
+     * same official-VIT-email rule as Student Google Sign-In, so a random Gmail or
+     * other outside address can't be used to create a buyer/student account.
+     */
     public AuthResponse register(RegisterRequest req) {
         if (userRepository.existsByPhone(req.getPhone())) {
             throw new IllegalArgumentException("An account with this phone number already exists.");
         }
-        if (req.getEmail() != null && !req.getEmail().isBlank() && userRepository.existsByEmail(req.getEmail())) {
-            throw new IllegalArgumentException("An account with this email already exists.");
+
+        String normalizedEmail = null;
+        if (req.getEmail() != null && !req.getEmail().isBlank()) {
+            normalizedEmail = req.getEmail().trim().toLowerCase();
+
+            boolean isVitStudent = VIT_STUDENT_EMAIL.matcher(normalizedEmail).matches();
+            boolean isVitStaff = VIT_STAFF_EMAIL.matcher(normalizedEmail).matches();
+            if (!isVitStudent && !isVitStaff) {
+                throw new IllegalArgumentException(
+                        "Please register with your official VIT email (@vitstudent.ac.in or @vit.ac.in).");
+            }
+
+            if (userRepository.existsByEmail(normalizedEmail)) {
+                throw new IllegalArgumentException("An account with this email already exists.");
+            }
         }
 
         User user = new User();
         user.setFirstName(req.getFirstName());
         user.setLastName(req.getLastName());
-        user.setEmail(req.getEmail());
+        user.setEmail(normalizedEmail);
         user.setPhone(req.getPhone());
         user.setPasswordHash(passwordEncoder.encode(req.getPassword()));
         user.setRole("buyer");
