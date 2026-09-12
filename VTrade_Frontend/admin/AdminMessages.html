@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Contact Messages — VTrade</title>
+<link rel="stylesheet" href="/assets/vtrade.css">
+<script src="/assets/config.js"></script>
+<style>
+.admin-wrap{max-width:900px;margin:40px auto;padding:0 20px}
+.admin-warn{background:var(--err-bg);border:1px solid #fca5a5;color:var(--err);border-radius:var(--r2);padding:12px 16px;font-size:12.5px;margin-bottom:20px;line-height:1.6}
+.secret-bar{display:flex;gap:10px;margin-bottom:20px}
+.secret-bar input{flex:1}
+.msg-card{background:white;border:1px solid var(--line);border-radius:var(--r3);padding:18px 20px;margin-bottom:14px;box-shadow:var(--s1)}
+.msg-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+.msg-name{font-size:14px;font-weight:700;color:var(--ink)}
+.msg-email{font-size:12px;color:var(--ink-3);margin-top:2px}
+.msg-date{font-size:11px;color:var(--ink-4);white-space:nowrap}
+.msg-subject{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:var(--r-full);background:var(--brand-light);color:var(--brand);margin-bottom:8px}
+.msg-body{font-size:13px;color:var(--ink-2);line-height:1.6;white-space:pre-wrap;margin-bottom:12px}
+.msg-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.status-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:var(--r-full)}
+.status-new{background:var(--err-bg);color:var(--err)}
+.status-read{background:var(--surface-2);color:var(--ink-3)}
+.status-replied{background:var(--ok-bg);color:var(--ok)}
+.empty-msg{text-align:center;padding:50px 20px;color:var(--ink-3)}
+</style>
+</head>
+<body>
+<header class="inst-header">
+  <div class="inst-header-inner">
+    <div class="inst-logo-area"><div class="inst-logo">VT</div><div><div class="inst-name">V<span>Trade</span></div><div class="inst-sub">Internal Admin Tool</div></div></div>
+    <div class="inst-tagline"><strong>Not linked in nav — bookmark this URL</strong>View &amp; manage Contact Us messages.</div>
+  </div>
+</header>
+
+<div class="admin-wrap">
+  <div class="admin-warn">
+    ⚠️ This page is for the site admin only. It is not linked anywhere in the app —
+    access is controlled purely by the Admin Secret below. Never share this URL or the secret.
+  </div>
+
+  <div class="secret-bar">
+    <input type="password" id="admin-secret" class="vt-input" placeholder="Paste the admin secret">
+    <button class="btn btn-primary" id="load-btn">Load Messages</button>
+  </div>
+
+  <div id="messages-list"></div>
+</div>
+
+<div class="vt-toast" id="toast"></div>
+<footer class="inst-footer">© 2025 VTrade Commerce Pvt. Ltd. · Internal tool — not part of the public site.</footer>
+
+<script>
+function showToast(m,t='ok'){const el=document.getElementById('toast');el.textContent=m;el.className=`vt-toast toast-${t} show`;setTimeout(()=>el.classList.remove('show'),3200)}
+
+let currentSecret = '';
+
+document.getElementById('load-btn').addEventListener('click', loadMessages);
+
+async function loadMessages() {
+  currentSecret = document.getElementById('admin-secret').value.trim();
+  if (!currentSecret) { showToast('Enter the admin secret.', 'er'); return; }
+
+  const btn = document.getElementById('load-btn');
+  btn.disabled = true; btn.textContent = 'Loading…';
+
+  try {
+    const res = await fetch(VTRADE_CONFIG.API_BASE + '/contact', {
+      headers: { 'X-Admin-Secret': currentSecret }
+    });
+    const data = await res.json().catch(() => ([]));
+    if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
+    renderMessages(data);
+  } catch (err) {
+    showToast(err.message || 'Could not load messages.', 'er');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Load Messages';
+  }
+}
+
+function renderMessages(messages) {
+  const el = document.getElementById('messages-list');
+  if (!messages.length) {
+    el.innerHTML = '<div class="empty-msg">📭 No messages yet.</div>';
+    return;
+  }
+  el.innerHTML = messages.map(m => `
+    <div class="msg-card" data-id="${m.id}">
+      <div class="msg-top">
+        <div>
+          <div class="msg-name">${escapeHtml(m.name)}</div>
+          <div class="msg-email">${escapeHtml(m.email)}</div>
+        </div>
+        <div class="msg-date">${new Date(m.created_at).toLocaleString('en-IN', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' })}</div>
+      </div>
+      ${m.subject ? `<span class="msg-subject">${escapeHtml(m.subject)}</span>` : ''}
+      <div class="msg-body">${escapeHtml(m.message)}</div>
+      <div class="msg-actions">
+        <span class="status-badge status-${m.status}">${m.status}</span>
+        <button class="btn btn-outline btn-sm" onclick="setStatus(${m.id}, 'read')">Mark Read</button>
+        <button class="btn btn-primary btn-sm" onclick="setStatus(${m.id}, 'replied')">Mark Replied</button>
+        <a class="btn btn-ghost btn-sm" href="mailto:${encodeURIComponent(m.email)}?subject=${encodeURIComponent('Re: ' + (m.subject || 'Your VTrade message'))}">✉️ Reply by Email</a>
+      </div>
+    </div>
+  `).join('');
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
+
+async function setStatus(id, status) {
+  try {
+    const res = await fetch(VTRADE_CONFIG.API_BASE + `/contact/${id}/status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Secret': currentSecret },
+      body: JSON.stringify({ status })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
+    showToast(`Marked as ${status}.`, 'ok');
+    loadMessages();
+  } catch (err) {
+    showToast(err.message || 'Could not update status.', 'er');
+  }
+}
+</script>
+</body>
+</html>

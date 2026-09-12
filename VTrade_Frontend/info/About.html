@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us — VTrade</title>
+
+
+
+<style>
+.about-hero {
+  background: var(--brand); padding: 80px 28px;
+  position: relative; overflow: hidden; text-align: center;
+}
+.about-hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(232,52,26,0.18), transparent 70%);
+  pointer-events: none;
+}
+.about-hero-inner { max-width: 680px; margin: 0 auto; position: relative; z-index: 1; }
+.about-hero .eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 16px; border-radius: 40px;
+  background: rgba(232,52,26,0.15); color: var(--red-light);
+  font-size: 13px; font-weight: 600; letter-spacing: 0.4px;
+  border: 1px solid rgba(232,52,26,0.25); margin-bottom: 18px;
+}
+.about-hero h1 {
+  font-family: 'Syne', sans-serif; font-size: 52px; font-weight: 800;
+  color: white; letter-spacing: -1.5px; line-height: 1.05; margin-bottom: 16px;
+}
+.about-hero h1 em { color: var(--red-light); font-style: normal; }
+.about-hero p { color: rgba(255,255,255,0.55); font-size: 17px; line-height: 1.7; }
+
+.about-wrap { max-width: 1100px; margin: 0 auto; padding: 64px 28px; }
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; margin-bottom: 64px; }
+.about-text h2 { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 700; color: var(--brand); letter-spacing: -0.6px; margin-bottom: 14px; }
+.about-text p { font-size: 15px; color: var(--ink-3); line-height: 1.8; margin-bottom: 14px; }
+.about-visual {
+  background: var(--brand); border-radius: 24px; padding: 36px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+}
+.about-stat { background: rgba(255,255,255,0.06); border-radius: 14px; padding: 22px; text-align: center; }
+.about-stat-num { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: white; letter-spacing: -0.5px; }
+.about-stat-label { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 4px; }
+
+.model-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; margin-top: 28px; }
+.model-card { background: white; border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
+.model-card-icon { font-size: 28px; margin-bottom: 12px; }
+.model-card h3 { font-size: 16px; font-weight: 700; color: var(--brand); margin-bottom: 6px; }
+.model-card p { font-size: 14px; color: var(--ink-3); line-height: 1.65; }
+.model-card .vt-tag { margin-top: 10px; }
+
+.worker-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 28px; }
+.worker-type-card { background: var(--brand); border-radius: 16px; padding: 28px; }
+.worker-type-card h3 { font-size: 17px; font-weight: 700; color: white; margin-bottom: 12px; }
+.worker-type-card ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.worker-type-card ul li { font-size: 14px; color: rgba(255,255,255,0.6); display: flex; align-items: flex-start; gap: 8px; }
+.worker-type-card ul li::before { content: '→'; color: var(--red-light); flex-shrink: 0; }
+.worker-type-card .badge-strip { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+
+.cta-strip {
+  background: var(--err); border-radius: 20px; padding: 48px;
+  text-align: center; margin-top: 64px;
+}
+.cta-strip h2 { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: white; letter-spacing: -0.6px; margin-bottom: 10px; }
+.cta-strip p { color: rgba(255,255,255,0.7); font-size: 15px; margin-bottom: 28px; }
+.cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.cta-btns a {
+  padding: 12px 28px; border-radius: 10px; font-size: 14px; font-weight: 700;
+  font-family: var(--font-body); cursor: pointer; transition: var(--t);
+}
+.cta-white { background: white; color: var(--err); }
+.cta-white:hover { background: var(--surface-2); }
+.cta-ghost-white { background: rgba(255,255,255,0.15); color: white; border: 1.5px solid rgba(255,255,255,0.3); }
+.cta-ghost-white:hover { background: rgba(255,255,255,0.22); }
+
+@media (max-width: 768px) {
+  .about-grid { grid-template-columns: 1fr; }
+  .worker-grid { grid-template-columns: 1fr; }
+  .about-hero h1 { font-size: 36px; }
+}
+</style>
+
+
+
+
+<link rel="stylesheet" href="/assets/vtrade.css">
+<script src="/assets/config.js"></script>
+<script>function updateClock(){const el=document.getElementById("inst-time");if(el)el.textContent=new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true})}
+setInterval(updateClock,1000);updateClock();</script>
+</head>
+<body>
+
+<header class="inst-header">
+  <div class="inst-header-inner">
+    <div class="inst-logo-area"><div class="inst-logo">VT</div><div><div class="inst-name">V<span>Trade</span></div><div class="inst-sub">Campus E-Commerce · VIT University, Vellore</div></div></div>
+    <div class="inst-tagline"><strong>VTrade — Campus First</strong>Built by students, for students.</div>
+  </div>
+</header>
+<nav class="inst-nav">
+  <div class="inst-nav-inner">
+    <ul class="inst-nav-links">
+      <li><a href="/app/index.html">🏠 Home</a></li>
+      <li><a href="/app/SeeAll.html">🛒 Shop</a></li>
+      <li><a href="/app/Marketplace.html">♻️ Marketplace</a></li>
+      <li><a href="/app/Pickup.html">📦 Pickup</a></li>
+      <li><a href="/info/About.html" class="active">ℹ️ About</a></li>
+      <li><a href="/info/ContactUs.html">📧 Contact</a></li>
+    </ul>
+    <div class="inst-nav-right">
+      <span class="inst-time" id="inst-time"></span>
+      <div id="auth-area"><a href="/auth/login.html" class="btn btn-primary btn-sm">Login / Register</a></div>
+      <a href="/app/MyCart.html" class="btn btn-outline btn-sm">🛒 <span id="cart-count"></span></a>
+    </div>
+  </div>
+</nav>
+
+<section class="about-hero">
+  <div class="about-hero-inner">
+    <div class="eyebrow">🎓 VIT University, Vellore</div>
+    <h1>Built by students,<br>for <em>students.</em></h1>
+    <p>VTrade is the campus-first e-commerce and delivery ecosystem — turning free slots into deliveries and long walks into instant orders.</p>
+  </div>
+</section>
+
+<div class="about-wrap">
+
+  <div class="about-grid">
+    <div class="about-text">
+      <h2>Our Story</h2>
+      <p>Founded in 2025 by VIT students who were tired of wasting precious study hours walking to distant stores and karts, VTrade was born out of a simple frustration.</p>
+      <p>We asked: <em>why not connect students who need things with students who have free time?</em> What started as a WhatsApp group for hostel deliveries grew into a full platform.</p>
+      <p>Today, VTrade covers normal shopping, a second-hand marketplace with in-app chat and verified condition tags, and a pickup service that fetches your Amazon and Flipkart parcels from campus karts.</p>
+    </div>
+    <div class="about-visual">
+      <div class="about-stat">
+        <div class="about-stat-num">2,400+</div>
+        <div class="about-stat-label">Active Students</div>
+      </div>
+      <div class="about-stat">
+        <div class="about-stat-num">15 min</div>
+        <div class="about-stat-label">Avg. Delivery</div>
+      </div>
+      <div class="about-stat">
+        <div class="about-stat-num">98%</div>
+        <div class="about-stat-label">On-time Rate</div>
+      </div>
+      <div class="about-stat">
+        <div class="about-stat-num">4.8★</div>
+        <div class="about-stat-label">Campus Rating</div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h2 class="section-title">Our Hybrid Delivery Model</h2>
+    <p class="section-sub" style="margin-bottom:0">Two types of workers, one seamless system</p>
+    <div class="worker-grid">
+      <div class="worker-type-card">
+        <div class="badge-strip">
+          <span class="vt-tag" style="background:rgba(232,52,26,0.15);color:var(--red-light);">🎓 Student Workers</span>
+        </div>
+        <h3>Student Workers</h3>
+        <ul>
+          <li>Import V-TOP timetable to set free slots</li>
+          <li>Accept assignments between classes</li>
+          <li>Earn Bounty Points per delivery (10 pts base)</li>
+          <li>Redeem points for shopping discounts (10pts = ₹1)</li>
+          <li>Climb the weekly leaderboard for bonus points</li>
+          <li>Slots updatable anytime, no fixed shifts</li>
+        </ul>
+      </div>
+      <div class="worker-type-card">
+        <div class="badge-strip">
+          <span class="vt-tag" style="background:rgba(212,168,83,0.15);color:var(--gold);">🚴 Hired Staff</span>
+        </div>
+        <h3>Hired Delivery Staff</h3>
+        <ul>
+          <li>Vetted &amp; approved by VTrade</li>
+          <li>Fixed working shifts, guaranteed pay</li>
+          <li>Rs. 80/hr base + peak hour bonuses</li>
+          <li>Performance bonus for high ratings</li>
+          <li>Cover time slots students can't</li>
+          <li>Deductions enforced for missed shifts</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 56px;">
+    <h2 class="section-title">Security You Can Trust</h2>
+    <p class="section-sub" style="margin-bottom:0">Every delivery is protected end-to-end</p>
+    <div class="model-grid">
+      <div class="model-card">
+        <div class="model-card-icon">🔐</div>
+        <h3>Double OTP</h3>
+        <p>OTP-1 at pickup point confirms correct parcel collected. OTP-2 at your door confirms correct recipient.</p>
+        <span class="vt-tag tag-red">Security</span>
+      </div>
+      <div class="model-card">
+        <div class="model-card-icon">📍</div>
+        <h3>Geofence Locked</h3>
+        <p>Workers can only mark delivery complete within 150m of your hostel. Campus boundary enforced.</p>
+        <span class="vt-tag tag-green">Trust</span>
+      </div>
+      <div class="model-card">
+        <div class="model-card-icon">📸</div>
+        <h3>Photo Proof</h3>
+        <p>Mandatory timestamped delivery photo taken in-app. GPS-tagged, server-verified — no gallery uploads.</p>
+        <span class="vt-tag tag-gray">Verification</span>
+      </div>
+      <div class="model-card">
+        <div class="model-card-icon">💰</div>
+        <h3>Escrow Payments</h3>
+        <p>Your money is held securely until delivery is confirmed. Disputed? Funds frozen until resolved.</p>
+        <span class="vt-tag tag-gold">Payments</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-strip">
+    <h2>Ready to join VTrade?</h2>
+    <p>Shop smarter, earn while studying, sell your old things.</p>
+    <div class="cta-btns">
+      <a href="/app/index.html" class="cta-white">Start Shopping</a>
+      <a href="/auth/login.html" class="cta-ghost-white">Become a Worker →</a>
+    </div>
+  </div>
+
+</div>
+
+<footer class="inst-footer">© 2025 VTrade Commerce Pvt. Ltd. · VIT University, Vellore 632 014 · Built by VIT Students · <a href="/info/PrivacyPolicy.html">Privacy</a> · <a href="/info/TermsAndCondition.html">Terms</a></footer>
+</body>
+</html>

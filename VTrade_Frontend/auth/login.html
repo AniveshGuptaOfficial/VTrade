@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VTrade Portal — Login</title>
+
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f4;min-height:100vh;display:flex;flex-direction:column}
+
+/* ── TOP INSTITUTIONAL HEADER ── */
+.inst-header{
+  background:linear-gradient(135deg,#1a1a1a 0%,#0a0a0a 60%,#000000 100%);
+  border-bottom:3px solid #f59e0b;
+  padding:0;
+}
+.inst-header-inner{
+  max-width:1400px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 32px;
+  gap:20px;
+}
+.inst-logo-area{display:flex;align-items:center;gap:16px}
+.inst-logo{
+  width:64px;height:64px;
+  background:white;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-size:22px;font-weight:900;
+  color:#1a1a1a;border:3px solid #f59e0b;
+  flex-shrink:0;
+}
+.inst-name{
+  font-family:'Syne',sans-serif;
+  font-size:26px;font-weight:800;color:white;
+  letter-spacing:-0.5px;line-height:1;
+}
+.inst-name span{color:#f59e0b}
+.inst-sub{font-size:12px;color:rgba(255,255,255,0.65);margin-top:3px;letter-spacing:0.3px}
+.inst-tagline{
+  text-align:right;
+  color:rgba(255,255,255,0.75);
+  font-size:12px;line-height:1.6;
+  max-width:300px;
+}
+.inst-tagline strong{color:#f59e0b;font-size:15px;display:block;margin-bottom:3px}
+
+/* ── BLUE NAV BAR ── */
+.inst-nav{
+  background:#0a0a0a;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  padding:0 32px;
+}
+.inst-nav-inner{
+  max-width:1400px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  height:38px;
+}
+.inst-nav-links{display:flex;gap:0;list-style:none}
+.inst-nav-links a{
+  color:rgba(255,255,255,0.75);font-size:12px;
+  padding:0 14px;line-height:38px;display:block;
+  border-right:1px solid rgba(255,255,255,0.1);
+  transition:all 0.2s;text-decoration:none;
+}
+.inst-nav-links a:hover{background:rgba(255,255,255,0.1);color:white}
+.inst-time{color:rgba(255,255,255,0.55);font-size:12px}
+
+/* ── MAIN CONTENT ── */
+.portal-body{
+  flex:1;display:flex;
+  max-width:1400px;width:100%;margin:0 auto;
+  padding:32px;gap:28px;
+  align-items:flex-start;
+}
+
+/* ── LEFT PANEL ── */
+.portal-left{flex:1;min-width:0}
+
+.welcome-card{
+  background:white;border-radius:6px;
+  border:1px solid #e5e5e5;
+  border-top:4px solid #1a1a1a;
+  padding:28px 32px;margin-bottom:20px;
+}
+.welcome-title{
+  font-family:'Syne',sans-serif;
+  font-size:21px;font-weight:800;color:#1a1a1a;
+  margin-bottom:6px;
+}
+.welcome-title span{color:#f59e0b}
+.welcome-sub{font-size:13px;color:#666;line-height:1.65;margin-bottom:20px}
+
+/* ── ROLE CARDS ── */
+.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.role-card{
+  border:2px solid #e5e5e5;border-radius:8px;
+  padding:20px 14px;text-align:center;
+  cursor:pointer;transition:all 0.2s;
+  background:white;position:relative;overflow:hidden;
+}
+.role-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,#1a1a1a 0%,#2a2a2a 100%);
+  opacity:0;transition:opacity 0.2s;
+}
+.role-card:hover{border-color:#1a1a1a;transform:translateY(-2px);box-shadow:0 4px 18px rgba(0,0,0,.12)}
+.role-card:hover::before{opacity:0.06}
+.role-card.selected{border-color:#1a1a1a;background:#f5f5f5}
+.role-icon{
+  width:64px;height:64px;border-radius:50%;
+  margin:0 auto 12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;
+  border:2px solid #e5e5e5;
+  background:#fafafa;
+  position:relative;z-index:1;
+  transition:all 0.2s;
+}
+.role-card:hover .role-icon{border-color:#1a1a1a;background:#e5e5e5}
+.role-card h4{font-size:14px;font-weight:700;color:#1a1a1a;position:relative;z-index:1}
+.role-card p{font-size:11px;color:#777;margin-top:4px;position:relative;z-index:1;line-height:1.45}
+
+/* ── LOGIN FORMS ── */
+.login-form-area{
+  background:white;border-radius:6px;
+  border:1px solid #e5e5e5;
+  border-top:4px solid #f59e0b;
+  padding:28px 32px;
+  display:none;
+}
+.login-form-area.visible{display:block}
+.form-header{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:22px;padding-bottom:16px;
+  border-bottom:1px solid #e5e5e5;
+}
+.form-header-icon{
+  width:44px;height:44px;border-radius:50%;
+  background:#f5f5f5;border:2px solid #1a1a1a;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+}
+.form-header-text h3{font-size:16px;font-weight:700;color:#1a1a1a}
+.form-header-text p{font-size:12px;color:#888;margin-top:1px}
+
+.field-group{margin-bottom:16px}
+.field-label{display:block;font-size:12px;font-weight:600;color:#444;margin-bottom:6px;letter-spacing:0.2px}
+.field-input{
+  width:100%;padding:10px 14px;
+  border:1.5px solid #d4d4d4;border-radius:5px;
+  font-size:14px;color:#222;background:white;
+  outline:none;transition:all 0.2s;font-family:inherit;
+}
+.field-input:focus{border-color:#1a1a1a;box-shadow:0 0 0 3px rgba(0,0,0,.06)}
+.field-input::placeholder{color:#bbb}
+.field-input.error{border-color:#dc3545;background:#fff8f8}
+
+.captcha-box{
+  background:#fafafa;border:1px solid #d4d4d4;
+  border-radius:5px;padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;
+}
+.captcha-check{display:flex;align-items:center;gap:10px;font-size:13px;color:#444;cursor:pointer}
+.captcha-check input{width:18px;height:18px;accent-color:#1a1a1a;cursor:pointer}
+.captcha-logo{font-size:10px;color:#aaa;text-align:right;line-height:1.3}
+.captcha-logo strong{display:block;color:#666}
+
+.login-btn{
+  width:100%;padding:11px;
+  background:linear-gradient(135deg,#1a1a1a,#2a2a2a);
+  color:white;border:none;border-radius:5px;
+  font-size:14px;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.login-btn:hover{background:linear-gradient(135deg,#000000,#1a1a1a);box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.login-btn:disabled{opacity:0.55;cursor:not-allowed}
+
+.form-links{display:flex;justify-content:space-between;margin-top:12px;font-size:12px}
+.form-links a{color:#1a1a1a;text-decoration:none}
+.form-links a:hover{text-decoration:underline}
+
+.provision-note{
+  background:#fefce8;border:1px solid #fde68a;border-radius:5px;
+  padding:10px 14px;font-size:11.5px;color:#78530a;line-height:1.55;margin-bottom:16px;
+}
+
+/* ── GOOGLE SIGN-IN ── */
+#google-btn-wrap, #worker-google-btn-wrap, #store-google-btn-wrap{display:flex;justify-content:center;margin-bottom:16px}
+.google-divider{text-align:center;font-size:12px;color:#999;margin-bottom:20px;position:relative}
+.google-divider::before,.google-divider::after{content:'';position:absolute;top:50%;width:38%;height:1px;background:#e5e5e5}
+.google-divider::before{left:0}
+.google-divider::after{right:0}
+
+/* ── RIGHT PANEL ── */
+.portal-right{width:300px;flex-shrink:0}
+
+.spotlight-card{
+  background:white;border-radius:6px;
+  border:1px solid #e5e5e5;
+  border-top:4px solid #1a1a1a;
+  overflow:hidden;margin-bottom:16px;
+}
+.spotlight-header{
+  background:linear-gradient(135deg,#1a1a1a,#0a0a0a);
+  padding:12px 18px;
+  display:flex;align-items:center;gap:8px;
+}
+.spotlight-header h4{color:white;font-size:13px;font-weight:700;letter-spacing:0.5px}
+.spotlight-ticker{
+  padding:0;list-style:none;
+  max-height:220px;overflow-y:auto;
+}
+.spotlight-ticker::-webkit-scrollbar{width:4px}
+.spotlight-ticker::-webkit-scrollbar-thumb{background:#c4c4c4;border-radius:2px}
+.spotlight-ticker li{
+  padding:10px 16px;
+  border-bottom:1px solid #e5e5e5;
+  font-size:12px;color:#444;line-height:1.5;
+  cursor:pointer;transition:background 0.15s;
+}
+.spotlight-ticker li:hover{background:#fafafa}
+.spotlight-ticker li::before{content:'• ';color:#1a1a1a;font-weight:700}
+.spotlight-ticker li:last-child{border-bottom:none}
+
+.info-card{
+  background:white;border-radius:6px;
+  border:1px solid #e5e5e5;
+  padding:18px;margin-bottom:16px;
+}
+.info-card h4{font-size:12px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:12px}
+.info-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:12px;color:#555}
+.info-row-icon{font-size:16px;width:20px;text-align:center}
+
+.app-badges{display:flex;flex-direction:column;gap:8px}
+.app-badge-btn{
+  display:flex;align-items:center;gap:10px;
+  background:#f5f5f5;border:1px solid #e5e5e5;
+  border-radius:6px;padding:8px 12px;cursor:pointer;
+  transition:all 0.15s;text-decoration:none;
+}
+.app-badge-btn:hover{border-color:#1a1a1a;background:#e5e5e5}
+.app-badge-icon{font-size:20px}
+.app-badge-text{font-size:11px;color:#444}
+.app-badge-text strong{display:block;color:#1a1a1a;font-size:12px}
+
+/* ── FOOTER ── */
+.inst-footer{
+  background:#0a0a0a;
+  border-top:3px solid #f59e0b;
+  text-align:center;padding:12px;
+  font-size:11px;color:rgba(255,255,255,0.55);
+}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);padding:12px 22px;border-radius:6px;font-size:13px;font-weight:600;color:white;z-index:9999;opacity:0;transition:all .3s;pointer-events:none;border-left:4px solid rgba(255,255,255,0.4)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{background:#1a6b38}
+.toast.er{background:#c0392b}
+
+@media(max-width:900px){
+  .portal-body{flex-direction:column;padding:16px}
+  .portal-right{width:100%}
+  .role-grid{grid-template-columns:repeat(3,1fr)}
+  .inst-tagline{display:none}
+}
+@media(max-width:500px){
+  .role-grid{grid-template-columns:1fr 1fr 1fr}
+  .role-card{padding:14px 8px}
+  .role-icon{width:50px;height:50px;font-size:22px}
+  .inst-header-inner{padding:10px 16px}
+  .inst-name{font-size:20px}
+}
+</style>
+<link rel="stylesheet" href="/assets/vtrade.css">
+<script src="/assets/config.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+<!-- INSTITUTIONAL HEADER -->
+<header class="inst-header">
+  <div class="inst-header-inner">
+    <div class="inst-logo-area">
+      <div class="inst-logo">VT</div>
+      <div class="inst-name-block">
+        <div class="inst-name">V<span>Trade</span></div>
+        <div class="inst-sub">Campus E-Commerce Portal &nbsp;|&nbsp; VIT University, Vellore</div>
+      </div>
+    </div>
+    <div class="inst-tagline">
+      <strong>VTrade — Campus First</strong>
+      A student-driven delivery ecosystem facilitating<br>
+      shopping, second-hand trade, and pickup services<br>
+      within VIT University campus.
+    </div>
+  </div>
+</header>
+
+<!-- SECONDARY NAV -->
+<nav class="inst-nav">
+  <div class="inst-nav-inner">
+    <ul class="inst-nav-links">
+      <li><a href="/app/index.html">Home</a></li>
+      <li><a href="/info/About.html">About VTrade</a></li>
+      <li><a href="/info/ContactUs.html">Contact Us</a></li>
+      <li><a href="/info/PrivacyPolicy.html">Privacy Policy</a></li>
+      <li><a href="/info/TermsAndCondition.html">Terms &amp; Conditions</a></li>
+    </ul>
+    <span class="inst-time" id="inst-time"></span>
+  </div>
+</nav>
+
+<!-- MAIN PORTAL BODY -->
+<div class="portal-body">
+
+  <!-- LEFT: WELCOME + ROLE SELECT + FORMS -->
+  <div class="portal-left">
+
+    <!-- WELCOME CARD -->
+    <div class="welcome-card">
+      <div class="welcome-title">Welcome to <span>VTrade Portal</span></div>
+      <div class="welcome-sub">Select your role below to sign in to your account. All VIT students, delivery partners, and registered stores can access the platform through this portal.</div>
+
+      <!-- ROLE CARDS -->
+      <div class="role-grid">
+        <div class="role-card" id="role-student" onclick="selectRole('student')">
+          <div class="role-icon">🎓</div>
+          <h4>Student</h4>
+          <p>Shop, sell second-hand, request pickups &amp; deliver</p>
+        </div>
+        <div class="role-card" id="role-worker" onclick="selectRole('worker')">
+          <div class="role-icon">🚴</div>
+          <h4>Delivery Staff</h4>
+          <p>Hired delivery personnel login</p>
+        </div>
+        <div class="role-card" id="role-store" onclick="selectRole('store')">
+          <div class="role-icon">🏪</div>
+          <h4>Partner Store</h4>
+          <p>Groceries, beauty, stationery &amp; undergarment sellers</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STUDENT LOGIN FORM -->
+    <div class="login-form-area" id="form-student">
+      <div class="form-header">
+        <div class="form-header-icon">🎓</div>
+        <div class="form-header-text">
+          <h3>Student / Student Worker Login</h3>
+          <p>Sign in with your official VIT Google account or your registration number</p>
+        </div>
+      </div>
+
+      <!-- Google Sign-In -->
+      <div id="google-btn-wrap"></div>
+      <div class="google-divider">— or —</div>
+
+      <!-- Reg No. + Password -->
+      <div class="field-group">
+        <label class="field-label">Registration Number</label>
+        <input type="text" class="field-input" id="s-reg" placeholder="e.g. 22BCE0001" style="text-transform:uppercase">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Password</label>
+        <input type="password" class="field-input" id="s-pass" placeholder="Enter your password">
+      </div>
+      <div class="captcha-box">
+        <label class="captcha-check">
+          <input type="checkbox" id="s-captcha2">
+          I'm not a robot
+        </label>
+        <div class="captcha-logo"><strong>reCAPTCHA</strong>Privacy · Terms</div>
+      </div>
+      <button class="login-btn" id="s-reg-btn" onclick="studentRegLogin()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Sign In
+      </button>
+      <div class="form-links">
+        <a href="#">Forgot Password?</a>
+        <a href="/auth/SignUp.html">Create Account</a>
+      </div>
+    </div>
+
+    <!-- DELIVERY STAFF LOGIN FORM -->
+    <div class="login-form-area" id="form-worker">
+      <div class="form-header">
+        <div class="form-header-icon">🚴</div>
+        <div class="form-header-text">
+          <h3>Hired Delivery Staff Login</h3>
+          <p>Sign in with the Gmail or password issued to you by VTrade admin</p>
+        </div>
+      </div>
+
+      <div class="provision-note">
+        🔒 Delivery Staff accounts are created by the VTrade admin only. If you don't have
+        access yet, request access below. First-time sign-in will ask you to set your own password.
+      </div>
+
+      <!-- Google Sign-In -->
+      <div id="worker-google-btn-wrap"></div>
+      <div class="google-divider">— or —</div>
+
+      <div class="field-group">
+        <label class="field-label">Email</label>
+        <input type="email" class="field-input" id="w-email" placeholder="you@gmail.com">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Password</label>
+        <input type="password" class="field-input" id="w-pass" placeholder="Enter your password">
+      </div>
+      <div class="captcha-box">
+        <label class="captcha-check">
+          <input type="checkbox" id="w-captcha">
+          I'm not a robot
+        </label>
+        <div class="captcha-logo"><strong>reCAPTCHA</strong>Privacy · Terms</div>
+      </div>
+      <button class="login-btn" onclick="workerLogin()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Sign In as Delivery Staff
+      </button>
+      <div class="form-links" style="margin-top:10px">
+        <a href="#">Forgot Password?</a>
+        <a href="/auth/RequestAccess.html?role=delivery_staff">Apply for Delivery Staff →</a>
+      </div>
+    </div>
+
+    <!-- PARTNER STORE LOGIN FORM -->
+    <div class="login-form-area" id="form-store">
+      <div class="form-header">
+        <div class="form-header-icon">🏪</div>
+        <div class="form-header-text">
+          <h3>Partner Store Login</h3>
+          <p>Sign in with the Gmail or password issued to you by VTrade admin</p>
+        </div>
+      </div>
+
+      <div class="provision-note">
+        🔒 Partner Store accounts are created by the VTrade admin only. If you don't have
+        access yet, request access below. First-time sign-in will ask you to set your own password.
+      </div>
+
+      <!-- Google Sign-In -->
+      <div id="store-google-btn-wrap"></div>
+      <div class="google-divider">— or —</div>
+
+      <div class="field-group">
+        <label class="field-label">Store Email</label>
+        <input type="email" class="field-input" id="p-email" placeholder="store@yourshop.com">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Password</label>
+        <input type="password" class="field-input" id="p-pass" placeholder="Enter your password">
+      </div>
+      <div class="captcha-box">
+        <label class="captcha-check">
+          <input type="checkbox" id="p-captcha">
+          I'm not a robot
+        </label>
+        <div class="captcha-logo"><strong>reCAPTCHA</strong>Privacy · Terms</div>
+      </div>
+      <button class="login-btn" onclick="storeLogin()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Sign In as Partner Store
+      </button>
+      <div class="form-links" style="margin-top:10px">
+        <a href="#">Forgot Password?</a>
+        <a href="/auth/RequestAccess.html?role=store">Apply for Partner Store →</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: SPOTLIGHT + APP INFO -->
+  <div class="portal-right">
+
+    <div class="spotlight-card">
+      <div class="spotlight-header">
+        <span style="font-size:16px">📢</span>
+        <h4>SPOTLIGHT</h4>
+      </div>
+      <ul class="spotlight-ticker" id="spotlight-list">
+        <li>Pickup service now available for Amazon Kart, Flipkart Hub &amp; VIT Book Store</li>
+        <li>Student workers: Import your V-TOP timetable to auto-set free slots</li>
+        <li>Second-hand marketplace now live — sell your old textbooks &amp; electronics</li>
+        <li>Escrow payment system protects every marketplace transaction</li>
+        <li>New: In-app chat between buyers and sellers for price negotiation</li>
+        <li>Bounty Points redeemable for up to ₹50 discount per order</li>
+        <li>Geofence delivery confirmation now active across all hostels</li>
+        <li>Partner stores can now add products directly from their dashboard</li>
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h4>Quick Info</h4>
+      <div class="info-row"><span class="info-row-icon">🏫</span>VIT University, Vellore — 632 014</div>
+      <div class="info-row"><span class="info-row-icon">📧</span>hello@vtrade.in</div>
+      <div class="info-row"><span class="info-row-icon">⏰</span>Support: 8 AM – 10 PM daily</div>
+      <div class="info-row"><span class="info-row-icon">🔐</span>Google or Reg. Number login</div>
+    </div>
+
+    <div class="info-card">
+      <h4>VTrade App</h4>
+      <div class="app-badges">
+        <a href="#" class="app-badge-btn">
+          <span class="app-badge-icon">▶</span>
+          <div class="app-badge-text"><strong>Google Play</strong>Download for Android</div>
+        </a>
+        <a href="#" class="app-badge-btn">
+          <span class="app-badge-icon">🍎</span>
+          <div class="app-badge-text"><strong>App Store</strong>Download for iOS</div>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="inst-footer">© 2025 VTrade Commerce Pvt. Ltd. · VIT University, Vellore 632 014 · Built by VIT Students</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function showToast(m,t='ok'){const el=document.getElementById('toast');el.textContent=m;el.className=`toast ${t} show`;setTimeout(()=>el.classList.remove('show'),3200)}
+function updateClock(){const el=document.getElementById('inst-time');if(el)el.textContent=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true})}
+setInterval(updateClock,1000);updateClock();
+
+if (typeof isLoggedIn === 'function' && isLoggedIn()) window.location.href = '/app/index.html';
+
+// ── ROLE SELECTION ──────────────────────────────────────────
+let currentRole = null;
+
+function selectRole(role) {
+  currentRole = role;
+
+  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('role-' + role).classList.add('selected');
+
+  document.querySelectorAll('.login-form-area').forEach(f => f.classList.remove('visible'));
+  const form = document.getElementById('form-' + role);
+  if (form) {
+    form.classList.add('visible');
+    setTimeout(() => form.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
+  }
+}
+
+// ── SHARED POST-LOGIN HANDLER ─────────────────────────────────
+// Used by every successful login path (reg-no, worker, store, Google).
+// If the account is flagged must_reset_password (admin-provisioned Delivery
+// Staff / Partner Store on their first-ever sign-in), send them to the
+// forced password-reset page instead of straight into the app.
+async function completeLogin(d) {
+  saveAuthData(d.token, d.user);
+  if (d.user) {
+    localStorage.setItem('userName', d.user.first_name || '');
+    localStorage.setItem('userRole', d.user.role || 'buyer');
+  }
+  if (d.user && d.user.must_reset_password) {
+    showToast('First-time login — please set your own password.', 'ok');
+    setTimeout(() => window.location.href = '/auth/ResetPassword.html', 700);
+    return;
+  }
+  showToast('Signed in!', 'ok');
+  setTimeout(() => window.location.href = '/app/index.html', 700);
+}
+
+// ── STUDENT: Registration Number + Password login ───────────
+async function studentRegLogin() {
+  const reg = document.getElementById('s-reg').value.trim().toUpperCase();
+  const pass = document.getElementById('s-pass').value;
+  if (!reg) { showToast('Enter your registration number.', 'er'); return; }
+  if (!pass) { showToast('Enter your password.', 'er'); return; }
+
+  const btn = document.getElementById('s-reg-btn');
+  btn.disabled = true; btn.textContent = 'Signing in…';
+
+  const online = await pingBackend();
+  if (!online) {
+    showToast('Backend is offline. Please try again shortly.', 'er');
+    btn.disabled = false; btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Sign In';
+    return;
+  }
+
+  try {
+    const d = await vtFetch('POST', '/auth/login', { student_id: reg, password: pass });
+    await completeLogin(d);
+  } catch (err) {
+    showToast(err.message || 'Sign in failed.', 'er');
+    btn.disabled = false; btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Sign In';
+  }
+}
+
+// ── DELIVERY STAFF: email + password login (admin-provisioned accounts only) ──
+async function workerLogin() {
+  const email = document.getElementById('w-email').value.trim();
+  const pass = document.getElementById('w-pass').value;
+  if (!email) { showToast('Enter your email.', 'er'); return; }
+  if (!pass) { showToast('Enter your password.', 'er'); return; }
+
+  const online = await pingBackend();
+  if (!online) { showToast('Backend is offline. Please try again shortly.', 'er'); return; }
+
+  try {
+    const d = await vtFetch('POST', '/auth/login', { email, password: pass });
+    await completeLogin(d);
+  } catch (err) {
+    showToast(err.message || 'Sign in failed.', 'er');
+  }
+}
+
+// ── PARTNER STORE: email + password login (admin-provisioned accounts only) ──
+async function storeLogin() {
+  const email = document.getElementById('p-email').value.trim();
+  const pass = document.getElementById('p-pass').value;
+  if (!email) { showToast('Enter your Store Email.', 'er'); return; }
+  if (!pass) { showToast('Enter your password.', 'er'); return; }
+
+  const online = await pingBackend();
+  if (!online) { showToast('Backend is offline. Please try again shortly.', 'er'); return; }
+
+  try {
+    const d = await vtFetch('POST', '/auth/login', { email, password: pass });
+    await completeLogin(d);
+  } catch (err) {
+    showToast(err.message || 'Sign in failed.', 'er');
+  }
+}
+
+// ── GOOGLE SIGN-IN (shared across all three portals) ──────────
+window.addEventListener('load', () => {
+  if (typeof google === 'undefined') return;
+  google.accounts.id.initialize({
+    client_id: '101215014340-cr6sqhrd2krnfichm13muvpdcr0lhsf9.apps.googleusercontent.com',
+    callback: handleGoogleCredential
+  });
+  google.accounts.id.renderButton(
+    document.getElementById('google-btn-wrap'),
+    { theme: 'outline', size: 'large', width: 300 }
+  );
+  google.accounts.id.renderButton(
+    document.getElementById('worker-google-btn-wrap'),
+    { theme: 'outline', size: 'large', width: 300 }
+  );
+  google.accounts.id.renderButton(
+    document.getElementById('store-google-btn-wrap'),
+    { theme: 'outline', size: 'large', width: 300 }
+  );
+});
+
+async function handleGoogleCredential(resp) {
+  // currentRole is set by selectRole('student'|'worker'|'store') when the person
+  // picked their portal — that tells the backend which domain rule to apply, and
+  // for worker/store, whether an admin-provisioned account must already exist.
+  const role = currentRole || 'student';
+  showToast('Verifying with Google…', 'ok');
+  const online = await pingBackend();
+  if (!online) { showToast('Backend is offline — cannot verify Google sign-in.', 'er'); return; }
+  try {
+    const d = await vtFetch('POST', '/auth/google', { idToken: resp.credential, role });
+    await completeLogin(d);
+  } catch (err) {
+    showToast(err.message || 'Google sign-in failed.', 'er');
+  }
+}
+</script>
+</body>
+</html>
