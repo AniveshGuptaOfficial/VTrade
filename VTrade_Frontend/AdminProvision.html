@@ -15,18 +15,10 @@
 <header class="inst-header">
   <div class="inst-header-inner">
     <div class="inst-logo-area"><div class="inst-logo">VT</div><div><div class="inst-name">V<span>Trade</span></div><div class="inst-sub">Internal Admin Tool</div></div></div>
-    <div class="inst-tagline"><strong>Not linked in nav — bookmark this URL</strong>Provision Delivery Staff / Partner Store accounts.</div>
   </div>
 </header>
 
 <div class="admin-wrap">
-  <div class="admin-warn">
-    ⚠️ This page is for the site admin only. It is not linked anywhere in the app —
-    access is controlled purely by the Admin Secret below, which must match
-    <code>vtrade.admin.secret</code> / the <code>VTRADE_ADMIN_SECRET</code> env var on Render.
-    Never share this URL or the secret.
-  </div>
-
   <div class="vt-card navy-top">
     <div class="vt-card-header"><h2>➕ Provision New Account</h2></div>
     <div class="vt-card-body">
@@ -50,7 +42,7 @@
         <input type="email" id="email" class="vt-input" placeholder="person@gmail.com">
       </div>
       <div class="vt-field">
-        <label class="vt-label">Phone <span class="vt-label opt">optional — copy from their access request if you have it</span></label>
+        <label class="vt-label">Phone <span class="vt-label opt"></span></label>
         <input type="tel" id="phone" class="vt-input" placeholder="10-digit number" maxlength="10">
       </div>
       <div class="vt-field">
