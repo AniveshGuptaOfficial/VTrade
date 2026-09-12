@@ -50,6 +50,10 @@
         <input type="email" id="email" class="vt-input" placeholder="person@gmail.com">
       </div>
       <div class="vt-field">
+        <label class="vt-label">Phone <span class="vt-label opt">optional — copy from their access request if you have it</span></label>
+        <input type="tel" id="phone" class="vt-input" placeholder="10-digit number" maxlength="10">
+      </div>
+      <div class="vt-field">
         <label class="vt-label">Temporary Password <span class="req">*</span></label>
         <input type="text" id="temp-password" class="vt-input" placeholder="Min. 8 characters — give this to them directly">
       </div>
@@ -65,16 +69,22 @@
 <script>
 function showToast(m,t='ok'){const el=document.getElementById('toast');el.textContent=m;el.className=`vt-toast toast-${t} show`;setTimeout(()=>el.classList.remove('show'),3200)}
 
+document.getElementById('phone').addEventListener('input', function(){
+  this.value = this.value.replace(/\D/g,'').slice(0,10);
+});
+
 document.getElementById('provision-btn').addEventListener('click', async () => {
   const secret = document.getElementById('admin-secret').value.trim();
   const role = document.getElementById('role').value;
   const firstName = document.getElementById('first-name').value.trim();
   const lastName = document.getElementById('last-name').value.trim();
   const email = document.getElementById('email').value.trim();
+  const phone = document.getElementById('phone').value.trim();
   const tempPassword = document.getElementById('temp-password').value;
 
   if (!secret) { showToast('Enter the admin secret.', 'er'); return; }
   if (!email) { showToast('Enter an email.', 'er'); return; }
+  if (phone && phone.length !== 10) { showToast('Phone must be exactly 10 digits, or left blank.', 'er'); return; }
   if (!tempPassword || tempPassword.length < 8) { showToast('Temp password must be at least 8 characters.', 'er'); return; }
 
   const btn = document.getElementById('provision-btn');
@@ -94,7 +104,8 @@ document.getElementById('provision-btn').addEventListener('click', async () => {
         temp_password: tempPassword,
         role,
         first_name: firstName || undefined,
-        last_name: lastName || undefined
+        last_name: lastName || undefined,
+        phone: phone || undefined
       })
     });
     const data = await res.json().catch(() => ({}));
@@ -105,7 +116,9 @@ document.getElementById('provision-btn').addEventListener('click', async () => {
     box.innerHTML = `
       <strong>✅ Account created</strong><br>
       Email: <strong>${data.email}</strong><br>
-      Role: <strong>${data.role}</strong><br><br>
+      Role: <strong>${data.role}</strong><br>
+      ${data.phone ? `Phone: <strong>${data.phone}</strong><br>` : ''}
+      <br>
       Share these with them directly (not over email/chat if possible):<br>
       • Email: <code>${data.email}</code><br>
       • Temporary password: <code>${tempPassword}</code><br><br>
@@ -114,6 +127,7 @@ document.getElementById('provision-btn').addEventListener('click', async () => {
     `;
     showToast('Account provisioned!', 'ok');
     document.getElementById('email').value = '';
+    document.getElementById('phone').value = '';
     document.getElementById('temp-password').value = '';
     document.getElementById('first-name').value = '';
     document.getElementById('last-name').value = '';

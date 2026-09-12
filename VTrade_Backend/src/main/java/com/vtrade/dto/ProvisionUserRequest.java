@@ -25,4 +25,8 @@ public class ProvisionUserRequest {
     private String firstName;
 
     private String lastName;
+
+    /** Optional — usually copied over from the person's access_requests submission. */
+    @Pattern(regexp = "\\d{10}", message = "Phone must be exactly 10 digits")
+    private String phone;
 }
