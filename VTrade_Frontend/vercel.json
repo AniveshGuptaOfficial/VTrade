@@ -1,0 +1,84 @@
+{
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/app/index.html"
+    },
+    {
+      "source": "/index.html",
+      "destination": "/app/index.html"
+    },
+    {
+      "source": "/About.html",
+      "destination": "/info/About.html"
+    },
+    {
+      "source": "/Account.html",
+      "destination": "/app/Account.html"
+    },
+    {
+      "source": "/AdminMessages.html",
+      "destination": "/admin/AdminMessages.html"
+    },
+    {
+      "source": "/AdminProvision.html",
+      "destination": "/admin/AdminProvision.html"
+    },
+    {
+      "source": "/ContactUs.html",
+      "destination": "/info/ContactUs.html"
+    },
+    {
+      "source": "/Marketplace.html",
+      "destination": "/app/Marketplace.html"
+    },
+    {
+      "source": "/MyCart.html",
+      "destination": "/app/MyCart.html"
+    },
+    {
+      "source": "/Pickup.html",
+      "destination": "/app/Pickup.html"
+    },
+    {
+      "source": "/PrivacyPolicy.html",
+      "destination": "/info/PrivacyPolicy.html"
+    },
+    {
+      "source": "/RequestAccess.html",
+      "destination": "/auth/RequestAccess.html"
+    },
+    {
+      "source": "/ResetPassword.html",
+      "destination": "/auth/ResetPassword.html"
+    },
+    {
+      "source": "/SeeAll.html",
+      "destination": "/app/SeeAll.html"
+    },
+    {
+      "source": "/SignUp.html",
+      "destination": "/auth/SignUp.html"
+    },
+    {
+      "source": "/TermsAndCondition.html",
+      "destination": "/info/TermsAndCondition.html"
+    },
+    {
+      "source": "/login.html",
+      "destination": "/auth/login.html"
+    },
+    {
+      "source": "/vtrade.css",
+      "destination": "/assets/vtrade.css"
+    },
+    {
+      "source": "/config.js",
+      "destination": "/assets/config.js"
+    },
+    {
+      "source": "/script.js",
+      "destination": "/assets/script.js"
+    }
+  ]
+}
