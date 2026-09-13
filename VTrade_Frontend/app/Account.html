@@ -153,8 +153,7 @@
   <div class="account-topbar">
     <h1>My Account</h1>
     <div style="display:flex;gap:10px;align-items:center">
-      <span class="api-badge off" id="api-badge"><span class="api-dot"></span><span id="api-txt">Checking…</span></span>
-      <button class="btn btn-outline btn-sm" id="logout-btn">Sign Out</button>
+      <button class="btn btn-gold btn-sm" id="logout-btn">Sign Out</button>
     </div>
   </div>
 
@@ -398,6 +397,9 @@ let user = null, workerProfile = null, apiUp = false;
 let localSlots = JSON.parse(localStorage.getItem('vtrade_slots')) || [];
 let isOnline = false;
 
+function updateClock(){const el=document.getElementById('inst-time');if(el)el.textContent=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true})}
+setInterval(updateClock,1000);updateClock();
+
 function toast(msg, type = 's') {
   const t = document.getElementById('toast');
   t.textContent = msg; t.className = `toast ${type} show`;
@@ -414,14 +416,6 @@ async function init() {
 
   // Ping backend
   apiUp = await pingBackend();
-  const badge = document.getElementById('api-badge');
-  if (apiUp) {
-    badge.className = 'api-badge on';
-    document.getElementById('api-txt').textContent = 'API Connected';
-  } else {
-    badge.className = 'api-badge off';
-    document.getElementById('api-txt').textContent = 'Offline Mode';
-  }
 
   // Load user from API if online, else from localStorage
   if (apiUp && getToken()) {
