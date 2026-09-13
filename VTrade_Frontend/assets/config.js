@@ -83,7 +83,7 @@ function updateAuthNav() {
   if (isLoggedIn()) {
     const ud = JSON.parse(localStorage.getItem('userData') || '{}');
     const name = ud.firstName || ud.first_name || ud.name || 'Account';
-    area.innerHTML = `<a href="/app/Account.html" class="btn btn-outline btn-sm" style="border-color:rgba(255,255,255,.35);color:white">👤 ${name}</a>`;
+    area.innerHTML = `<a href="/app/Account.html" class="btn btn-outline btn-sm">👤 ${name}</a>`;
   } else {
     area.innerHTML = '<a href="/auth/login.html" class="btn btn-gold btn-sm">Login / Register</a>';
   }
