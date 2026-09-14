@@ -24,6 +24,11 @@
 .status-read{background:var(--surface-2);color:var(--ink-3)}
 .status-replied{background:var(--ok-bg);color:var(--ok)}
 .empty-msg{text-align:center;padding:50px 20px;color:var(--ink-3)}
+.reply-box{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.reply-box textarea{width:100%;min-height:70px;padding:9px 12px;border:1.5px solid var(--border-mid);border-radius:var(--r2);font-family:inherit;font-size:13px;resize:vertical;outline:none}
+.reply-box textarea:focus{border-color:var(--gray-700)}
+.reply-sent{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);background:var(--ok-bg);border-radius:var(--r2);padding:10px 12px;font-size:12.5px;color:var(--ok);white-space:pre-wrap}
+.reply-sent strong{display:block;color:var(--ink);margin-bottom:4px;font-size:11px;text-transform:uppercase;letter-spacing:.4px}
 </style>
 </head>
 <body>
@@ -99,9 +104,18 @@ function renderMessages(messages) {
       <div class="msg-actions">
         <span class="status-badge status-${m.status}">${m.status}</span>
         <button class="btn btn-outline btn-sm" onclick="setStatus(${m.id}, 'read')">Mark Read</button>
-        <button class="btn btn-primary btn-sm" onclick="setStatus(${m.id}, 'replied')">Mark Replied</button>
-        <a class="btn btn-ghost btn-sm" href="mailto:${encodeURIComponent(m.email)}?subject=${encodeURIComponent('Re: ' + (m.subject || 'Your VTrade message'))}">✉️ Reply by Email</a>
       </div>
+      ${m.status === 'replied' ? `
+        <div class="reply-sent">
+          <strong>✅ Reply sent ${m.replied_at ? new Date(m.replied_at).toLocaleString('en-IN', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) : ''}</strong>
+          ${escapeHtml(m.admin_reply || '')}
+        </div>
+      ` : `
+        <div class="reply-box">
+          <textarea id="reply-text-${m.id}" placeholder="Type your reply — this will be emailed to ${escapeHtml(m.email)}"></textarea>
+          <button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="sendReply(${m.id})">📧 Send Reply Email</button>
+        </div>
+      `}
     </div>
   `).join('');
 }
@@ -125,6 +139,30 @@ async function setStatus(id, status) {
     loadMessages();
   } catch (err) {
     showToast(err.message || 'Could not update status.', 'er');
+  }
+}
+
+async function sendReply(id) {
+  const textarea = document.getElementById(`reply-text-${id}`);
+  const reply = textarea.value.trim();
+  if (!reply) { showToast('Write a reply first.', 'er'); return; }
+
+  const btn = textarea.nextElementSibling;
+  btn.disabled = true; btn.textContent = 'Sending…';
+
+  try {
+    const res = await fetch(VTRADE_CONFIG.API_BASE + `/contact/${id}/reply`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Secret': currentSecret },
+      body: JSON.stringify({ reply })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
+    showToast('Reply emailed! 📧', 'ok');
+    loadMessages();
+  } catch (err) {
+    showToast(err.message || 'Could not send reply.', 'er');
+    btn.disabled = false; btn.textContent = '📧 Send Reply Email';
   }
 }
 </script>

@@ -31,6 +31,13 @@ public class ContactMessage {
     /** new | read | replied — admin updates this manually in Supabase after handling */
     private String status = "new";
 
+    /** The reply text the admin sent, stored for reference once emailed to the person. */
+    @Column(length = 2000)
+    private String adminReply;
+
+    @Column(name = "replied_at")
+    private LocalDateTime repliedAt;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 }

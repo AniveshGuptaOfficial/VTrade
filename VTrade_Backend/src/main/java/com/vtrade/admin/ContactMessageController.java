@@ -48,6 +48,16 @@ public class ContactMessageController {
         return ResponseEntity.ok(contactMessageService.updateStatus(id, body.get("status")));
     }
 
+    // Sends the admin's reply to the person's email via Gmail SMTP and marks the
+    // message as replied. Same secret-header protection as the rest of this controller.
+    @PostMapping("/{id}/reply")
+    public ResponseEntity<ContactMessage> reply(@RequestHeader("X-Admin-Secret") String suppliedSecret,
+                                                  @PathVariable Long id,
+                                                  @RequestBody Map<String, String> body) {
+        requireAdmin(suppliedSecret);
+        return ResponseEntity.ok(contactMessageService.reply(id, body.get("reply")));
+    }
+
     private void requireAdmin(String suppliedSecret) {
         if (adminSecret == null || adminSecret.isBlank() || !adminSecret.equals(suppliedSecret)) {
             throw new IllegalArgumentException("Invalid admin secret.");

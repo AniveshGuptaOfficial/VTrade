@@ -94,6 +94,12 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- Email (Gmail SMTP for admin replies to Contact Us) -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-mail</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
